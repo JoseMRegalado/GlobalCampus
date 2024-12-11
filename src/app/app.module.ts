@@ -5,16 +5,35 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
-import {RouterOutlet} from "@angular/router";
+import {RouterLink, RouterModule, RouterOutlet, Routes} from "@angular/router";
+import { HomeComponent } from './components/home/home.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { LoginComponent } from './components/login/login.component';
+import {FormsModule} from "@angular/forms";
+import { PersonalDataComponent } from './components/personal-data/personal-data.component';
+import {AuthGuard} from "./guards/auth.guard";
+import { UniversityDataComponent } from './components/university-data/university-data.component';
 
+
+const appRoutes: Routes = [
+  {path: 'home', component: HomeComponent},
+  {path: '', component: HomeComponent},
+  {path: 'login', component: LoginComponent},
+  { path: 'personal-data', component: PersonalDataComponent, canActivate: [AuthGuard] },
+  { path: 'university-data', component: UniversityDataComponent, canActivate: [AuthGuard] },
+];
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
     RouterOutlet,
+    RouterModule.forRoot(appRoutes),
+    RouterLink,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

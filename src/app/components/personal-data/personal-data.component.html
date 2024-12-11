@@ -1,0 +1,51 @@
+<app-header></app-header>
+<div>
+  <h2>Datos Personales</h2>
+  <form (ngSubmit)="saveForm(f.value)" #f="ngForm">
+    <div>
+      <label for="lastName">Apellidos completos</label>
+      <input type="text" id="lastName" name="lastName" placeholder="Apellidos completos" required ngModel>
+    </div>
+    <div>
+      <label for="firstName">Nombres completos</label>
+      <input type="text" id="firstName" name="firstName" placeholder="Nombres completos" required ngModel>
+    </div>
+    <div>
+      <label for="birthPlace">Lugar de nacimiento</label>
+      <input type="text" id="birthPlace" name="birthPlace" placeholder="Lugar de nacimiento" required ngModel>
+    </div>
+    <div>
+      <label for="birthDate">Fecha de nacimiento</label>
+      <input type="date" id="birthDate" name="birthDate" placeholder="Fecha de nacimiento" required ngModel>
+    </div>
+    <div>
+      <label for="gender">Género</label>
+      <select id="gender" name="gender" required ngModel>
+        <option value="Masculino">Masculino</option>
+        <option value="Femenino">Femenino</option>
+      </select>
+    </div>
+    <div>
+      <label for="idNumber">Número de documento</label>
+      <input type="text" id="idNumber" name="idNumber" placeholder="Número de documento" required ngModel>
+    </div>
+    <div>
+      <label for="idExpiry">Fecha de caducidad del documento</label>
+      <input type="date" id="idExpiry" name="idExpiry" placeholder="Fecha de caducidad" required ngModel>
+    </div>
+    <div>
+      <label for="nationality">Nacionalidad</label>
+      <input type="text" id="nationality" name="nationality" placeholder="Nacionalidad" required ngModel>
+    </div>
+    <div>
+      <label for="phone">Teléfono celular</label>
+      <input type="text" id="phone" name="phone" placeholder="Teléfono celular" required ngModel>
+    </div>
+    <div>
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" [value]="userEmail" readonly>
+    </div>
+    <button [routerLink]="['/university-data']" type="submit">Guardar</button>
+  </form>
+</div>
+<app-footer></app-footer>
