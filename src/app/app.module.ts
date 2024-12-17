@@ -14,6 +14,7 @@ import {FormsModule} from "@angular/forms";
 import { PersonalDataComponent } from './components/personal-data/personal-data.component';
 import {AuthGuard} from "./guards/auth.guard";
 import { UniversityDataComponent } from './components/university-data/university-data.component';
+import { CartaAceptacionComponent } from './components/carta-aceptacion/carta-aceptacion.component';
 
 
 const appRoutes: Routes = [
@@ -22,9 +23,10 @@ const appRoutes: Routes = [
   {path: 'login', component: LoginComponent},
   { path: 'personal-data', component: PersonalDataComponent, canActivate: [AuthGuard] },
   { path: 'university-data', component: UniversityDataComponent, canActivate: [AuthGuard] },
+  { path: 'carta-aceptacion', component: CartaAceptacionComponent, canActivate: [AuthGuard] },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),

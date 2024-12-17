@@ -1,0 +1,20 @@
+<app-header></app-header>
+<div>
+  <h2>Carta de Aceptación</h2>
+
+  <!-- Botón para generar el PDF -->
+  <button (click)="generatePdf()">Generar Carta</button>
+
+  <!-- Input para subir el PDF firmado -->
+  <div style="margin-top: 20px;">
+    <label for="signedFile">Subir documento firmado:</label>
+    <input type="file" id="signedFile" accept="application/pdf" (change)="onFileSelected($event)">
+  </div>
+
+  <!-- Botón para subir el documento -->
+  <button (click)="uploadSignedPdf()" [disabled]="pdfUploading || !selectedFile">
+    {{ pdfUploading ? 'Subiendo...' : 'Subir Documento Firmado' }}
+  </button>
+</div>
+<app-footer></app-footer>
+

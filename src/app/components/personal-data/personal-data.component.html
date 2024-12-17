@@ -1,51 +1,54 @@
 <app-header></app-header>
 <div>
   <h2>Datos Personales</h2>
-  <form (ngSubmit)="saveForm(f.value)" #f="ngForm">
+  <form #form="ngForm" (ngSubmit)="saveOrUpdateForm()">
     <div>
       <label for="lastName">Apellidos completos</label>
-      <input type="text" id="lastName" name="lastName" placeholder="Apellidos completos" required ngModel>
+      <input type="text" id="lastName" name="lastName" [(ngModel)]="formData.lastName" placeholder="Apellidos completos" required>
     </div>
     <div>
       <label for="firstName">Nombres completos</label>
-      <input type="text" id="firstName" name="firstName" placeholder="Nombres completos" required ngModel>
+      <input type="text" id="firstName" name="firstName" [(ngModel)]="formData.firstName" placeholder="Nombres completos" required>
     </div>
     <div>
       <label for="birthPlace">Lugar de nacimiento</label>
-      <input type="text" id="birthPlace" name="birthPlace" placeholder="Lugar de nacimiento" required ngModel>
+      <input type="text" id="birthPlace" name="birthPlace" [(ngModel)]="formData.birthPlace" placeholder="Lugar de nacimiento" required>
     </div>
     <div>
       <label for="birthDate">Fecha de nacimiento</label>
-      <input type="date" id="birthDate" name="birthDate" placeholder="Fecha de nacimiento" required ngModel>
+      <input type="date" id="birthDate" name="birthDate" [(ngModel)]="formData.birthDate" placeholder="Fecha de nacimiento" required>
     </div>
     <div>
       <label for="gender">Género</label>
-      <select id="gender" name="gender" required ngModel>
+      <select id="gender" name="gender" [(ngModel)]="formData.gender" required>
         <option value="Masculino">Masculino</option>
         <option value="Femenino">Femenino</option>
       </select>
     </div>
     <div>
       <label for="idNumber">Número de documento</label>
-      <input type="text" id="idNumber" name="idNumber" placeholder="Número de documento" required ngModel>
+      <input type="text" id="idNumber" name="idNumber" [(ngModel)]="formData.idNumber" placeholder="Número de documento" required>
     </div>
     <div>
       <label for="idExpiry">Fecha de caducidad del documento</label>
-      <input type="date" id="idExpiry" name="idExpiry" placeholder="Fecha de caducidad" required ngModel>
+      <input type="date" id="idExpiry" name="idExpiry" [(ngModel)]="formData.idExpiry" placeholder="Fecha de caducidad" required>
     </div>
     <div>
       <label for="nationality">Nacionalidad</label>
-      <input type="text" id="nationality" name="nationality" placeholder="Nacionalidad" required ngModel>
+      <input type="text" id="nationality" name="nationality" [(ngModel)]="formData.nationality" placeholder="Nacionalidad" required>
     </div>
     <div>
       <label for="phone">Teléfono celular</label>
-      <input type="text" id="phone" name="phone" placeholder="Teléfono celular" required ngModel>
+      <input type="text" id="phone" name="phone" [(ngModel)]="formData.phone" placeholder="Teléfono celular" required>
     </div>
     <div>
       <label for="email">Correo electrónico</label>
       <input type="email" id="email" name="email" [value]="userEmail" readonly>
     </div>
-    <button [routerLink]="['/university-data']" type="submit">Guardar</button>
+
+    <button type="submit" [routerLink]="['/university-data']">
+      {{ hasData ? 'Siguiente' : 'Guardar' }}
+    </button>
   </form>
 </div>
 <app-footer></app-footer>
