@@ -37,33 +37,47 @@ export class PersonalDataComponent implements OnInit {
     });
   }
 
-  loadUserData() {
+  loadUserData(): void {
     if (this.userEmail) {
-      this.userDataService.getUserData(this.userEmail).subscribe(data => {
-        if (data) {
-          this.formData = data; // Cargar los datos del documento correspondiente
-          this.hasData = true;
+      this.userDataService.getUserData(this.userEmail).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.formData = { ...data };
+            this.hasData = true;
+          }
+        },
+        error: (err: any) => {
+          console.error('Error al cargar los datos:', err);
         }
       });
     }
   }
 
-  saveOrUpdateForm() {
+  saveOrUpdateForm(): void {
     if (this.userEmail) {
       const userData = {
         ...this.formData,
-        email: this.userEmail, // Agregar el correo al objeto de datos
+        email: this.userEmail,
       };
 
       if (this.hasData) {
         this.userDataService.updateUserData(this.userEmail, userData).subscribe({
-          next: () => alert('Datos actualizados correctamente.'),
-          error: (err) => alert('Error al actualizar los datos: ' + err),
+          next: () => {
+            alert('Datos actualizados correctamente.');
+          },
+          error: (err: any) => {
+            alert('Error al actualizar los datos: ' + err.message);
+          }
         });
       } else {
         this.userDataService.saveUserData(userData).subscribe({
-          next: () => alert('Datos guardados correctamente.'),
-          error: (err) => alert('Error al guardar los datos: ' + err),
+          next: () => {
+            alert('Datos guardados correctamente.');
+            this.hasData = true;
+          },
+          error: (err: any) => {
+            alert('Error al guardar los datos: ' + err.message);
+          }
         });
       }
     }

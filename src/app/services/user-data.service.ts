@@ -37,7 +37,9 @@ export class UserDataService {
     return new Observable<void>((observer) => {
       this.firestore
         .collection('users') // Colección principal
-        .doc(userId) // Documento del usuario
+        .doc(userId)// Documento del usuario
+        .collection('personal-data')
+        .doc('default')
         .collection('universityData') // Subcolección
         .add(data) // Agregar los datos como un nuevo documento
         .then(() => observer.next())
@@ -79,6 +81,8 @@ export class UserDataService {
     return this.firestore
       .collection('users')
       .doc(email)
+      .collection('personal-data')
+      .doc('default')
       .collection('universityData')
       .get()
       .pipe(
@@ -93,6 +97,8 @@ export class UserDataService {
       this.firestore
         .collection('users')
         .doc(email)
+        .collection('personal-data')
+        .doc('default')
         .collection('universityData')
         .doc(docId)
         .set(data, { merge: true }) // Actualizar el documento existente

@@ -1,0 +1,30 @@
+<app-header></app-header>
+<div class="options-container">
+  <!-- Opciones circulares -->
+  <div class="circle-options">
+    <div
+      class="circle-option"
+      *ngFor="let option of options"
+      (click)="selectOption(option)"
+    >
+      <img [src]="option.icon" [alt]="option.name" />
+      <p>{{ option.name }}</p>
+    </div>
+  </div>
+
+  <!-- Requisitos y Pasos -->
+  <div *ngIf="selectedOption" class="details-container">
+    <h2>{{ selectedOption.name }}</h2>
+
+    <h3>REQUISITOS</h3>
+    <ul>
+      <li *ngFor="let req of selectedOption.requirements">{{ req }}</li>
+    </ul>
+
+    <h3>PASOS A SEGUIR</h3>
+    <ol>
+      <li *ngFor="let step of selectedOption.steps">{{ step }}</li>
+    </ol>
+  </div>
+</div>
+<app-footer></app-footer>
