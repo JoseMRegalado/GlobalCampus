@@ -1,9 +1,11 @@
 <header>
-  <nav>
-    <ul>
-      <li><a routerLink="/personal-data">Datos Personales</a></li>
-      <li><a routerLink="/university-data">Datos Universitarios</a></li>
-      <li><button (click)="logout()">Cerrar Sesión</button></li>
-    </ul>
+  <div class="logo">
+    <img [routerLink]="['/home']" src="./assets/img/logo.svg" alt="Logo">
+  </div>
+  <nav class="nav-bar">
+    <a routerLink="/personal-data">Inicio</a>
+    <a routerLink="/personal-data">Convocatorias</a>
+    <a routerLink="/personal-data">Conoce UTPL</a>
+    <a routerLink="/personal-data">Conoce el mundo</a>
   </nav>
 </header>
