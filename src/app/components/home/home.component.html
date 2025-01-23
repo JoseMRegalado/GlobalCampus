@@ -1,16 +1,25 @@
-
 <app-header></app-header>
-
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejemplo de Fuente Personalizada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Volkhov&display=swap" rel="stylesheet">
+  <style>
+    .custom-title {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body>
 <section class="seccion-1">
   <div class="content">
-    <h1>Global Campus</h1>
+    <h1 class="titulo-global">Global Campus</h1>
+    <img src="assets/img/Decore.svg" alt="Línea amarilla" class="underline">
     <p>La Movilidad académica internacional se enfoca en la internacionalización de la educación
       superior por un período de tiempo determinado a través de la cooperación y convenios con
       diversas universidades en todo el mundo.</p>
-    <div>
-      <a [routerLink]="['/personal-data']" class="btn">Iniciar</a>
-    </div>
   </div>
   <div class="img">
     <img src="assets/img/imagen-home.svg" alt="Grafico-1" class="grafico-1">
@@ -18,35 +27,51 @@
 </section>
 
 <section class="seccion-2">
-  <div class="imagen-seccion2">
-    <img src="assets/img/estudiante-1%201.png" alt="Objetivo Principal">
-    <div class="objetivo">
-      <div class="titulo-objetivo">
-        <div class="nuestro">
-          <img src="assets/img/linea.svg" alt="Linea">
-          <span>Nuestro</span>
-        </div>
-        <h3>Objetivo principal</h3>
-      </div>
-      <p>Empower yourself with the knowledge and skills gained through online education! The key to your future!
-        Empower yourself with the knowledge and skills gained through online education! The key to your future!</p>
+  <div>
+    <h2 class="subtitulo">Tipos de Movilidad</h2>
+  </div>
+  <div class="contenido">
+    <div class="tipo-movilidad">
+      <img src="assets/img/icon.svg" alt="Prácticas/Pasantías">
+      <h3>Prácticas/Pasantías</h3>
+      <p>Programas internacionales que permiten al estudiante adquirir experiencia laboral.</p>
+    </div>
+    <div class="tipo-movilidad">
+      <img src="assets/img/icon.svg" alt="Cursos Cortos">
+      <h3>Cursos Cortos</h3>
+      <p>Programas diseñados por iniciativa de la IES de acogida, no mayor a 3 meses.</p>
+    </div>
+    <div class="tipo-movilidad">
+      <img src="assets/img/icon.svg" alt="Visitas de estudio">
+      <h3>Visitas de estudio</h3>
+      <p>Visitas académicas de grupos de estudiantes o docentes/investigadores.</p>
     </div>
   </div>
+
+  <div class="contenido">
+    <div class="tipo-movilidad">
+      <img src="assets/img/icon.svg" alt="Cursos Cortos">
+      <h3>Cursos Cortos</h3>
+      <p>Programas diseñados por iniciativa de la IES de acogida, no mayor a 3 meses.</p>
+    </div>
+    <div class="tipo-movilidad">
+      <img src="assets/img/icon.svg" alt="Visitas de estudio">
+      <h3>Visitas de estudio</h3>
+      <p>Visitas académicas de grupos de estudiantes o docentes/investigadores.</p>
+    </div>
+  </div>
+
 </section>
 <section class="seccion-3">
-  <div class="estadisticas">
-    <div class="info">
-      <h3>100k</h3>
-      <p>Estudiantes usando</p>
-    </div>
-    <div class="info">
-      <h3>45+</h3>
-      <p>Tesis</p>
-    </div>
-    <div class="info">
-      <h3>98k</h3>
-      <p>Participación de directores</p>
-    </div>
+  <div class="card">
+    <h3 class="card-title">¿Eres estudiante UTPL?</h3>
+    <img src="assets/img/image.png" alt="Campus UTPL" class="card-image">
+    <button class="card-button">Ingresa aquí</button>
+  </div>
+  <div class="card">
+    <h3 class="card-title">¿Eres estudiante visitante?</h3>
+    <img src="assets/img/image.png" alt="Campus UTPL" class="card-image">
+    <button class="card-button">Ingresa aquí</button>
   </div>
 </section>
 
@@ -95,4 +120,10 @@
 
 
 <app-footer></app-footer>
+
+</body>
+</html>
+
+
+
 
