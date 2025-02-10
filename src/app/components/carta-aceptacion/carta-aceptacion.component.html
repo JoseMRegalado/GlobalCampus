@@ -1,20 +1,38 @@
 <app-header></app-header>
-<div>
+
+<div class="container">
   <h2>Carta de Aceptación</h2>
 
   <!-- Botón para generar el PDF -->
-  <button (click)="generatePdf()">Generar Carta</button>
+  <button class="btn-generate" (click)="generatePdf()">Generar Carta</button>
 
-  <!-- Input para subir el PDF firmado -->
-  <div style="margin-top: 20px;">
-    <label for="signedFile">Subir documento firmado:</label>
-    <input type="file" id="signedFile" accept="application/pdf" (change)="onFileSelected($event)">
+  <!-- Área de carga del documento firmado -->
+  <div class="contenedor-upload">
+    <form class="seleccionar">
+      <div class="upload-area">
+        <label for="signedFile" class="custom-file-label">
+          <img src="assets/img/subir.png" alt="Upload Icon" class="upload-icon" />
+          <p>Selecciona tu documento firmado</p>
+        </label>
+        <input type="file" id="signedFile" accept="application/pdf" (change)="onFileSelected($event)" hidden />
+      </div>
+
+      <div *ngIf="selectedFile" class="file-preview">
+        <img src="assets/img/upload-icon.svg" alt="PDF Icon" class="file-icon" />
+        <p>{{ selectedFile.name }}</p>
+        <img src="assets/img/borrar.svg" alt="Trash" class="file-icon" (click)="clearFile()" />
+      </div>
+
+      <div class="boton">
+        <button class="subir-pdf" type="button" (click)="uploadSignedPdf()" [disabled]="pdfUploading || !selectedFile">
+          {{ pdfUploading ? 'Subiendo...' : 'Subir Documento Firmado' }}
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="pdfUploading">
+      <p>Cargando archivo... Por favor, espera.</p>
+    </div>
+
   </div>
-
-  <!-- Botón para subir el documento -->
-  <button (click)="uploadSignedPdf()" [disabled]="pdfUploading || !selectedFile">
-    {{ pdfUploading ? 'Subiendo...' : 'Subir Documento Firmado' }}
-  </button>
 </div>
-<app-footer></app-footer>
-

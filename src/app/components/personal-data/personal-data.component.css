@@ -1,36 +1,95 @@
-div {
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
-}
-
-form {
+.personal-data-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
 }
 
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+.personal-data-container h2 {
+  text-align: center;
+  color: #333;
+  margin-top: 20px;
 }
 
-input, select {
-  padding: 10px;
+.informacion-obligatoria {
+  padding: 40px 10%;
+}
+
+/* Contenedor con Grid para distribuir los campos */
+.campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Mínimo 250px, ajusta automáticamente */
+  gap: 20px; /* Espaciado entre elementos */
+}
+
+/* Estilos de cada campo */
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.required-label::after {
+  content: " *";
+  color: red;
+}
+
+/* Estilos de los inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+select {
+  padding: 8px;
+  margin-top:10px ;
+  margin-bottom: 10px;
+  box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
+  width: 100%;
 }
 
-button {
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
+
+
+/* Responsividad para diferentes tamaños de pantalla */
+@media (max-width: 1024px) {
+  .campos {
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas en tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .campos {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en móviles */
+  }
+}
+
+@media (max-width: 480px) {
+  .campos {
+    grid-template-columns: repeat(1, 1fr); /* 1 columna en pantallas pequeñas */
+  }
+}
+
+.boton{
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+
+}
+
+.boton button{
+  display: inline-block;
+  border-radius: 0.5rem;
+  color: #fff;
+  background-color: rgba(4, 65, 112, 1);
+  padding: .9rem 3.5rem;
   cursor: pointer;
+  font-size: 13px;
+  margin: 0;
+
 }
 
-button:hover {
-  background-color: #218838;
+.boton:hover button{
+  color: rgba(4, 65, 112, 1);
+  background-color: #E2E2E2;
 }

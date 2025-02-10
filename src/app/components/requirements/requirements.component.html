@@ -14,7 +14,11 @@
 
   <!-- Requisitos y Pasos -->
   <div *ngIf="selectedOption" class="details-container">
-    <h2>{{ selectedOption.name }}</h2>
+    <div class="titulo-boton">
+      <h2>{{ selectedOption.name }}</h2>
+      <button class="boton" routerLink="/personal-data">Inicia tu proceso aquí</button>
+    </div>
+
 
     <h3>REQUISITOS</h3>
     <ul>
@@ -22,9 +26,15 @@
     </ul>
 
     <h3>PASOS A SEGUIR</h3>
-    <ol>
-      <li *ngFor="let step of selectedOption.steps">{{ step }}</li>
-    </ol>
+    <div class="steps-container">
+      <div class="step-card" *ngFor="let step of selectedOption.steps; let i = index">
+        <div class="card-titulo">
+          <span class="step-number">Paso {{ i + 1 }}</span>
+          <span class="step-title" *ngIf="step.title">{{ step.title }}</span>
+        </div>
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+
   </div>
 </div>
-<app-footer></app-footer>

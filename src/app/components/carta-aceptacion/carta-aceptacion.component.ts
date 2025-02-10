@@ -43,6 +43,13 @@ export class CartaAceptacionComponent implements OnInit {
       });
     }
   }
+  clearFile(): void {
+    this.selectedFile = null;
+  }
+
+
+
+
 
   // Generar el PDF y abrirlo en una pestaña
   generatePdf() {
