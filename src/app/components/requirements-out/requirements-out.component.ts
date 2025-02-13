@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 interface Step {
   title?: string; // Opcional
   description: string;
@@ -10,34 +11,37 @@ interface Option {
   requirements: string[];
   steps: Step[];
 }
+
 @Component({
-  selector: 'app-requirements',
-  templateUrl: './requirements.component.html',
-  styleUrls: ['./requirements.component.css']
+  selector: 'app-requirements-out',
+  templateUrl: './requirements-out.component.html',
+  styleUrls: ['./requirements-out.component.css']
 })
 
-export class RequirementsComponent {
+export class RequirementsOutComponent {
 
   options: Option[] = [
     {
       name: 'Intercambio estudiantil',
       icon: 'assets/icons/intercambio.png',
       requirements: [
-        'Estudiante regular de la Universidad de Origen',
-        'Certificado de notas de todos los ciclos cursados',
-        'Carta de postulación de la Universidad de Origen',
-        'Copia a colores de pasaporte',
-        'Foto tamaño pasaporte',
-        'Seguro médico internacional que incluya servicio de repatriación'
+        'Copia a colores de documento de identidad.',
+        'Promedio mínimo general para la postulación es de 8.5 .',
+        'Se podrá postular desde el 3er ciclo hasta el penúltimo ciclo.',
+        'Seguro médico internacional que incluya servicio de repatriación.'
       ],
       steps: [
-        { title: 'Elección de asignaturas', description: 'Revisa nuestra malla curricular de la titulación que desees cursar en la UTPL por un semestre.' },
-        { title: 'Aprobación de la universidad de origen', description: 'Consulta con el responsable de intercambios en tu universidad para iniciar tu nominación en la UTPL.' },
-        { title: 'Postulación', description: 'Inicia tu proceso de postulación dentro de la plaforma.' },
-        { title: 'Carta de aceptación', description: 'La UTPL enviará la carta de aceptación para que puedas iniciar tu trámite de visado (en caso de requerirlo).' },
-        { title: 'Trámites de alojamiento', description: 'Contacta con nuestra oficina de movilidad para recibir asesoramiento sobre alojamiento, movilización y más.' },
-        { title: 'Día de llegada', description: 'Al llegar a la UTPL, debes acercarte a la oficina de movilidad para recibir orientación académica.' },
-        { title: 'Trámites de matriculación', description: 'La UTPL se encargará de la matrícula y la entrega de usuario y contraseña para acceder a la plataforma.' },
+        { title: 'Elección de universidad', description: 'Revisa en nuestro catálogo las universidades extranjeras con convenio con la univerisidad, y elige a la que quieres ir' },
+        { title: 'Elección de asignaturas', description: 'Revisa la malla curricular de tu carrera y compararla con la malla de la universidad extranjera seleccionada.' },
+        { title: 'Validación', description: 'Validar las asignaturas seleccionadas con tu director de carrera de UTPL' },
+        { title: 'Postulación', description: 'Llenar el formulario de datos personales y documentos requeridos.' },
+        { title: 'Nominación del estudiante', description: 'Desde la oficina de Movilidad, se nominará al estudiante a la universidad extranjera, la misma que una vez aceptada la nominación se contactara directamente con el estudiante.' },
+        { title: 'Carta de aceptación', description: 'Dentro de la plataforma de Global-Campus, se subirá la carta de aceptación por la universidad extranjera.' },
+        { title: 'Visa y seguro internacional', description: 'El estudiante hará su proceso de visado y contratara un seguro internacional.' },
+        { title: 'Subir documentación', description: 'Dentro de la plataforma de Global-Campus, subir formato de carta institucional, visa, carta de compromiso, autorización de comunicación de datos personales y seguro internacional.' },
+        { title: 'Compra de pasajes aéreos', description: 'Una vez aceptada la visa, el estudiante compra los pasajes aéreos, para que UTPL les realice el reembolso correspondiente.' },
+        { title: 'Reembolso', description: 'Se necesitarán pasaje e intinerario de vuelo, cuenta bancaria y la factura para realizar el reembolso, mismos documentos que serán subidos a la plataforma.' },
+        { title: 'Homologación', description: 'Al terminar tu ciclo académico, debes acercarte a la oficina de Movilidad para la homologación de materias.' },
       ],
     },
     {
@@ -133,4 +137,5 @@ export class RequirementsComponent {
   selectOption(option: Option) {
     this.selectedOption = option;
   }
+
 }

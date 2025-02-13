@@ -177,10 +177,23 @@
   margin-top: 10px;
 }
 
+.nota h3{
+  color: #004270;
+}
+
+.nota{
+  display: flex;
+  align-items: center;
+}
+
+.nota span{
+  font-size: 14px;
+  margin-left: 10px;
+}
+
 .seleccionar{
   display: flex;
   margin-left: 70px;
   color: #eaab00;
   justify-content: left;
 }
-
