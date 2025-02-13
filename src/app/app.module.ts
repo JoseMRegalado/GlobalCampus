@@ -18,6 +18,7 @@ import { CartaAceptacionComponent } from './components/carta-aceptacion/carta-ac
 import { RequirementsComponent } from './components/requirements/requirements.component';
 import { RequirementsOutComponent } from './components/requirements-out/requirements-out.component';
 import { ConvocatoriasComponent } from './components/convocatorias/convocatorias.component';
+import { DocumentosComponent } from './components/documentos/documentos.component';
 
 
 const appRoutes: Routes = [
@@ -30,9 +31,10 @@ const appRoutes: Routes = [
   {path: 'requirements', component: RequirementsComponent},
   {path: 'requirements-out', component: RequirementsOutComponent},
   {path: 'convocatorias', component: ConvocatoriasComponent},
+  {path: 'docs', component: DocumentosComponent},
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),

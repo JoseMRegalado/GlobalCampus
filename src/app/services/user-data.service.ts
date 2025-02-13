@@ -121,6 +121,89 @@ export class UserDataService {
     });
   }
 
+  getUserRole(email: string): Observable<string | null> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .get()
+      .pipe(
+        map((docSnapshot) => {
+          const data = docSnapshot.data() as { role: string }; // Especifica el tipo
+          return docSnapshot.exists ? data.role : null;
+        })
+      );
+  }
+
+  getAllDocuments(): Observable<any[]> {
+    return this.firestore.collectionGroup('docs').valueChanges();
+  }
+
+
+
+
+  // Método para guardar un documento en la subcolección 'docs' del usuario
+  saveDocument(email: string, data: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs')
+        .add(data)
+        .then(() => observer.next())
+        .catch((error) => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+// Método para obtener todos los documentos de la subcolección 'docs' del usuario
+  getDocuments(email: string): Observable<any[]> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('docs')
+      .snapshotChanges()
+      .pipe(
+        map(actions =>
+          actions.map(a => {
+            const id = a.payload.doc.id;
+            const data = a.payload.doc.data();
+            return { id, ...data };
+          })
+        )
+      );
+  }
+
+// Método para actualizar un documento específico en la subcolección 'docs'
+  updateDocument(email: string, docId: string, data: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs')
+        .doc(docId)
+        .set(data, { merge: true }) // Actualiza solo los campos modificados
+        .then(() => observer.next())
+        .catch((error) => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+
+  // Obtener todos los usuarios
+  getAllUsers(): Observable<any[]> {
+    return this.firestore.collection('users').valueChanges();
+  }
+
+  getDocumentNames(userEmail: string): Observable<string[]> {
+    return this.firestore.collection('users')
+      .snapshotChanges()
+      .pipe(
+        map(actions => actions.map(a => a.payload.doc.id))
+      );
+  }
+
+
+
 
 
 

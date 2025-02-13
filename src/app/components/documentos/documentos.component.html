@@ -1,0 +1,88 @@
+<app-header></app-header>
+<h2>Ingreso y Validación de Documentación</h2>
+
+<!-- Para el usuario con role 'user' -->
+<div *ngIf="role === 'user'">
+  <table>
+    <tr>
+      <th>Acceso al documento</th>
+      <th>Descripción de Documento</th>
+      <th>Fecha de ingreso</th>
+      <th>Fecha de validación</th>
+      <th>Observaciones</th>
+      <th>Estado</th>
+    </tr>
+    <tr *ngFor="let doc of documentos">
+      <td>
+        <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
+        <span *ngIf="!doc.archivo">No disponible</span>
+      </td>
+      <td>{{ doc.descripcion }}</td>
+      <td>{{ doc.fechaIngreso }}</td>
+      <td>{{ doc.fechaValidacion || '-' }}</td>
+      <td>{{ doc.observaciones || '-' }}</td>
+      <td>{{ doc.estado }}</td>
+    </tr>
+    <!-- Fila para cargar nuevo documento -->
+    <tr>
+      <td>
+        <input type="file" (change)="onFileSelected($event)">
+      </td>
+      <td>
+        <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">
+      </td>
+      <td>{{ fechaActual }}</td>
+      <td>-</td>
+      <td>-</td>
+      <td>
+        <button (click)="cargarDocumento()">Cargar</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- Para el usuario con role 'admin' -->
+<div *ngIf="role === 'admin'">
+  <!-- Solo para el rol admin -->
+  <div *ngIf="role === 'admin'">
+    <label for="userSelect">Seleccionar Usuario:</label>
+    <select id="userSelect" [(ngModel)]="usuarioSeleccionado" (change)="obtenerDocumentos()">
+      <option value="">Todos los usuarios</option>
+      <option *ngFor="let nombre of documentosNombres" [value]="nombre">{{ nombre }}</option>
+    </select>
+  </div>
+
+  <table>
+    <tr>
+      <th>Acceso al documento</th>
+      <th>Descripción de Documento</th>
+      <th>Fecha de ingreso</th>
+      <th>Fecha de validación</th>
+      <th>Observaciones</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+    <tr *ngFor="let doc of documentos">
+      <td>
+        <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
+        <span *ngIf="!doc.archivo">No disponible</span>
+      </td>
+      <td>{{ doc.descripcion }}</td>
+      <td>{{ doc.fechaIngreso }}</td>
+      <td>{{ doc.fechaValidacion || '-' }}</td>
+      <td>
+        <input [(ngModel)]="doc.observaciones" placeholder="Observaciones">
+      </td>
+      <td>
+        <select [(ngModel)]="doc.estado">
+          <option value="pendiente">Pendiente</option>
+          <option value="aprobado">Aprobado</option>
+          <option value="rechazado">Rechazado</option>
+        </select>
+      </td>
+      <td>
+        <button (click)="validarDocumento(doc)">Guardar</button>
+      </td>
+    </tr>
+  </table>
+</div>
