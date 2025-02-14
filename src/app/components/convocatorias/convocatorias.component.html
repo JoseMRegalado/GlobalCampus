@@ -1,9 +1,46 @@
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide">Slide 1</div>
-    <div class="swiper-slide">Slide 2</div>
-    <div class="swiper-slide">Slide 3</div>
-  </div>
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
+<div>
+  <h2>Becas</h2>
+  <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
+    <div></div>
+    <swiper-slide *ngFor="let slide of slides">
+      <div class="card">
+        <div class="card-title">{{ slide.name }}</div>
+        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.date}}</div>
+        <button (click)="verDetalles(slide)">Más información</button>
+      </div>
+    </swiper-slide>
+
+  </swiper-container>
 </div>
+<div>
+  <h2>Eventos</h2>
+  <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
+    <div></div>
+    <swiper-slide *ngFor="let slide of slides">
+      <div class="card">
+        <div class="card-title">{{ slide.name }}</div>
+        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.date}}</div>
+        <button (click)="verDetalles(slide)">Más información</button>
+      </div>
+    </swiper-slide>
+
+  </swiper-container>
+</div>
+<div>
+  <h2>Proyectos</h2>
+  <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
+    <div></div>
+    <swiper-slide *ngFor="let slide of slides">
+      <div class="card">
+        <div class="card-title">{{ slide.name }}</div>
+        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.date}}</div>
+        <button (click)="verDetalles(slide)">Más información</button>
+      </div>
+    </swiper-slide>
+
+  </swiper-container>
+</div>
+

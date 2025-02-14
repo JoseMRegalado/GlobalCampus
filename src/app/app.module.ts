@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA,NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -19,6 +19,11 @@ import { RequirementsComponent } from './components/requirements/requirements.co
 import { RequirementsOutComponent } from './components/requirements-out/requirements-out.component';
 import { ConvocatoriasComponent } from './components/convocatorias/convocatorias.component';
 import { DocumentosComponent } from './components/documentos/documentos.component';
+import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import  {register} from 'swiper/element/bundle';
+import { ConvocatoriaDetalleComponent } from './components/convocatoria-detalle/convocatoria-detalle.component';
+
+register();
 
 
 const appRoutes: Routes = [
@@ -32,9 +37,10 @@ const appRoutes: Routes = [
   {path: 'requirements-out', component: RequirementsOutComponent},
   {path: 'convocatorias', component: ConvocatoriasComponent},
   {path: 'docs', component: DocumentosComponent},
+  { path: 'convocatoria-detalle', component: ConvocatoriaDetalleComponent }
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -47,5 +53,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}

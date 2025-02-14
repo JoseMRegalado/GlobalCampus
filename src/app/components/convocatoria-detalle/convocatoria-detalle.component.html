@@ -1,0 +1,24 @@
+<div class="detalle-container">
+  <h2>{{ data?.name }}</h2>
+
+  <table>
+    <tr><th>Tipo</th><td>{{ data?.type }}</td></tr>
+    <tr><th>Idioma</th><td>{{ data?.language }}</td></tr>
+    <tr><th>Duración</th><td>{{ data?.duration }}</td></tr>
+    <tr><th>Tema</th><td>{{ data?.topic }}</td></tr>
+    <tr><th>Descripción</th><td>{{ data?.descriptionShort }}</td></tr>
+    <tr><th>Fecha</th><td>{{ data?.date }}</td></tr>
+  </table>
+
+  <h3>Requisitos</h3>
+  <ul>
+    <li *ngFor="let item of data?.eligibility">{{ item }}</li>
+  </ul>
+
+  <h3>Beneficios</h3>
+  <ul>
+    <li *ngFor="let item of data?.benefits">{{ item }}</li>
+  </ul>
+
+  <button (click)="volver()">Volver</button>
+</div>

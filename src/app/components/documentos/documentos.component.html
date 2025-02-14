@@ -1,6 +1,7 @@
 <app-header></app-header>
 <h2>Ingreso y Validación de Documentación</h2>
 
+
 <!-- Para el usuario con role 'user' -->
 <div *ngIf="role === 'user'">
   <table>
@@ -26,7 +27,11 @@
     <!-- Fila para cargar nuevo documento -->
     <tr>
       <td>
-        <input type="file" (change)="onFileSelected($event)">
+        <input id="archivo" type="file" (change)="onFileSelected($event)">
+        <label for="archivo" class="custom-file-upload">
+          <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+          Adjunta tu documento aquí
+        </label>
       </td>
       <td>
         <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">

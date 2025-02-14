@@ -1,0 +1,65 @@
+.progress-bar {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(174, 181, 194, 1);
+  font-weight: bold;
+  background: rgba(239, 239, 239, 1);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
+
+}
+
+.step.active .circle {
+  background-color: #172D5A;
+}
+
+.titles {
+  display: flex;
+  justify-content: space-between;
+  width: 88%;
+  margin: 0 70px 0;
+  padding-top: 0;
+}
+
+/*.titles div {
+  flex: 1;
+  text-align: center;
+}*/
+
+.titles span {
+  font-size: 16px;
+  color: rgba(174, 181, 194, 1);
+  display: block;
+}
+
+.line {
+  height: 10px;
+  flex: 1;
+  position: static;
+  top: -15px;
+  background: rgba(239, 239, 239, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.line.active {
+  background: linear-gradient(270.01deg, #328BCC 10.17%, rgba(50, 121, 204, 0) 102.27%);
+}

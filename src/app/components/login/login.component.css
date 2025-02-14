@@ -1,27 +1,127 @@
-div {
+.login-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute; /*Esto cambie para que salga centrado*/
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  gap: 10px;
+
+.login-container::before, .login-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 340px;
+  height: 420px;
+  border-radius: 15px;
+  z-index: -1;
 }
 
-button {
+.login-container::before {
+  background: linear-gradient(to bottom, #c3c4c6, #c3c4c6);
+  transform: translate(-49.5%, calc(-50%)) rotate(-10deg);
+}
+
+.login-container::after {
+  background: linear-gradient(to bottom, #044170, #004271);
+  transform: translate(-49.5%, calc(-50%)) rotate(10deg);
+}
+
+.body {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  width: 340px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-container {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.input-container label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input-container input {
+  width: 100%;
   padding: 10px;
-  background-color: #007bff;
-  color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+}
+
+.options input {
+  margin-right: 5px;
+}
+
+.options a {
+  color: #044170;
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color:#044170;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.divider {
+  padding-bottom: 10px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.google-login {
+  width: 100%;
+  padding: 10px;
+  background-color: #fff;
+  color: #444;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.google-login img {
+  width: 20px;
+  margin-right: 10px;
+}
+
+.login-container p a {
+  color: #044170;
+  text-decoration: underline;
 }

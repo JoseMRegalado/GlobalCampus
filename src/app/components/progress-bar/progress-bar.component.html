@@ -1,0 +1,41 @@
+<section class="progress-bar">
+  <div class="step" [ngClass]="{'active': step >= 1}">
+    <div class="circle">
+      <ng-container *ngIf="step > 1; else step1">
+        <img src="assets/img/Vector.svg" class="check" alt="Check"/>
+      </ng-container>
+      <ng-template #step1>1</ng-template>
+    </div>
+  </div>
+  <div class="line" [ngClass]="{'active': step >= 2}"></div>
+  <div class="step" [ngClass]="{'active': step >= 2}">
+    <div class="circle">
+      <ng-container *ngIf="step > 2; else step2">
+        <img src="assets/img/Vector.svg" class="check" alt="Check"/>
+      </ng-container>
+      <ng-template #step2>2</ng-template>
+    </div>
+  </div>
+  <div class="line" [ngClass]="{'active': step >= 3}"></div>
+  <div class="step" [ngClass]="{'active': step >= 3}">
+    <div class="circle">
+      <ng-container *ngIf="step > 3; else step3">
+        <img src="assets/img/Vector.svg" class="check" alt="Check"/>
+      </ng-container>
+      <ng-template #step3>3</ng-template>
+    </div>
+  </div>
+</section>
+
+<section class="titles">
+  <div>
+    <span>Visualización de caso</span>
+  </div>
+  <div>
+    <span>Ronda de preguntas</span>
+  </div>
+  <div>
+    <span>Estudio de casos</span>
+  </div>
+</section>
+
