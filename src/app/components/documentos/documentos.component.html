@@ -1,4 +1,5 @@
 <app-header></app-header>
+<body>
 <h2>Ingreso y Validación de Documentación</h2>
 
 
@@ -47,7 +48,7 @@
 </div>
 
 <!-- Para el usuario con role 'admin' -->
-<div *ngIf="role === 'admin'">
+<div class="contenedor" *ngIf="role === 'admin'">
   <!-- Solo para el rol admin -->
   <div *ngIf="role === 'admin'">
     <label for="userSelect">Seleccionar Usuario:</label>
@@ -91,3 +92,5 @@
     </tr>
   </table>
 </div>
+
+</body>

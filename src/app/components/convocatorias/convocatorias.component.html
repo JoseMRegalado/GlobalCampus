@@ -1,11 +1,13 @@
+<app-header></app-header>
+<body>
 <div>
-  <h2>Becas</h2>
+  <h3>Becas</h3>
   <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
     <div></div>
     <swiper-slide *ngFor="let slide of slides">
       <div class="card">
         <div class="card-title">{{ slide.name }}</div>
-        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.summary}}</div>
         <div class="card-content">{{ slide.date}}</div>
         <button (click)="verDetalles(slide)">Más información</button>
       </div>
@@ -14,13 +16,13 @@
   </swiper-container>
 </div>
 <div>
-  <h2>Eventos</h2>
+  <h3>Eventos</h3>
   <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
     <div></div>
     <swiper-slide *ngFor="let slide of slides">
       <div class="card">
         <div class="card-title">{{ slide.name }}</div>
-        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.summary}}</div>
         <div class="card-content">{{ slide.date}}</div>
         <button (click)="verDetalles(slide)">Más información</button>
       </div>
@@ -29,13 +31,13 @@
   </swiper-container>
 </div>
 <div>
-  <h2>Proyectos</h2>
+  <h3>Proyectos</h3>
   <swiper-container pagination="true" slides-per-view="3" speed="500" css-mode="true" navigation="true">
     <div></div>
     <swiper-slide *ngFor="let slide of slides">
       <div class="card">
         <div class="card-title">{{ slide.name }}</div>
-        <div class="card-content">{{ slide.descriptionShort}}</div>
+        <div class="card-content">{{ slide.summary}}</div>
         <div class="card-content">{{ slide.date}}</div>
         <button (click)="verDetalles(slide)">Más información</button>
       </div>
@@ -44,3 +46,5 @@
   </swiper-container>
 </div>
 
+
+</body>
