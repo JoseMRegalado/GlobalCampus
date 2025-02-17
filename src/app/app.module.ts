@@ -22,6 +22,9 @@ import { DocumentosComponent } from './components/documentos/documentos.componen
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import  {register} from 'swiper/element/bundle';
 import { ConvocatoriaDetalleComponent } from './components/convocatoria-detalle/convocatoria-detalle.component';
+import {MatMenuModule} from "@angular/material/menu";
+import {MatIconModule} from "@angular/material/icon";
+import { PersonalDataOutComponent } from './components/personal-data-out/personal-data-out.component';
 
 register();
 
@@ -40,7 +43,7 @@ const appRoutes: Routes = [
   { path: 'convocatoria-detalle', component: ConvocatoriaDetalleComponent }
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -50,6 +53,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     RouterLink,
     FormsModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

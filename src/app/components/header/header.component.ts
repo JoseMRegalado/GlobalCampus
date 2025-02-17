@@ -22,4 +22,17 @@ export class HeaderComponent {
       this.router.navigate(['/home']);
     });
   }
+
+  menuOpen = false;
+  botonOpen: boolean = false;
+
+  toggleMenu() {
+    this.botonOpen = !this.botonOpen;
+  }
+
+  toggleNav() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+
 }

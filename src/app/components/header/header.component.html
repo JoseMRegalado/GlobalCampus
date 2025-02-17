@@ -2,12 +2,23 @@
   <div class="logo">
     <img [routerLink]="['/home']" src="./assets/img/logo.svg" alt="Logo">
   </div>
-  <nav class="nav-bar">
+
+  <div class="menu-icon" (click)="toggleNav()">☰</div>
+
+  <nav class="nav-bar" [class.active]="menuOpen">
     <a routerLink="/home">Inicio</a>
     <a routerLink="/convocatorias">Convocatorias</a>
     <a routerLink="/requirements">Conoce UTPL</a>
     <a routerLink="/requirements-out">Conoce el mundo</a>
-    <a class="logout" *ngIf="isLoggedIn" (click)="logout()">Cerrar sesión</a>
-    <a class="login" *ngIf="!isLoggedIn" routerLink="/login">Iniciar sesión</a>
   </nav>
+
+  <div class="auth-buttons">
+    <div *ngIf="isLoggedIn" (click)="toggleMenu()" class="profile-container">
+      <img src="./assets/img/user.svg" alt="logo-usuario">
+    </div>
+    <a class="boton"><button *ngIf="!isLoggedIn" [routerLink]="['/login']">Iniciar Sesión</button></a>
+    <div *ngIf="isLoggedIn && botonOpen" class="dropdown-menu">
+      <button (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
 </header>
