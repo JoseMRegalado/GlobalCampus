@@ -62,19 +62,14 @@ export class PersonalDataComponent implements OnInit {
 
       if (this.hasData) {
         this.userDataService.updateUserData(this.userEmail, userData).subscribe({
-          next: () => {
-            alert('Datos actualizados correctamente.');
-          },
+
           error: (err: any) => {
             alert('Error al actualizar los datos: ' + err.message);
           }
         });
       } else {
         this.userDataService.saveUserData(userData).subscribe({
-          next: () => {
-            alert('Datos guardados correctamente.');
-            this.hasData = true;
-          },
+
           error: (err: any) => {
             alert('Error al guardar los datos: ' + err.message);
           }

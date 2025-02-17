@@ -80,13 +80,19 @@ export class DocumentosComponent implements OnInit {
 
 
   onFileSelected(event: any) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.archivoBase64 = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+    this.selectedFile = event.target.files[0] || null;
+
+    if (this.selectedFile) { // Verificamos que no sea null
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.archivoBase64 = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
+
+
+
 
   cargarDocumento() {
     if (!this.email || !this.selectedFile) {

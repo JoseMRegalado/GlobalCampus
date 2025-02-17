@@ -7,6 +7,7 @@
     <a routerLink="/convocatorias">Convocatorias</a>
     <a routerLink="/requirements">Conoce UTPL</a>
     <a routerLink="/requirements-out">Conoce el mundo</a>
-    <a (click)="logout()">Cerrar sesión</a>
+    <a class="logout" *ngIf="isLoggedIn" (click)="logout()">Cerrar sesión</a>
+    <a class="login" *ngIf="!isLoggedIn" routerLink="/login">Iniciar sesión</a>
   </nav>
 </header>

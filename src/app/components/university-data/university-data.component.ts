@@ -174,12 +174,10 @@ export class UniversityDataComponent {
 
       if (this.hasData) {
         this.userDataService.updateUniversityData(this.userEmail, userData).subscribe({
-          next: () => alert('Datos actualizados correctamente.'),
           error: (err) => alert('Error al actualizar los datos: ' + err),
         });
       } else {
         this.userDataService.saveUniversityData(userData).subscribe({
-          next: () => alert('Datos guardados correctamente.'),
           error: (err) => alert('Error al guardar los datos: ' + err),
         });
       }
