@@ -106,6 +106,7 @@ export class DocumentosComponent implements OnInit {
       const base64File = reader.result as string;
 
       const nuevoDocumento = {
+        email: this.email,  // Agregar el email del usuario
         descripcion: this.descripcion,
         archivo: base64File, // Guardar el archivo como Base64
         fechaIngreso: new Date().toISOString().split('T')[0],

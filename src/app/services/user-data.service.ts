@@ -173,6 +173,10 @@ export class UserDataService {
       );
   }
 
+
+
+
+
 // Método para actualizar un documento específico en la subcolección 'docs'
   updateDocument(email: string, docId: string, data: any): Observable<void> {
     return new Observable<void>((observer) => {
