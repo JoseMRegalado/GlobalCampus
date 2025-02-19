@@ -94,7 +94,10 @@ export class DocumentosComponent implements OnInit {
 
 
 
-  cargarDocumento() {
+  /**
+   * Carga un nuevo documento o actualiza el documento en "pendiente".
+   */
+  cargarDocumento(doc?: any) {
     if (!this.email || !this.selectedFile) {
       alert('Debe seleccionar un archivo para subir.');
       return;
@@ -106,40 +109,57 @@ export class DocumentosComponent implements OnInit {
       const base64File = reader.result as string;
 
       const nuevoDocumento = {
-        email: this.email,  // Agregar el email del usuario
-        descripcion: this.descripcion,
-        archivo: base64File, // Guardar el archivo como Base64
+        email: this.email,
+        descripcion: this.descripcion || doc?.descripcion,
+        archivo: base64File,
         fechaIngreso: new Date().toISOString().split('T')[0],
         fechaValidacion: '',
         observaciones: '',
-        estado: 'pendiente'
+        estado: 'en revisión'
       };
 
-      this.userDataService.saveDocument(this.email, nuevoDocumento).subscribe({
-        next: () => {
-          alert('Documento subido correctamente.');
-          this.descripcion = '';
-          this.selectedFile = null;
-          this.obtenerDocumentos();
-        },
-        error: err => {
-          alert('Error al subir el documento: ' + err);
-        }
-      });
+      if (doc?.id) {
+        // Actualizar el documento existente en estado "pendiente"
+        this.userDataService.updateDocument(this.email, doc.id, nuevoDocumento).subscribe({
+          next: () => {
+            alert('Documento actualizado correctamente.');
+            this.descripcion = '';
+            this.selectedFile = null;
+            this.obtenerDocumentos();
+          },
+          error: err => {
+            alert('Error al actualizar el documento: ' + err);
+          }
+        });
+      } else {
+        // Crear un nuevo documento
+        this.userDataService.saveDocument(this.email, nuevoDocumento).subscribe({
+          next: () => {
+            alert('Documento subido correctamente.');
+            this.descripcion = '';
+            this.selectedFile = null;
+            this.obtenerDocumentos();
+          },
+          error: err => {
+            alert('Error al subir el documento: ' + err);
+          }
+        });
+      }
     };
   }
 
-
   validarDocumento(doc: any) {
-    const data = {
-      ...doc,
-      status: 'validado'
-    };
+    const data = { ...doc };
 
-    console.log('Documento a validar:', data); // Verifica que el id esté presente
+    if (doc.estado === 'aprobado') {
+      data.fechaValidacion = new Date().toISOString().split('T')[0];
+    }
 
     this.userDataService.updateDocument(doc.email, doc.id, data).subscribe({
-      next: () => console.log('Documento validado con éxito'),
+      next: () => {
+        console.log('Documento validado con éxito');
+        this.obtenerDocumentos();
+      },
       error: (error) => console.error('Error al validar el documento:', error)
     });
   }

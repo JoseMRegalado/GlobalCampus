@@ -8,7 +8,7 @@
   <table>
     <tr>
       <th>Acceso al documento</th>
-      <th>Descripción de Documento</th>
+      <th>Descripción</th>
       <th>Fecha de ingreso</th>
       <th>Fecha de validación</th>
       <th>Observaciones</th>
@@ -16,8 +16,21 @@
     </tr>
     <tr *ngFor="let doc of documentos">
       <td>
-        <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
-        <span *ngIf="!doc.archivo">No disponible</span>
+        <!-- Mostrar el input si el documento está en 'pendiente' -->
+        <ng-container *ngIf="doc.estado === 'pendiente'; else verDoc">
+          <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
+          <label for="archivo-{{doc.id}}" class="custom-file-upload">
+            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+            Reemplazar documento
+          </label>
+          <button (click)="cargarDocumento(doc)">Actualizar</button>
+        </ng-container>
+
+        <!-- Mostrar el enlace si el documento no está en 'pendiente' -->
+        <ng-template #verDoc>
+          <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
+          <span *ngIf="!doc.archivo">No disponible</span>
+        </ng-template>
       </td>
       <td>{{ doc.descripcion }}</td>
       <td>{{ doc.fechaIngreso }}</td>
@@ -25,43 +38,33 @@
       <td>{{ doc.observaciones || '-' }}</td>
       <td>{{ doc.estado }}</td>
     </tr>
-    <!-- Fila para cargar nuevo documento -->
-    <tr>
-      <td>
-        <input id="archivo" type="file" (change)="onFileSelected($event)">
-        <label for="archivo" class="custom-file-upload">
-          <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-          Adjunta tu documento aquí
-        </label>
-      </td>
-      <td>
-        <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">
-      </td>
-      <td>{{ fechaActual }}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>
-        <button (click)="cargarDocumento()">Cargar</button>
-      </td>
-    </tr>
   </table>
+
+  <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
+  <div *ngIf="documentos.length === 0 || documentos.length === 1">
+    <input id="archivo" type="file" (change)="onFileSelected($event)">
+    <label for="archivo" class="custom-file-upload">
+      <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+      Adjunta tu documento aquí
+    </label>
+    <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">
+    <button (click)="cargarDocumento()">Cargar</button>
+  </div>
 </div>
 
+
 <!-- Para el usuario con role 'admin' -->
-<div class="contenedor" *ngIf="role === 'admin'">
-  <!-- Solo para el rol admin -->
-  <div *ngIf="role === 'admin'">
-    <label for="userSelect">Seleccionar Usuario:</label>
-    <select id="userSelect" [(ngModel)]="usuarioSeleccionado" (change)="obtenerDocumentos()">
-      <option value="">Todos los usuarios</option>
-      <option *ngFor="let nombre of documentosNombres" [value]="nombre">{{ nombre }}</option>
-    </select>
-  </div>
+<div *ngIf="role === 'admin'">
+  <label for="userSelect">Seleccionar Usuario:</label>
+  <select id="userSelect" [(ngModel)]="usuarioSeleccionado" (change)="obtenerDocumentos()">
+    <option value="">Todos los usuarios</option>
+    <option *ngFor="let nombre of documentosNombres" [value]="nombre">{{ nombre }}</option>
+  </select>
 
   <table>
     <tr>
-      <th>Acceso al documento</th>
-      <th>Descripción de Documento</th>
+      <th>Acceso</th>
+      <th>Descripción</th>
       <th>Fecha de ingreso</th>
       <th>Fecha de validación</th>
       <th>Observaciones</th>
@@ -71,7 +74,6 @@
     <tr *ngFor="let doc of documentos">
       <td>
         <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
-        <span *ngIf="!doc.archivo">No disponible</span>
       </td>
       <td>{{ doc.descripcion }}</td>
       <td>{{ doc.fechaIngreso }}</td>
@@ -81,9 +83,9 @@
       </td>
       <td>
         <select [(ngModel)]="doc.estado">
-          <option value="pendiente">Pendiente</option>
+          <option value="en revisión">En revisión</option>
           <option value="aprobado">Aprobado</option>
-          <option value="rechazado">Rechazado</option>
+          <option value="pendiente">Pendiente</option>
         </select>
       </td>
       <td>
@@ -92,5 +94,6 @@
     </tr>
   </table>
 </div>
+
 
 </body>

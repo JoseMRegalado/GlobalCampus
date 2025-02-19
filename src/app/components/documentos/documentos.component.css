@@ -120,7 +120,7 @@ input, select{
   background-color: #fff;
 }
 
-#archivo{
+#archivo, .inputNover{
   display: none;
 }
 
