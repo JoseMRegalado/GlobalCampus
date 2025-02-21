@@ -25,6 +25,7 @@ import { ConvocatoriaDetalleComponent } from './components/convocatoria-detalle/
 import {MatMenuModule} from "@angular/material/menu";
 import {MatIconModule} from "@angular/material/icon";
 import { PersonalDataOutComponent } from './components/personal-data-out/personal-data-out.component';
+import { AdminViewComponent } from './components/admin-view/admin-view.component';
 
 register();
 
@@ -40,10 +41,11 @@ const appRoutes: Routes = [
   {path: 'requirements-out', component: RequirementsOutComponent},
   {path: 'convocatorias', component: ConvocatoriasComponent},
   {path: 'docs', component: DocumentosComponent},
-  { path: 'convocatoria-detalle', component: ConvocatoriaDetalleComponent }
+  { path: 'convocatoria-detalle', component: ConvocatoriaDetalleComponent },
+  {path: 'admin', component: AdminViewComponent},
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent, AdminViewComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
