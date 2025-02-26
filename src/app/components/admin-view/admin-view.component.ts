@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-admin-view',
@@ -10,7 +11,7 @@ export class AdminViewComponent implements OnInit {
   users: any[] = [];
   currentView: string = 'incoming';
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore, private router: Router) {}
 
   ngOnInit() {
     this.obtenerUsuarios();
@@ -18,6 +19,11 @@ export class AdminViewComponent implements OnInit {
 
   setView(view: string) {
     this.currentView = view;
+  }
+
+  verSeguimiento(docId: string) {
+    const encodedDocId = encodeURIComponent(docId);
+    this.router.navigate(['/personal-data', encodedDocId]);
   }
 
   async obtenerUsuarios() {

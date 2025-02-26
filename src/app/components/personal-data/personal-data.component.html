@@ -8,27 +8,27 @@
       <div class="campos">
         <div class="campo">
           <label for="lastName" class="required-label">Apellidos completos</label>
-          <input type="text" id="lastName" name="lastName" [(ngModel)]="formData.lastName" placeholder="Apellidos completos" required>
+          <input type="text" id="lastName" name="lastName" [(ngModel)]="formData.lastName" placeholder="Apellidos completos" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="firstName" class="required-label">Nombres completos</label>
-          <input type="text" id="firstName" name="firstName" [(ngModel)]="formData.firstName" placeholder="Nombres completos" required>
+          <input type="text" id="firstName" name="firstName" [(ngModel)]="formData.firstName" placeholder="Nombres completos" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="birthPlace" class="required-label">Lugar de nacimiento</label>
-          <input type="text" id="birthPlace" name="birthPlace" [(ngModel)]="formData.birthPlace" placeholder="Lugar de nacimiento" required>
+          <input type="text" id="birthPlace" name="birthPlace" [(ngModel)]="formData.birthPlace" placeholder="Lugar de nacimiento" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="birthDate" class="required-label">Fecha de nacimiento</label>
-          <input type="date" id="birthDate" name="birthDate" [(ngModel)]="formData.birthDate" required>
+          <input type="date" id="birthDate" name="birthDate" [(ngModel)]="formData.birthDate" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="gender" class="required-label">Género</label>
-          <select id="gender" name="gender" [(ngModel)]="formData.gender" required>
+          <select id="gender" name="gender" [(ngModel)]="formData.gender" [disabled]="isAdmin" required>
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
           </select>
@@ -36,22 +36,22 @@
 
         <div class="campo">
           <label for="idNumber" class="required-label">Número de documento</label>
-          <input type="text" id="idNumber" name="idNumber" [(ngModel)]="formData.idNumber" placeholder="Número de documento" required>
+          <input type="text" id="idNumber" name="idNumber" [(ngModel)]="formData.idNumber" placeholder="Número de documento" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="idExpiry" class="required-label">Fecha de caducidad del documento</label>
-          <input type="date" id="idExpiry" name="idExpiry" [(ngModel)]="formData.idExpiry" required>
+          <input type="date" id="idExpiry" name="idExpiry" [(ngModel)]="formData.idExpiry" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="nationality" class="required-label">Nacionalidad</label>
-          <input type="text" id="nationality" name="nationality" [(ngModel)]="formData.nationality" placeholder="Nacionalidad" required>
+          <input type="text" id="nationality" name="nationality" [(ngModel)]="formData.nationality" placeholder="Nacionalidad" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
           <label for="phone" class="required-label">Teléfono celular</label>
-          <input type="text" id="phone" name="phone" [(ngModel)]="formData.phone" placeholder="Teléfono celular" required>
+          <input type="text" id="phone" name="phone" [(ngModel)]="formData.phone" placeholder="Teléfono celular" [disabled]="isAdmin" required>
         </div>
 
         <div class="campo">
@@ -61,7 +61,7 @@
       </div>
 
       <div class="boton">
-        <button type="submit" [routerLink]="['/university-data']">
+        <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>

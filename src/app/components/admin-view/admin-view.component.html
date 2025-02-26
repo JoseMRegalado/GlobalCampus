@@ -28,7 +28,8 @@
         <td>{{ user.email }}</td>
         <td>{{ user.university }}</td>
         <td>{{ user.period }}</td>
-        <td><a href="#">Ver seguimiento</a></td>
+        <td><button (click)="verSeguimiento(user.docId)">Ver Seguimiento</button>
+        </td>
       </tr>
       </tbody>
     </table>

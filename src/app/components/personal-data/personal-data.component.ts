@@ -9,6 +9,8 @@ import { UserDataService } from '../../services/user-data.service';
 })
 export class PersonalDataComponent implements OnInit {
   userEmail: string | null = null;
+  userRole: string | null = null; // Nuevo: Guardará el rol del usuario
+  isAdmin: boolean = false; // Nuevo: Indica si el usuario es admin
   formData = {
     lastName: '',
     firstName: '',
@@ -33,9 +35,26 @@ export class PersonalDataComponent implements OnInit {
       this.userEmail = user?.email || null;
       if (this.userEmail) {
         this.loadUserData();
+        this.loadUserRole();
       }
     });
   }
+
+  loadUserRole(): void {
+    if (this.userEmail) {
+      this.userDataService.getUserRole(this.userEmail).subscribe({
+        next: (role: string | null) => { // Ajustamos el tipo para aceptar `null`
+          this.userRole = role ?? 'user'; // Si es `null`, asignamos 'user' por defecto
+          this.isAdmin = this.userRole === 'admin'; // Evaluamos si es admin
+        },
+        error: (err: any) => {
+          console.error('Error al obtener el rol del usuario:', err);
+        }
+      });
+    }
+  }
+
+
 
   loadUserData(): void {
     if (this.userEmail) {
