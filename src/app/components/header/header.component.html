@@ -14,7 +14,7 @@
 
   <div class="auth-buttons">
     <div *ngIf="isLoggedIn" (click)="toggleMenu()" class="profile-container">
-      <img src="./assets/img/user.svg" alt="logo-usuario">
+      <img src="./assets/img/logout.svg" alt="logo-usuario">
     </div>
     <a class="boton"><button *ngIf="!isLoggedIn" [routerLink]="['/login']">Iniciar Sesión</button></a>
     <div *ngIf="isLoggedIn && botonOpen" class="dropdown-menu">

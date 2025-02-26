@@ -1,18 +1,18 @@
-<div class="w-full bg-gray-800 p-4 text-white">
-  <nav class="flex justify-around">
-    <button [routerLink]="['/personal-data']" [queryParams]="{ userId: userId }" routerLinkActive="text-yellow-300">
+<div class="bar">
+  <nav>
+    <button [routerLink]="['/personal-data']" [queryParams]="{ userId: userId }">
       Datos Personales
     </button>
-    <button [routerLink]="['/docs']" [queryParams]="{ userId: userId }" routerLinkActive="text-yellow-300">
+    <button [routerLink]="['/docs']" [queryParams]="{ userId: userId }">
       Validación de Documentos
     </button>
-    <button [routerLink]="['/university-data']" [queryParams]="{ userId: userId }" routerLinkActive="text-yellow-300">
+    <button [routerLink]="['/university-data']" [queryParams]="{ userId: userId }">
       Datos de la Universidad
     </button>
-    <button [routerLink]="['/carta-aceptacion']" [queryParams]="{ userId: userId }" routerLinkActive="text-yellow-300">
+    <button [routerLink]="['/carta-aceptacion']" [queryParams]="{ userId: userId }">
       Carta de Aceptación
     </button>
-    <button [routerLink]="['/flujo']" [queryParams]="{ userId: userId }" routerLinkActive="text-yellow-300">
+    <button [routerLink]="['/flujo']" [queryParams]="{ userId: userId }">
       Flujo de Tesis
     </button>
   </nav>

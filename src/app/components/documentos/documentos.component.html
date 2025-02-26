@@ -6,51 +6,83 @@
 
 <!-- Para el usuario con role 'user' -->
 <div *ngIf="role === 'user'">
-  <table>
-    <tr>
-      <th>Acceso al documento</th>
-      <th>Descripción</th>
-      <th>Fecha de ingreso</th>
-      <th>Fecha de validación</th>
-      <th>Observaciones</th>
-      <th>Estado</th>
-    </tr>
-    <tr *ngFor="let doc of documentos">
-      <td>
-        <!-- Mostrar el input si el documento está en 'pendiente' -->
-        <ng-container *ngIf="doc.estado === 'pendiente'; else verDoc">
-          <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
-          <label for="archivo-{{doc.id}}" class="custom-file-upload">
-            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-            Reemplazar documento
-          </label>
-          <button (click)="cargarDocumento(doc)">Actualizar</button>
-        </ng-container>
-
-        <!-- Mostrar el enlace si el documento no está en 'pendiente' -->
-        <ng-template #verDoc>
-          <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
-          <span *ngIf="!doc.archivo">No disponible</span>
-        </ng-template>
-      </td>
-      <td>{{ doc.descripcion }}</td>
-      <td>{{ doc.fechaIngreso }}</td>
-      <td>{{ doc.fechaValidacion || '-' }}</td>
-      <td>{{ doc.observaciones || '-' }}</td>
-      <td>{{ doc.estado }}</td>
-    </tr>
-  </table>
-
+  <h3>Carga tu nuevo documento</h3>
   <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
-  <div *ngIf="documentos.length === 0 || documentos.length === 1">
-    <input id="archivo" type="file" (change)="onFileSelected($event)">
-    <label for="archivo" class="custom-file-upload">
-      <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-      Adjunta tu documento aquí
-    </label>
-    <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">
-    <button (click)="cargarDocumento()">Cargar</button>
+  <div class="tabla">
+    <table *ngIf="documentos.length === 0 || documentos.length === 1">
+      <thead>
+      <tr>
+        <th>Adjuntar Documento</th>
+        <th>Descripción</th>
+        <th>Acción</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <input id="archivo" type="file" (change)="onFileSelected($event)">
+          <label for="archivo" class="custom-file-upload">
+            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+            Adjunta tu documento aquí
+          </label>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="descripcion" placeholder="Descripción del documento">
+        </td>
+        <td>
+          <button (click)="cargarDocumento()">Cargar</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
+
+
+  <h3>Documentos Cargados</h3>
+  <div class="tabla">
+    <table>
+      <tr>
+        <th>Acceso al documento</th>
+        <th>Descripción</th>
+        <th>Fecha de ingreso</th>
+        <th>Fecha de validación</th>
+        <th>Observaciones</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+      <tr *ngFor="let doc of documentos">
+        <td>
+          <!-- Mostrar el input si el documento está en 'pendiente' -->
+          <ng-container *ngIf="doc.estado === 'pendiente'; else verDoc">
+            <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
+            <label for="archivo-{{doc.id}}" class="custom-file-upload">
+              <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+              Reemplazar documento
+            </label>
+          </ng-container>
+
+          <!-- Mostrar el enlace si el documento no está en 'pendiente' -->
+          <ng-template #verDoc>
+            <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
+            <span *ngIf="!doc.archivo">No disponible</span>
+          </ng-template>
+        </td>
+        <td>{{ doc.descripcion }}</td>
+        <td>{{ doc.fechaIngreso }}</td>
+        <td>{{ doc.fechaValidacion || '-' }}</td>
+        <td>{{ doc.observaciones || '-' }}</td>
+        <td>{{ doc.estado }}</td>
+
+        <td *ngIf="doc.estado === 'pendiente'">
+          <button (click)="cargarDocumento(doc)">Actualizar</button>
+        </td>
+
+      </tr>
+
+    </table>
+  </div>
+
+
 </div>
 
 

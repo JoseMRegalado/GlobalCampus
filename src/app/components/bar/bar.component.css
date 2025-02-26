@@ -1,1 +1,29 @@
+.bar{
+  display: flex;
+  justify-content: center;
+}
+nav {
+  display: flex;
+  overflow: hidden;
+  width: 80%;
+  justify-content: center;
+}
+
+button {
+  flex: 1;
+  padding: 12px 20px;
+  background-color: white;
+  color: #003366;
+  border: 2px solid #004270;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #004270;
+  color: white;
+}
 

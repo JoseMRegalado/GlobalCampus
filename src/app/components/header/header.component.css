@@ -7,7 +7,6 @@ header {
   justify-content: space-between;
   background-color: white;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   height: 150px;
 }
 
@@ -42,7 +41,6 @@ header .logo img {
 .profile-container img {
   height: 40px;
   width: 40px;
-  border-radius: 50%;
   cursor: pointer;
 }
 
