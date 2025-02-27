@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-view',
@@ -9,6 +9,8 @@ import {Router} from "@angular/router";
 })
 export class AdminViewComponent implements OnInit {
   users: any[] = [];
+  incomingUsers: any[] = [];  // Usuarios sin 'proceso: outgoing'
+  outgoingUsers: any[] = [];  // Usuarios con 'proceso: outgoing'
   currentView: string = 'incoming';
 
   constructor(private firestore: AngularFirestore, private router: Router) {}
@@ -22,21 +24,27 @@ export class AdminViewComponent implements OnInit {
   }
 
   verSeguimiento(userEmail: string) {
-    this.router.navigate(['/personal-data'], { queryParams: { userEmail: userEmail } });
+    // Comprobamos si estamos en la vista 'incoming' o 'outgoing'
+    if (this.currentView === 'incoming') {
+      // Si estamos en la vista 'incoming', navegamos a 'personal-data' con los queryParams
+      this.router.navigate(['/personal-data'], { queryParams: { userEmail: userEmail } });
+    } else if (this.currentView === 'outgoing') {
+      // Si estamos en la vista 'outgoing', navegamos a 'out' con los queryParams
+      this.router.navigate(['/out'], { queryParams: { userEmail: userEmail } });
+    }
   }
-
 
 
   async obtenerUsuarios() {
     try {
       const usersSnapshot = await this.firestore.collection('users').get().toPromise();
-      let usersData: any[] = [];
+      let incomingUsersData: any[] = [];
+      let outgoingUsersData: any[] = [];
 
       if (!usersSnapshot) return;
 
       for (const userDoc of usersSnapshot.docs) {
         const userId = userDoc.id;
-        console.log(`📌 Procesando usuario: ${userId}`); // 📌 Log para depuración
 
         const personalDataRef = this.firestore.collection(`users/${userId}/personal-data`);
         let userData: any = { id: userId };
@@ -55,28 +63,31 @@ export class AdminViewComponent implements OnInit {
           }
         }
 
-        // Obtener datos universitarios correctamente
+        // Obtener datos universitarios
         const universityDataRef = personalDataRef.doc('default').collection('universityData');
         const univSnapshot = await universityDataRef.get().toPromise();
-
-        console.log(`🔍 Datos de university-data para ${userId}:`, univSnapshot?.docs.map(doc => doc.data())); // Log de depuración
-
         if (univSnapshot && !univSnapshot.empty) {
           const univDoc = univSnapshot.docs[0]; // Obtenemos el primer documento
           const univData = univDoc.data() as any;
           userData.university = univData?.universityName || 'N/A';
           userData.period = univData?.period || 'N/A';
         } else {
-          console.warn(`⚠️ No se encontraron datos de universidad para ${userId}`);
           userData.university = 'N/A';
           userData.period = 'N/A';
         }
 
-        usersData.push(userData);
+        // Verificar el campo 'proceso'
+        const userProceso = (userDoc.data() as any)?.proceso;
+        if (userProceso === 'outgoing') {
+          outgoingUsersData.push(userData); // Usuario con 'outgoing'
+        } else {
+          incomingUsersData.push(userData); // Usuario sin 'outgoing'
+        }
       }
 
-      this.users = usersData;
-      console.log('✅ Usuarios cargados:', this.users); // Log final
+      // Asignamos los usuarios filtrados
+      this.incomingUsers = incomingUsersData;
+      this.outgoingUsers = outgoingUsersData;
     } catch (error) {
       console.error('❌ Error al obtener los usuarios:', error);
     }

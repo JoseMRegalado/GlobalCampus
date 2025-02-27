@@ -134,6 +134,41 @@ export class UserDataService {
       );
   }
 
+  getDocumentReference(userEmail: string, fileType: string): Promise<any> {
+    return this.firestore
+      .collection('users')
+      .doc(userEmail)
+      .collection('documents', ref => ref.where('fileType', '==', fileType))
+      .get()
+      .toPromise()
+      .then(snapshot => {
+        if (snapshot && !snapshot.empty) {
+          const docData = snapshot.docs[0].data(); // 🔹 Ahora devolvemos los datos del documento
+          console.log("Documento obtenido:", docData); // 👀 Verifica en la consola
+          return docData;
+        } else {
+          throw new Error('No se encontró un documento con ese tipo de archivo.');
+        }
+      })
+      .catch(error => {
+        console.error('Error obteniendo el documento:', error);
+        throw error;
+      });
+  }
+
+  updateUserProcess(email: string, process: string): Observable<void> {
+    return new Observable(observer => {
+      this.firestore.collection('users').doc(email).update({ process }).then(() => {
+        observer.next();
+        observer.complete();
+      }).catch(err => observer.error(err));
+    });
+  }
+
+
+
+
+
   getAllDocuments(): Observable<any[]> {
     return this.firestore.collectionGroup('docs').valueChanges();
   }

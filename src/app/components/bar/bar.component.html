@@ -1,4 +1,5 @@
-<div class="bar">
+<!-- Barra normal -->
+<div class="bar" *ngIf="!showNewSteps">
   <nav>
     <button [routerLink]="['/personal-data']" [queryParams]="{ userEmail: email }">
       Datos Personales
@@ -13,7 +14,23 @@
       Carta de Aceptación
     </button>
     <button [routerLink]="['/flujo']" [queryParams]="{ userEmail: email }">
-      Flujo de Tesis
+      Certificado de Notas
     </button>
+  </nav>
+</div>
+
+<!-- Barra nueva para usuarios con campo 'proceso' -->
+<div class="bar" *ngIf="showNewSteps">
+  <nav>
+    <button [routerLink]="['/out']" [queryParams]="{ userEmail: email }">
+      Datos Personales
+    </button>
+    <button [routerLink]="['/docs']" [queryParams]="{ userEmail: email }">
+      Validación de Documentos
+    </button>
+    <button [routerLink]="['/step3']" [queryParams]="{ userEmail: email }">
+      Elección de Materias
+    </button>
+    <!-- Aquí puedes añadir más pasos nuevos según necesites -->
   </nav>
 </div>

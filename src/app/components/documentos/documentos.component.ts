@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserDataService } from '../../services/user-data.service';
 import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-documentos',
@@ -19,9 +20,11 @@ export class DocumentosComponent implements OnInit {
   usuarios: any[] = [];  // Almacena todos los usuarios
   usuarioSeleccionado: string = ''; // Almacena el usuario seleccionado
   documentosNombres: string[] = [];
+  userEmail: string = ''; // Email obtenido de los queryParams
 
 
-  constructor(private userDataService: UserDataService, private authService: AuthService) {}
+
+  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.fechaActual = new Date().toISOString().split('T')[0];
@@ -33,7 +36,14 @@ export class DocumentosComponent implements OnInit {
         this.userDataService.getUserRole(this.email).subscribe(role => {
           this.role = role;
           if (this.role === 'admin') {
-            this.obtenerNombresDocumentos();
+            this.route.queryParams.subscribe(params => {
+              this.userEmail = params['userEmail'];
+              if (this.userEmail) {
+                this.obtenerDocumentos();
+              } else {
+                console.error('No se encontró el userEmail en los queryParams');
+              }
+            });
           }
           // Obtener documentos del usuario
           this.obtenerDocumentos();
@@ -50,25 +60,11 @@ export class DocumentosComponent implements OnInit {
 
   // Obtener documentos
   obtenerDocumentos() {
-    // Si es admin y seleccionó un usuario
-    if (this.role === 'admin' && this.usuarioSeleccionado) {
-      this.userDataService.getDocuments(this.usuarioSeleccionado).subscribe(docs => {
-        console.log('Documentos obtenidos:', docs); // Verifica que el id esté presente
-        this.documentos = docs;
-      });
-    } else if (this.role === 'admin') {
-      // Si es admin y seleccionó "Todos"
-      this.userDataService.getAllDocuments().subscribe(docs => {
-        console.log('Todos los documentos:', docs); // Verifica el id aquí también
-        this.documentos = docs;
-      });
-    } else {
-      // Si es un usuario normal
-      this.userDataService.getDocuments(this.email).subscribe(docs => {
-        console.log('Documentos del usuario:', docs); // Verifica el id aquí
-        this.documentos = docs;
-      });
-    }
+    // Usa el userEmail para obtener los documentos del usuario
+    this.userDataService.getDocuments(this.userEmail).subscribe(docs => {
+      console.log('Documentos del usuario:', docs);
+      this.documentos = docs;
+    });
   }
 
 // Obtener todos los usuarios (Solo para admin)

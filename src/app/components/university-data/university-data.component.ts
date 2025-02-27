@@ -1,7 +1,9 @@
 
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/login.service'; // Servicio de autenticación
-import { UserDataService } from '../../services/user-data.service'; // Servicio para manejar los datos del usuario
+import { UserDataService } from '../../services/user-data.service';
+import {ActivatedRoute} from "@angular/router";
+import {switchMap} from "rxjs"; // Servicio para manejar los datos del usuario
 
 @Component({
   selector: 'app-university-data',
@@ -139,38 +141,65 @@ export class UniversityDataComponent {
 
   selectedPrograms: any[] = [];
 
+  isAdmin: boolean = false;
+  isEditable: boolean = true; // Para controlar si el formulario es editable
+
   constructor(
     private authService: AuthService,
-    private userDataService: UserDataService
-  ) {
+    private userDataService: UserDataService,
+  private route: ActivatedRoute
+
+) {
   }
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
-      this.userEmail = user?.email || null;
+    this.authService.getCurrentUser().pipe(
+      switchMap(user => {
+        if (user) {
+          this.userEmail = user.email;
+          console.log("🟢 Usuario autenticado:", this.userEmail);
+          // @ts-ignore
+          return this.userDataService.getUserRole(this.userEmail);
+        }
+        throw new Error("❌ No hay usuario autenticado");
+      }),
+      switchMap(role => {
+        this.isAdmin = role === 'admin';
+        this.isEditable = !this.isAdmin;
+        console.log("👑 Rol del usuario:", role);
+        return this.route.queryParams; // Esperamos los queryParams
+      })
+    ).subscribe(params => {
+      const emailFromParams = params['userEmail'];
+      console.log("🔍 Email en queryParams:", emailFromParams);
+
+      if (this.isAdmin && emailFromParams) {
+        this.userEmail = emailFromParams; // Sobreescribimos si es admin
+        console.log("✅ Admin viendo datos de otro usuario:", this.userEmail);
+      } else {
+        console.log("🛑 No es admin o no hay email en queryParams, usando:", this.userEmail);
+      }
+
       if (this.userEmail) {
-        this.loadUserData();
+        console.log("📡 Cargando datos para:", this.userEmail);
+        this.loadUserData(this.userEmail);
       }
     });
   }
 
-  loadUserData() {
-    if (this.userEmail) {
-      this.userDataService.getUniversityData(this.userEmail).subscribe(data => {
-        if (data) {
-          this.formData = data;
-          this.hasData = true;
-        }
-      });
-    }
+
+  loadUserData(email: string) {
+    this.userDataService.getUniversityData(email).subscribe(data => {
+      if (data) {
+        this.formData = data;
+        this.hasData = true;
+      }
+    });
   }
 
   saveForm() {
-    if (this.userEmail) {
-      const userData = {
-        ...this.formData,
-        email: this.userEmail,
-      };
+    if (this.userEmail && !this.isAdmin) {
+      const userData = { ...this.formData, email: this.userEmail };
 
       if (this.hasData) {
         this.userDataService.updateUniversityData(this.userEmail, userData).subscribe({

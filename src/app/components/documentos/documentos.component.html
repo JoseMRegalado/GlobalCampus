@@ -5,7 +5,7 @@
 
 
 <!-- Para el usuario con role 'user' -->
-<div *ngIf="role === 'user'">
+<div *ngIf="role !== 'admin'">
   <h3>Carga tu nuevo documento</h3>
   <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
   <div class="tabla">
@@ -88,12 +88,7 @@
 
 <!-- Para el usuario con role 'admin' -->
 <div *ngIf="role === 'admin'">
-  <label for="userSelect">Seleccionar Usuario:</label>
-  <select id="userSelect" [(ngModel)]="usuarioSeleccionado" (change)="obtenerDocumentos()">
-    <option value="">Todos los usuarios</option>
-    <option *ngFor="let nombre of documentosNombres" [value]="nombre">{{ nombre }}</option>
-  </select>
-
+  <h3>Documentos del usuario: {{ userEmail }}</h3>
   <table>
     <tr>
       <th>Acceso</th>
@@ -127,6 +122,7 @@
     </tr>
   </table>
 </div>
+
 
 
 </body>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/login.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserDataService } from 'src/app/services/user-data.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-bar',
@@ -11,32 +12,47 @@ import { UserDataService } from 'src/app/services/user-data.service';
 export class BarComponent implements OnInit {
   email: string | null = null;
   isAdmin: boolean = false;
+  showNewSteps: boolean = false;  // Variable para manejar la barra de pasos nuevos
 
-  constructor(private authService: AuthService, private route: ActivatedRoute, private userService: UserDataService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private userService: UserDataService,
+    private firestore: AngularFirestore
+  ) {}
 
   ngOnInit(): void {
     const emailFromUrl = this.route.snapshot.queryParams['userEmail'];
-    console.log('Email en la URL:', emailFromUrl);
 
     this.authService.getCurrentUser().subscribe(user => {
       if (user) {
-        // Evaluamos si el usuario loggeado es admin
+        // Verificamos si el usuario logueado es admin
         // @ts-ignore
         this.userService.getUserRole(user.email).subscribe(role => {
           this.isAdmin = role === 'admin';
 
-          if (this.isAdmin) {
-            // Si el usuario loggeado es admin, usamos el email de la URL (si existe)
-            this.email = emailFromUrl || user.email;
-          } else {
-            // Si NO es admin, usamos el email del usuario loggeado
-            this.email = user.email;
-          }
+          // Asignamos el email de acuerdo con el rol
+          this.email = emailFromUrl || user.email;
 
-          // Asegurarnos de que `this.email` no es `null` antes de usarlo
           if (this.email) {
-            console.log('¿Es admin?:', this.isAdmin);
-            console.log('Email asignado:', this.email);
+            // Verificamos si el usuario tiene el campo 'proceso'
+            this.firestore.collection('users').doc(this.email).get().toPromise().then(doc => {
+              // @ts-ignore
+              if (doc.exists) {
+                // @ts-ignore
+                const userData = doc.data() as any; // Acceso dinámico con 'as any'
+
+                // Verificamos si el campo 'proceso' existe y es 'outgoing'
+                const userProceso = userData?.proceso;
+                if (userProceso === 'outgoing') {
+                  this.showNewSteps = true;  // Si tiene 'proceso: outgoing', mostramos la barra nueva
+                } else {
+                  this.showNewSteps = false;  // Si no tiene 'proceso' o no es 'outgoing', mantenemos la barra estándar
+                }
+              }
+            }).catch(error => {
+              console.error('Error al obtener los datos del usuario:', error);
+            });
           } else {
             console.error('No se pudo asignar un email válido.');
           }

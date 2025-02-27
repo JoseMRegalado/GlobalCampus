@@ -27,6 +27,7 @@ import {MatIconModule} from "@angular/material/icon";
 import { PersonalDataOutComponent } from './components/personal-data-out/personal-data-out.component';
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { BarComponent } from './components/bar/bar.component';
+import { MovilidadFormComponent } from './components/movilidad-form/movilidad-form.component';
 
 register();
 
@@ -46,9 +47,11 @@ const appRoutes: Routes = [
   {path: 'admin', component: AdminViewComponent},
   { path: 'personal-data/:email', component: PersonalDataComponent },
   { path: 'docs/:email', component: DocumentosComponent },
+  { path: 'out/:email', component: MovilidadFormComponent },
+  { path: 'out', component: MovilidadFormComponent },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent, AdminViewComponent, BarComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent, AdminViewComponent, BarComponent, MovilidadFormComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),

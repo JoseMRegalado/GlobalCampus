@@ -1,0 +1,75 @@
+<app-header></app-header>
+<app-bar></app-bar>
+
+<div class="movilidad-form-container">
+  <h2>Formulario de Movilidad</h2>
+
+  <form #form="ngForm" (ngSubmit)="saveOrUpdateForm()">
+    <div class="informacion-obligatoria">
+      <div class="campos">
+        <div class="campo">
+          <label for="facultad" class="required-label">Facultad</label>
+          <input type="text" id="facultad" name="facultad" [(ngModel)]="formData.facultad" placeholder="Facultad" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="semestre" class="required-label">Semestre</label>
+          <input type="text" id="semestre" name="semestre" [(ngModel)]="formData.semestre" placeholder="Semestre" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="promedio" class="required-label">Promedio</label>
+          <input type="number" id="promedio" name="promedio" [(ngModel)]="formData.promedio" placeholder="Promedio" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="periodoMovilidad" class="required-label">Periodo de Movilidad</label>
+          <input type="text" id="periodoMovilidad" name="periodoMovilidad" [(ngModel)]="formData.periodoMovilidad" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="tipoMovilidad" class="required-label">Tipo de Movilidad</label>
+          <input type="text" id="tipoMovilidad" name="tipoMovilidad" [(ngModel)]="formData.tipoMovilidad" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="contactoEmergencia" class="required-label">Contacto de Emergencia</label>
+          <input type="text" id="contactoEmergencia" name="contactoEmergencia" [(ngModel)]="formData.contactoEmergencia" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="universidadDestino" class="required-label">Universidad de Destino</label>
+          <input type="text" id="universidadDestino" name="universidadDestino" [(ngModel)]="formData.universidadDestino" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="titulacionDestino" class="required-label">Titulación en Destino</label>
+          <input type="text" id="titulacionDestino" name="titulacionDestino" [(ngModel)]="formData.titulacionDestino" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="periodoDestino" class="required-label">Periodo en Destino</label>
+          <input type="text" id="periodoDestino" name="periodoDestino" [(ngModel)]="formData.periodoDestino" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <label for="paisDestino" class="required-label">País de Destino</label>
+          <input type="text" id="paisDestino" name="paisDestino" [(ngModel)]="formData.paisDestino" [disabled]="isAdmin" required>
+        </div>
+
+        <div class="campo">
+          <input type="checkbox" id="declaracion" name="declaracion" [(ngModel)]="formData.declaracion"  required>
+          <label for="declaracion" class="required-label">Declaro que la información entregada en esta postulación es correcta y completa. Entiendo que la Universidad Técnica Particular de Loja pueda rechazar mi postulación si  la  información entregada por  mi  es  incompleta  o  incorrecta.   Autorizo  a  que  se  solicite  a  mi  Universidad información adicional que pueda respaldar mi postulación.</label>
+        </div>
+      </div>
+
+      <div class="boton">
+        <button type="submit">
+          {{ hasData ? 'Siguiente' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-footer></app-footer>

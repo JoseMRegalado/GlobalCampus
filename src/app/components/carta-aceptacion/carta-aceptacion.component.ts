@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { UserDataService } from '../../services/user-data.service';
 import { AuthService } from '../../services/login.service';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { jsPDF } from 'jspdf';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-carta-aceptacion',
@@ -11,56 +10,86 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./carta-aceptacion.component.css']
 })
 export class CartaAceptacionComponent implements OnInit {
-  userEmail: string | null = null;
+  userEmail: string | null = null; // Email del usuario logueado
+  queryUserEmail: string | null = null; // Email del usuario en queryParams
   personalData: any = {};
   universityData: any = {};
-  selectedFile: File | null = null; // Archivo seleccionado para subir
+  isAdmin: boolean = false; // Si el usuario es admin
+  selectedFile: File | null = null;
   pdfUploading: boolean = false;
   currentDate = new Date();
+  generatedDocument: any = null; // Almacena el documento generado para la descarga
 
   constructor(
     private authService: AuthService,
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.authService.getCurrentUser().subscribe(user => {
       this.userEmail = user?.email || null;
       if (this.userEmail) {
-        this.loadData();
+        // Obtener el rol del usuario
+        this.userDataService.getUserRole(this.userEmail).subscribe(role => {
+          this.isAdmin = role === 'admin';
+
+          // Si el usuario es admin, obtenemos el email de los queryParams
+          if (this.isAdmin) {
+            this.queryUserEmail = this.route.snapshot.queryParams['userEmail'] || null;
+          } else {
+            this.queryUserEmail = this.userEmail; // Si no es admin, usa su propio email
+          }
+
+          if (this.queryUserEmail) {
+            this.loadData();
+            this.loadGeneratedDocument();
+          }
+        });
       }
     });
   }
 
   loadData() {
-    if (this.userEmail) {
-      this.userDataService.getUserData(this.userEmail).subscribe(data => {
+    if (this.queryUserEmail) {
+      this.userDataService.getUserData(this.queryUserEmail).subscribe(data => {
         this.personalData = data || {};
       });
 
-      this.userDataService.getUniversityData(this.userEmail).subscribe(data => {
+      this.userDataService.getUniversityData(this.queryUserEmail).subscribe(data => {
         this.universityData = data || {};
       });
     }
   }
-  clearFile(): void {
-    this.selectedFile = null;
+
+  // Cargar la carta de aceptación generada previamente
+  loadGeneratedDocument() {
+    if (this.queryUserEmail) {
+      this.userDataService.getDocumentReference(this.queryUserEmail, 'Carta de Aceptación')
+        .then(doc => {
+          console.log("Documento encontrado:", doc); // ✅ Verifica si realmente devuelve datos
+          this.generatedDocument = doc;
+        })
+        .catch(error => {
+          console.warn("No se encontró el documento:", error);
+        });
+    }
   }
 
 
 
-
-
-  // Generar el PDF y abrirlo en una pestaña
+  // Generar la carta de aceptación y guardarla en la base de datos
   generatePdf() {
+    if (!this.personalData || !this.personalData.firstName) {
+      alert('No hay datos para generar la carta.');
+      return;
+    }
+
     const pdf = new jsPDF();
     const formattedDate = this.currentDate.toLocaleDateString('es-ES');
 
-    // Contenido del PDF
     pdf.setFontSize(12);
     pdf.text('Carta de Aceptación', 105, 20, { align: 'center' });
-
-
     pdf.text(formattedDate, 150, 20);
     pdf.text(`${this.personalData.firstName || ''} ${this.personalData.lastName || ''}`, 20, 50);
     pdf.text('Loja, Ecuador', 20, 60);
@@ -74,21 +103,56 @@ export class CartaAceptacionComponent implements OnInit {
     pdf.text('_____________________', 20, 180);
     pdf.text('Firma', 20, 190);
 
+    // Convertir el PDF a Base64 y guardarlo en la base de datos
+    const pdfBlob = pdf.output('blob');
+    const reader = new FileReader();
+    reader.readAsDataURL(pdfBlob);
+    reader.onloadend = () => {
+      const base64Pdf = reader.result as string;
+      const documentData = {
+        fileName: `Carta_Aceptacion_${this.queryUserEmail}.pdf`,
+        fileContent: base64Pdf,
+        uploadedAt: new Date(),
+        fileType: 'Carta de Aceptación'
+      };
 
-    // Abrir el PDF en una nueva pestaña
-    const pdfOutput = pdf.output('blob');
-    const url = URL.createObjectURL(pdfOutput);
-    window.open(url, '_blank');
+      this.userDataService.saveDocumentReference(this.queryUserEmail!, documentData).subscribe({
+        next: () => {
+          alert('Carta de aceptación generada y guardada correctamente.');
+          this.loadGeneratedDocument(); // Recargar el documento generado
+        },
+        error: err => {
+          alert('Error al guardar la carta: ' + err);
+        }
+      });
+    };
   }
 
-  // Manejar la selección de archivo
+  // Descargar la carta generada
+  downloadGeneratedPdf() {
+    if (this.generatedDocument && this.generatedDocument.fileContent) {
+      const link = document.createElement('a');
+      link.href = this.generatedDocument.fileContent;
+      link.download = this.generatedDocument.fileName;
+      link.click();
+    } else {
+      alert('No hay carta disponible para descargar.');
+    }
+  }
+
+  // Permite seleccionar el archivo firmado
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
 
-  // Subir el archivo firmado a Firestore
+  // Limpiar archivo seleccionado
+  clearFile(): void {
+    this.selectedFile = null;
+  }
+
+  // Subir el archivo firmado en formato Base64
   uploadSignedPdf() {
-    if (!this.userEmail || !this.selectedFile) {
+    if (!this.queryUserEmail || !this.selectedFile) {
       alert('Debe seleccionar un archivo para subir.');
       return;
     }
@@ -100,14 +164,14 @@ export class CartaAceptacionComponent implements OnInit {
 
       const documentData = {
         fileName: this.selectedFile!.name,
-        fileContent: base64File, // Guardar el archivo firmado como Base64
+        fileContent: base64File,
         uploadedAt: new Date(),
         fileType: 'Carta de Aceptación Firmada'
       };
 
       this.pdfUploading = true;
 
-      this.userDataService.saveDocumentReference(this.userEmail!, documentData).subscribe({
+      this.userDataService.saveDocumentReference(this.queryUserEmail!, documentData).subscribe({
         next: () => {
           this.pdfUploading = false;
           alert('Documento firmado subido correctamente.');
@@ -120,5 +184,4 @@ export class CartaAceptacionComponent implements OnInit {
       });
     };
   }
-
 }

@@ -1,6 +1,5 @@
 <app-header></app-header>
 <div class="container">
-
   <div class="contenedor">
     <!-- Sidebar -->
     <nav class="sidebar">
@@ -27,24 +26,43 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of incomingUsers">
           <td>{{ user.idNumber }}</td>
           <td>{{ user.firstName }} {{ user.lastName }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.university }}</td>
           <td>{{ user.period }}</td>
-          <td><button (click)="verSeguimiento(user.email)">Ver Seguimiento</button>
-          </td>
+          <td><button (click)="verSeguimiento(user.email)">Ver Seguimiento</button></td>
         </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Sección de Outgoing -->
+    <!-- Tabla de Outgoing -->
     <div *ngIf="currentView === 'outgoing'" class="seccion">
-      <h3>Datos de outgoing</h3>
+      <h3>Outgoing</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Identificación</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Universidad</th>
+          <th>Periodo</th>
+          <th>Seguimiento</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of outgoingUsers">
+          <td>{{ user.idNumber }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.university }}</td>
+          <td>{{ user.period }}</td>
+          <td><button (click)="verSeguimiento(user.email)">Ver Seguimiento</button></td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-
-
   </div>
 </div>

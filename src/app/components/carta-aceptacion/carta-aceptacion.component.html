@@ -1,13 +1,19 @@
 <app-header></app-header>
 <app-bar></app-bar>
+
 <div class="container">
   <h2>Carta de Aceptación</h2>
 
-  <!-- Botón para generar el PDF -->
-  <button class="btn-generate" (click)="generatePdf()">Generar Carta</button>
+  <!-- Botón para generar la carta si es ADMIN -->
+  <button *ngIf="isAdmin" class="btn-generate" (click)="generatePdf()">Generar Carta</button>
 
-  <!-- Área de carga del documento firmado -->
-  <div class="contenedor-upload">
+  <!-- Botón para descargar la carta si NO es admin y ya existe una generada -->
+  <button *ngIf="!isAdmin && generatedDocument" class="btn-download" (click)="downloadGeneratedPdf()">
+    Descargar Carta
+  </button>
+
+  <!-- Área de carga del documento firmado (visible solo para NO admins) -->
+  <div class="contenedor-upload" *ngIf="!isAdmin">
     <form class="seleccionar">
       <div class="upload-area">
         <label for="signedFile" class="custom-file-label">
@@ -18,7 +24,6 @@
       </div>
 
       <div *ngIf="selectedFile" class="file-preview">
-        <img src="assets/img/upload-icon.svg" alt="PDF Icon" class="file-icon" />
         <p>{{ selectedFile.name }}</p>
         <img src="assets/img/borrar.svg" alt="Trash" class="file-icon" (click)="clearFile()" />
       </div>
@@ -33,6 +38,7 @@
     <div *ngIf="pdfUploading">
       <p>Cargando archivo... Por favor, espera.</p>
     </div>
-
   </div>
 </div>
+
+

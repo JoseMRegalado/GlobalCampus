@@ -20,7 +20,7 @@ h2 {
   text-align: center;
 }
 
-.btn-generate {
+.btn-generate, .btn-download {
   background-color: #004270;
   color: white;
   padding: 10px 15px;
@@ -31,7 +31,7 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.btn-generate:hover {
+.btn-generate, .btn-download:hover {
   background-color: #004270;
 }
 

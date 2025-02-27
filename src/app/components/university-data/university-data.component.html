@@ -9,41 +9,41 @@
       <div class="campos">
         <div class="campo">
           <label for="universityName" class="required-label">Nombre de la universidad de origen</label>
-          <input type="text" id="universityName" name="universityName" [(ngModel)]="formData.universityName" placeholder="Nombre de la universidad" required>
+          <input type="text" id="universityName" name="universityName" [(ngModel)]="formData.universityName" placeholder="Nombre de la universidad" [disabled]="!isEditable" required>
         </div>
 
         <div class="campo">
           <label for="universityCountry" class="required-label">País de la universidad de origen</label>
-          <select id="universityCountry" name="universityCountry" [(ngModel)]="formData.universityCountry" required>
+          <select id="universityCountry" name="universityCountry" [(ngModel)]="formData.universityCountry" [disabled]="!isEditable" required>
             <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="universityAddress" class="required-label">Dirección de la universidad</label>
-          <input type="text" id="universityAddress" name="universityAddress" [(ngModel)]="formData.universityAddress" placeholder="Dirección" required>
+          <input type="text" id="universityAddress" name="universityAddress" [(ngModel)]="formData.universityAddress" placeholder="Dirección" [disabled]="!isEditable" required>
         </div>
 
         <div class="campo">
           <label for="universityPhone" class="required-label">Teléfono de la universidad</label>
-          <input type="text" id="universityPhone" name="universityPhone" [(ngModel)]="formData.universityPhone" placeholder="Teléfono" required>
+          <input type="text" id="universityPhone" name="universityPhone" [(ngModel)]="formData.universityPhone" placeholder="Teléfono" [disabled]="!isEditable" required>
         </div>
 
         <div class="campo">
           <label for="universityWeb" class="required-label">Web de la universidad</label>
-          <input type="url" id="universityWeb" name="universityWeb" [(ngModel)]="formData.universityWeb" placeholder="Web" required>
+          <input type="url" id="universityWeb" name="universityWeb" [(ngModel)]="formData.universityWeb" placeholder="Web" [disabled]="!isEditable" required>
         </div>
 
         <div class="campo">
           <label for="faculty" class="required-label">Facultad/Escuela a integrarse</label>
-          <select id="faculty" name="faculty" [(ngModel)]="formData.faculty" (change)="onFacultyOrStudentTypeChange(formData.faculty, formData.studentType)" required>
+          <select id="faculty" name="faculty" [(ngModel)]="formData.faculty" (change)="onFacultyOrStudentTypeChange(formData.faculty, formData.studentType)" [disabled]="!isEditable" required>
             <option *ngFor="let faculty of faculties" [value]="faculty">{{ faculty }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="studentType" class="required-label">Tipo de estudiante</label>
-          <select id="studentType" name="studentType" [(ngModel)]="formData.studentType" (change)="onFacultyOrStudentTypeChange(formData.faculty, formData.studentType)" required>
+          <select id="studentType" name="studentType" [(ngModel)]="formData.studentType" (change)="onFacultyOrStudentTypeChange(formData.faculty, formData.studentType)" [disabled]="!isEditable" required>
             <option value="Grado">Grado</option>
             <option value="Posgrado">Posgrado</option>
           </select>
@@ -51,35 +51,35 @@
 
         <div class="campo">
           <label for="program" class="required-label">Programa/Carrera a integrarse</label>
-          <select id="program" name="program" [(ngModel)]="formData.program" required>
+          <select id="program" name="program" [(ngModel)]="formData.program" [disabled]="!isEditable" required>
             <option *ngFor="let program of selectedPrograms" [value]="program.name">{{ program.name }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="period" class="required-label">Periodo de estancia en UTPL</label>
-          <select id="period" name="period" [(ngModel)]="formData.period" required>
+          <select id="period" name="period" [(ngModel)]="formData.period" [disabled]="!isEditable" required>
             <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="spanishLevel" class="required-label">Conocimiento del idioma español</label>
-          <select id="spanishLevel" name="spanishLevel" [(ngModel)]="formData.spanishLevel" required>
+          <select id="spanishLevel" name="spanishLevel" [(ngModel)]="formData.spanishLevel" [disabled]="!isEditable" required>
             <option *ngFor="let level of spanishLevels" [value]="level">{{ level }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="mobilityModality" class="required-label">Modalidad de la movilidad</label>
-          <select id="mobilityModality" name="mobilityModality" [(ngModel)]="formData.mobilityModality" required>
+          <select id="mobilityModality" name="mobilityModality" [(ngModel)]="formData.mobilityModality" [disabled]="!isEditable" required>
             <option *ngFor="let modality of mobilityModalities" [value]="modality">{{ modality }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="mobilityType" class="required-label">Tipo de la movilidad</label>
-          <select id="mobilityType" name="mobilityType" [(ngModel)]="formData.mobilityType" required>
+          <select id="mobilityType" name="mobilityType" [(ngModel)]="formData.mobilityType" [disabled]="!isEditable" required>
             <option *ngFor="let type of mobilityTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
