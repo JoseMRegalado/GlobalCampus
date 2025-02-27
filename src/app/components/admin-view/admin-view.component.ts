@@ -21,10 +21,11 @@ export class AdminViewComponent implements OnInit {
     this.currentView = view;
   }
 
-  verSeguimiento(docId: string) {
-    const encodedDocId = encodeURIComponent(docId);
-    this.router.navigate(['/personal-data', encodedDocId]);
+  verSeguimiento(userEmail: string) {
+    this.router.navigate(['/personal-data'], { queryParams: { userEmail: userEmail } });
   }
+
+
 
   async obtenerUsuarios() {
     try {

@@ -16,7 +16,14 @@
     <div *ngIf="isLoggedIn" (click)="toggleMenu()" class="profile-container">
       <img src="./assets/img/logout.svg" alt="logo-usuario">
     </div>
-    <a class="boton"><button *ngIf="!isLoggedIn" [routerLink]="['/login']">Iniciar Sesión</button></a>
+
+    <!-- Mostrar el email del usuario si está loggeado -->
+    <span *ngIf="isLoggedIn" class="user-email">{{ userEmail }}</span>
+
+    <a class="boton">
+      <button *ngIf="!isLoggedIn" [routerLink]="['/login']">Iniciar Sesión</button>
+    </a>
+
     <div *ngIf="isLoggedIn && botonOpen" class="dropdown-menu">
       <button (click)="logout()">Cerrar Sesión</button>
     </div>

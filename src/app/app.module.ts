@@ -45,6 +45,7 @@ const appRoutes: Routes = [
   { path: 'convocatoria-detalle', component: ConvocatoriaDetalleComponent },
   {path: 'admin', component: AdminViewComponent},
   { path: 'personal-data/:email', component: PersonalDataComponent },
+  { path: 'docs/:email', component: DocumentosComponent },
 ];
 @NgModule({
   declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, PersonalDataOutComponent, AdminViewComponent, BarComponent],

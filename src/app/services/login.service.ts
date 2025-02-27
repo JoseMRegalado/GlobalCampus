@@ -41,6 +41,13 @@ export class AuthService {
     return this.afAuth.signOut();
   }
 
+  getUserRole(uid: string): Observable<string> {
+    return this.firestore.collection('users').doc(uid).valueChanges().pipe(
+      map((user: any) => user?.role || 'user') // Retorna 'estudiante' si no hay rol
+    );
+  }
+
+
 
 
   // Obtener usuario actual

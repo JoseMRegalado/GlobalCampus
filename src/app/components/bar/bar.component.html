@@ -1,18 +1,18 @@
 <div class="bar">
   <nav>
-    <button [routerLink]="['/personal-data']" [queryParams]="{ userId: userId }">
+    <button [routerLink]="['/personal-data']" [queryParams]="{ userEmail: email }">
       Datos Personales
     </button>
-    <button [routerLink]="['/docs']" [queryParams]="{ userId: userId }">
+    <button [routerLink]="['/docs']" [queryParams]="{ userEmail: email }">
       Validación de Documentos
     </button>
-    <button [routerLink]="['/university-data']" [queryParams]="{ userId: userId }">
+    <button [routerLink]="['/university-data']" [queryParams]="{ userEmail: email }">
       Datos de la Universidad
     </button>
-    <button [routerLink]="['/carta-aceptacion']" [queryParams]="{ userId: userId }">
+    <button [routerLink]="['/carta-aceptacion']" [queryParams]="{ userEmail: email }">
       Carta de Aceptación
     </button>
-    <button [routerLink]="['/flujo']" [queryParams]="{ userId: userId }">
+    <button [routerLink]="['/flujo']" [queryParams]="{ userEmail: email }">
       Flujo de Tesis
     </button>
   </nav>
