@@ -1,42 +1,50 @@
+<app-header></app-header>
 <div class="container">
-  <h2>Vista de Administrador</h2>
 
-  <!-- Botones para cambiar entre secciones -->
-  <div class="button-group">
-    <button (click)="setView('incoming')" [class.active]="currentView === 'incoming'">Incoming</button>
-    <button (click)="setView('outgoing')" [class.active]="currentView === 'outgoing'">Outgoing</button>
-  </div>
+  <div class="contenedor">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <button (click)="setView('incoming')" [class.active]="currentView === 'incoming'">
+        Incoming
+      </button>
+      <button (click)="setView('outgoing')" [class.active]="currentView === 'outgoing'">
+        Outgoing
+      </button>
+    </nav>
 
-  <!-- Tabla de Incoming -->
-  <div *ngIf="currentView === 'incoming'">
-    <h3>Incoming</h3>
-    <table>
-      <thead>
-      <tr>
-        <th>Identificación</th>
-        <th>Nombre</th>
-        <th>Correo</th>
-        <th>Universidad</th>
-        <th>Periodo</th>
-        <th>Seguimiento</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let user of users">
-        <td>{{ user.idNumber }}</td>
-        <td>{{ user.firstName }} {{ user.lastName }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.university }}</td>
-        <td>{{ user.period }}</td>
-        <td><button (click)="verSeguimiento(user.docId)">Ver Seguimiento</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Tabla de Incoming -->
+    <div *ngIf="currentView === 'incoming'" class="seccion">
+      <h3>Incoming</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Identificación</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Universidad</th>
+          <th>Periodo</th>
+          <th>Seguimiento</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.idNumber }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.university }}</td>
+          <td>{{ user.period }}</td>
+          <td><button (click)="verSeguimiento(user.docId)">Ver Seguimiento</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Sección de Outgoing -->
-  <div *ngIf="currentView === 'outgoing'">
-    <h3>Datos de outgoing</h3>
+    <!-- Sección de Outgoing -->
+    <div *ngIf="currentView === 'outgoing'" class="seccion">
+      <h3>Datos de outgoing</h3>
+    </div>
+
+
   </div>
 </div>

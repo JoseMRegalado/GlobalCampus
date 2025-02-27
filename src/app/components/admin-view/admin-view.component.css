@@ -1,21 +1,26 @@
 .container {
-  width: 90%;
   margin: auto;
   text-align: center;
+}
+
+.contenedor{
+  display: flex;
+  gap: 20px;
 }
 
 .button-group {
   margin-bottom: 20px;
 }
 
-button {
+button{
+  display: inline-block;
+  border-radius: 10px;
+  color: #fff;
+  background-color: rgba(4, 65, 112, 1);
   padding: 10px 20px;
-  margin: 5px;
-  border: none;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
+  font-size: 13px;
+  margin: 0;
 }
 
 button.active {
@@ -26,6 +31,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  text-align: center;
 }
 
 th, td {
@@ -35,4 +41,45 @@ th, td {
 
 th {
   background-color: #f4f4f4;
+}
+
+/*Sidebar*/
+
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  gap: 10px;
+
+}
+
+.sidebar button {
+  background-color: transparent;
+  color: #004270;
+  border: none;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+.sidebar button.active {
+  background-color: rgba(0, 86, 179, 0.1);
+  border-left: 4px solid #004270;
+}
+
+.sidebar button:hover {
+  background-color: rgba(0, 86, 179, 0.1);
+}
+
+.seccion{
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
