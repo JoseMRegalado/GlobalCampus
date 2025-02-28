@@ -13,12 +13,11 @@
   </nav>
 
   <div class="auth-buttons">
+    <!-- Mostrar el email del usuario si está loggeado -->
+    <span *ngIf="isLoggedIn" class="user-email">{{ userEmail }}</span>
     <div *ngIf="isLoggedIn" (click)="toggleMenu()" class="profile-container">
       <img src="./assets/img/logout.svg" alt="logo-usuario">
     </div>
-
-    <!-- Mostrar el email del usuario si está loggeado -->
-    <span *ngIf="isLoggedIn" class="user-email">{{ userEmail }}</span>
 
     <a class="boton">
       <button *ngIf="!isLoggedIn" [routerLink]="['/login']">Iniciar Sesión</button>

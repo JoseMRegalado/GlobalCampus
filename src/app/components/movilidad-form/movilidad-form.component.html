@@ -1,7 +1,7 @@
 <app-header></app-header>
 <app-bar></app-bar>
 
-<div class="movilidad-form-container">
+<div class="personal-data-container">
   <h2>Formulario de Movilidad</h2>
 
   <form #form="ngForm" (ngSubmit)="saveOrUpdateForm()">
@@ -56,11 +56,10 @@
           <label for="paisDestino" class="required-label">País de Destino</label>
           <input type="text" id="paisDestino" name="paisDestino" [(ngModel)]="formData.paisDestino" [disabled]="isAdmin" required>
         </div>
-
-        <div class="campo">
-          <input type="checkbox" id="declaracion" name="declaracion" [(ngModel)]="formData.declaracion"  required>
-          <label for="declaracion" class="required-label">Declaro que la información entregada en esta postulación es correcta y completa. Entiendo que la Universidad Técnica Particular de Loja pueda rechazar mi postulación si  la  información entregada por  mi  es  incompleta  o  incorrecta.   Autorizo  a  que  se  solicite  a  mi  Universidad información adicional que pueda respaldar mi postulación.</label>
-        </div>
+      </div>
+      <div class="declaracion">
+        <input type="checkbox" id="declaracion" name="declaracion" [(ngModel)]="formData.declaracion"  required>
+        <label for="declaracion" class="required-label">Declaro que la información entregada en esta postulación es correcta y completa. Entiendo que la Universidad Técnica Particular de Loja pueda rechazar mi postulación si  la  información entregada por  mi  es  incompleta  o  incorrecta.   Autorizo  a  que  se  solicite  a  mi  Universidad información adicional que pueda respaldar mi postulación.</label>
       </div>
 
       <div class="boton">
