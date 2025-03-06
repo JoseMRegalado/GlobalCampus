@@ -243,8 +243,76 @@ export class UserDataService {
 
 
 
+  saveCartaAceptacion(email: string, data: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs')
+        .add(data) // Guardamos la carta como un documento en la subcolección
+        .then(() => observer.next())
+        .catch((error) => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
 
+  getCartaAceptacion(email: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Aceptación'))
+      .get() // Usar get() en lugar de valueChanges para obtener documentos
+      .pipe(
+        map(snapshot => {
+          if (snapshot.empty) {
+            console.error('No se encontró la carta de aceptación.');
+            return null; // Si no hay documentos, devolvemos null
+          } else {
+            return snapshot.docs.map(doc => doc.data())[0]; // Retornar el primer documento
+          }
+        })
+      );
+  }
 
+  updateCartaAceptacion(email: string, cartaActualizada: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      // Busca el documento de la carta de aceptación que debe actualizarse
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Aceptación'))
+        .get()
+        .toPromise()
+        .then((snapshot) => {
+          // @ts-ignore
+          if (!snapshot.empty) {
+            // Obtén el ID del primer documento de carta de aceptación
+            // @ts-ignore
+            const docId = snapshot.docs[0].id;
+
+            // Reemplaza el documento con la nueva carta
+            this.firestore
+              .collection('users')
+              .doc(email)
+              .collection('docs')
+              .doc(docId)
+              .set(cartaActualizada, { merge: true }) // Actualiza el documento existente
+              .then(() => {
+                observer.next();
+                observer.complete();
+              })
+              .catch((error) => {
+                observer.error(error);
+              });
+          } else {
+            observer.error('No se encontró la carta de aceptación para actualizar.');
+          }
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    });
+  }
 
 
 

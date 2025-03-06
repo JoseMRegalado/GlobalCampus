@@ -3,6 +3,7 @@ import { UserDataService } from '../../services/user-data.service';
 import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
 import {ActivatedRoute} from "@angular/router";
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-documentos',
@@ -22,35 +23,38 @@ export class DocumentosComponent implements OnInit {
   documentosNombres: string[] = [];
   userEmail: string = ''; // Email obtenido de los queryParams
 
+  documentosAprobados: number = 0;
+  selectedCartaFile: File | null = null;
+  cartaBase64: string = '';
+  cartaEstado: string = '';
+  cartaSubida: string | null = null;
+
 
 
   constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.fechaActual = new Date().toISOString().split('T')[0];
-    // Obtener usuario actual
+
     this.authService.getCurrentUser().subscribe(user => {
       if (user?.email) {
         this.email = user.email;
-        // Obtener rol del usuario
+
         this.userDataService.getUserRole(this.email).subscribe(role => {
           this.role = role;
+
           if (this.role === 'admin') {
             this.route.queryParams.subscribe(params => {
               this.userEmail = params['userEmail'];
-              if (this.userEmail) {
-                this.obtenerDocumentos();
-              } else {
-                console.error('No se encontró el userEmail en los queryParams');
-              }
             });
           }
-          // Obtener documentos del usuario
-          this.obtenerDocumentos();
+
+          this.obtenerDocumentos(); // Llama a la función aquí, sin importar si es admin o no
         });
       }
     });
   }
+
 
   obtenerNombresDocumentos() {
     this.userDataService.getDocumentNames(this.email).subscribe(nombres => {
@@ -60,12 +64,28 @@ export class DocumentosComponent implements OnInit {
 
   // Obtener documentos
   obtenerDocumentos() {
-    // Usa el userEmail para obtener los documentos del usuario
-    this.userDataService.getDocuments(this.userEmail).subscribe(docs => {
-      console.log('Documentos del usuario:', docs);
+    const emailConsulta = this.role === 'admin' ? this.userEmail : this.email;
+
+    if (!emailConsulta) {
+      console.error('No se encontró el email del usuario.');
+      return;
+    }
+
+    this.userDataService.getDocuments(emailConsulta).subscribe(docs => {
       this.documentos = docs;
+      this.documentosAprobados = this.documentos.filter(doc => doc.estado === 'aprobado').length;
+
+      // Obtener la carta de aceptación si ya fue subida
+      this.userDataService.getCartaAceptacion(emailConsulta).subscribe(cartas => {
+        if (cartas.length > 0) {
+          this.cartaSubida = cartas[0].archivo;
+          this.cartaEstado = cartas[0].estado;
+        }
+      });
     });
   }
+
+
 
 // Obtener todos los usuarios (Solo para admin)
   obtenerUsuarios() {
@@ -181,5 +201,108 @@ export class DocumentosComponent implements OnInit {
     // Abre la URL en una nueva pestaña
     window.open(blobUrl, '_blank');
   }
+
+
+
+
+  generarCartaAceptacion() {
+    if (!this.userEmail) {
+      alert('No se encontró el correo del usuario.');
+      return;
+    }
+
+    const pdf = new jsPDF();
+    const fechaActual = new Date().toLocaleDateString('es-ES');
+
+    pdf.setFontSize(12);
+    pdf.text('Carta de Aceptación', 105, 20, { align: 'center' });
+    pdf.text(fechaActual, 150, 20);
+    pdf.text(`Estimado/a`, 20, 50);
+    pdf.text('Reciba un cordial saludo de parte de la Universidad Técnica Particular de Loja (UTPL).', 20, 70);
+    pdf.text('Su solicitud de participación en el Programa de Movilidad Estudiantil ha sido aceptada.', 20, 80);
+    pdf.text('Nos complace darle la bienvenida a nuestra comunidad académica.', 20, 90);
+    pdf.text('Atentamente,', 20, 110);
+    pdf.text('Global Campus', 20, 120);
+    pdf.text('Universidad Técnica Particular de Loja', 20, 130);
+    pdf.text('_____________________', 20, 150);
+    pdf.text('Firma', 20, 160);
+
+    // Convertir el PDF a Base64
+    const pdfBlob = pdf.output('blob');
+    const reader = new FileReader();
+    reader.readAsDataURL(pdfBlob);
+    reader.onloadend = () => {
+      const base64Pdf = reader.result as string;
+
+      const carta = {
+        email: this.userEmail,
+        descripcion: 'Carta de Aceptación',
+        archivo: base64Pdf,
+        fechaIngreso: new Date().toISOString().split('T')[0],
+        estado: 'pendiente'
+      };
+
+      // Guardar la carta en Firebase
+      this.userDataService.saveCartaAceptacion(this.userEmail, carta).subscribe({
+        next: () => {
+          alert('Carta de Aceptación generada correctamente.');
+          this.obtenerDocumentos();
+        },
+        error: err => {
+          alert('Error al generar la carta: ' + err);
+        }
+      });
+    };
+  }
+
+
+  descargarCartaAceptacion() {
+    this.userDataService.getCartaAceptacion(this.email).subscribe(carta => {
+      if (carta?.archivo) {
+        this.verDocumento(carta.archivo);
+      } else {
+        alert('No se encontró la carta.');
+      }
+    });
+  }
+
+  onCartaSelected(event: any) {
+    this.selectedCartaFile = event.target.files[0] || null;
+
+    if (this.selectedCartaFile) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.cartaBase64 = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedCartaFile);
+    }
+  }
+
+  subirCartaAceptacion() {
+    if (!this.selectedCartaFile) {
+      alert('Debe seleccionar un archivo.');
+      return;
+    }
+
+    const cartaActualizada = {
+      email: this.email,
+      archivo: this.cartaBase64,
+      estado: 'en revisión',
+      fechaIngreso: new Date().toISOString().split('T')[0]
+    };
+
+    this.userDataService.updateCartaAceptacion(this.email, cartaActualizada).subscribe({
+      next: () => {
+        alert('Carta subida correctamente.');
+        this.obtenerDocumentos();
+      },
+      error: err => {
+        alert('Error al subir la carta: ' + err);
+      }
+    });
+  }
+
+
+
 
 }

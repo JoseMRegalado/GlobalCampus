@@ -6,7 +6,7 @@
 
 <!-- Para el usuario con role 'user' -->
 <div *ngIf="role !== 'admin'">
-  <h3>Carga tu nuevo documento</h3>
+  <h3 *ngIf="documentos.length === 0 || documentos.length === 1">Carga tu nuevo documento</h3>
   <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
   <div class="tabla">
     <table *ngIf="documentos.length === 0 || documentos.length === 1">
@@ -48,7 +48,6 @@
         <th>Fecha de validación</th>
         <th>Observaciones</th>
         <th>Estado</th>
-        <th>Acción</th>
       </tr>
       <tr *ngFor="let doc of documentos">
         <td>
@@ -99,7 +98,7 @@
       <th>Estado</th>
       <th>Acciones</th>
     </tr>
-    <tr *ngFor="let doc of documentos">
+    <tr *ngFor="let doc of documentos" >
       <td>
         <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
       </td>
@@ -122,6 +121,50 @@
     </tr>
   </table>
 </div>
+
+<!-- Botón para generar la carta de aceptación (Solo para Admin) -->
+<div *ngIf="role === 'admin' && documentosAprobados >= 2">
+  <button (click)="generarCartaAceptacion()">Generar Carta de Aceptación</button>
+</div>
+
+<!-- Para el usuario (descarga y carga de la carta) -->
+<div *ngIf="role !== 'admin' && documentosAprobados >= 2">
+  <h3>Carta de Aceptación</h3>
+  <div class="tabla">
+    <table>
+      <thead>
+      <tr>
+        <th>Descargar Carta</th>
+        <th>Subir Carta Firmada</th>
+        <th>Estado</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <button (click)="descargarCartaAceptacion()">Descargar Carta</button>
+        </td>
+        <td>
+          <input id="carta-archivo" type="file" (change)="onCartaSelected($event)">
+          <label for="carta-archivo" class="custom-file-upload">
+            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+            Adjunta tu carta firmada
+          </label>
+          <button (click)="subirCartaAceptacion()">Subir</button>
+        </td>
+        <td>{{ cartaEstado || 'Pendiente' }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Para el admin: visualizar la carta subida por el usuario -->
+<div *ngIf="role === 'admin' && cartaSubida">
+  <h3>Carta de Aceptación Subida</h3>
+  <button (click)="verDocumento(cartaSubida)">Ver Documento</button>
+</div>
+
 
 
 
