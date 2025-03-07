@@ -145,12 +145,14 @@
           <button (click)="descargarCartaAceptacion()">Descargar Carta</button>
         </td>
         <td>
-          <input id="carta-archivo" type="file" (change)="onCartaSelected($event)">
-          <label for="carta-archivo" class="custom-file-upload">
-            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-            Adjunta tu carta firmada
-          </label>
-          <button (click)="subirCartaAceptacion()">Subir</button>
+          <div class="adjuntar-carta">
+            <input id="carta-archivo" type="file" (change)="onCartaSelected($event)">
+            <label for="carta-archivo" class="custom-file-upload">
+              <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+              Adjunta tu carta de aceptación firmada
+            </label>
+            <button (click)="subirCartaAceptacion()">Subir</button>
+          </div>
         </td>
         <td>{{ cartaEstado || 'Pendiente' }}</td>
       </tr>

@@ -32,6 +32,7 @@ th, td {
   padding: 15px;
   border-bottom: 1px solid #ddd;
   font-size: 14px;
+  text-align: center;
 }
 
 th {
@@ -125,7 +126,7 @@ input, select{
   align-items: center;
 }
 
-#archivo, .inputNover{
+#archivo{
   display: none;
 }
 
@@ -147,4 +148,13 @@ h3{
 
 }
 
+.adjuntar-carta{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+#carta-archivo{
+  display: none;
+}
 

@@ -8,8 +8,56 @@
     <div class="informacion-obligatoria">
       <div class="campos">
         <div class="campo">
+          <label for="nombres" class="required-label">Nombres</label>
+          <input type="text" id="nombres" name="nombres" [(ngModel)]="formData.nombres" placeholder="Nombres" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="apellidos" class="required-label">Apellidos</label>
+          <input type="text" id="apellidos" name="apellidos" [(ngModel)]="formData.apellidos" placeholder="Apellidos" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="lugarNacimiento" class="required-label">Lugar de Nacimiento</label>
+          <input type="text" id="lugarNacimiento" name="lugarNacimiento" [(ngModel)]="formData.lugarNacimiento" placeholder="Lugar de Nacimiento" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="fechaNacimiento" class="required-label">Fecha de Nacimiento</label>
+          <input type="date" id="fechaNacimiento" name="fechaNacimiento" [(ngModel)]="formData.fechaNacimiento" placeholder="Fecha de Nacimiento" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="cedula" class="required-label">Documento de Identidad</label>
+          <input type="text" id="cedula" name="cedula" [(ngModel)]="formData.cedula" placeholder="Documento de Identidad" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="direccion" class="required-label">Dirección</label>
+          <input type="text" id="direccion" name="direccion" [(ngModel)]="formData.direccion" placeholder="Dirección" [disabled]="isAdmin" required>
+        </div>
+        <div class="campo">
+          <label for="celular" class="required-label">Celular</label>
+          <input type="text" id="celular" name="celular" [(ngModel)]="formData.celular" placeholder="Celular" [disabled]="isAdmin" required>
+        </div>
+        <div *ngIf="!isAdmin" class="campo">
+          <label for="email" class="required-label">Correo electrónico</label>
+          <input type="email" id="email" name="email" [value]="userEmail" readonly>
+        </div>
+        <div class="campo">
+          <label for="tipoEstudiante" class="required-label">Tipo de estudiante</label>
+          <select id="tipoEstudiante" name="tipoEstudiante" [(ngModel)]="formData.tipoEstudiante" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable" required>
+            <option value="Grado">Grado</option>
+            <option value="Posgrado">Posgrado</option>
+          </select>
+        </div>
+        <div class="campo">
           <label for="facultad" class="required-label">Facultad</label>
-          <input type="text" id="facultad" name="facultad" [(ngModel)]="formData.facultad" placeholder="Facultad" [disabled]="isAdmin" required>
+          <select id="facultad" name="faculty" [(ngModel)]="formData.facultad" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable" required>
+            <option *ngFor="let faculty of faculties" [value]="faculty">{{ faculty }}</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="carrera" class="required-label">Carrera</label>
+          <select id="carrera" name="carrera" [(ngModel)]="formData.carrera" [disabled]="!isEditable" required>
+            <option *ngFor="let program of selectedPrograms" [value]="program.name">{{ program.name }}</option>
+          </select>
         </div>
 
         <div class="campo">
@@ -24,12 +72,15 @@
 
         <div class="campo">
           <label for="periodoMovilidad" class="required-label">Periodo de Movilidad</label>
-          <input type="text" id="periodoMovilidad" name="periodoMovilidad" [(ngModel)]="formData.periodoMovilidad" [disabled]="isAdmin" required>
-        </div>
+          <select id="periodoMovilidad" name="periodoMovilidad" [(ngModel)]="formData.periodoMovilidad" [disabled]="!isEditable" required>
+            <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
+          </select>        </div>
 
         <div class="campo">
           <label for="tipoMovilidad" class="required-label">Tipo de Movilidad</label>
-          <input type="text" id="tipoMovilidad" name="tipoMovilidad" [(ngModel)]="formData.tipoMovilidad" [disabled]="isAdmin" required>
+          <select id="tipoMovilidad" name="tipoMovilidad" [(ngModel)]="formData.tipoMovilidad" [disabled]="!isEditable" required>
+            <option *ngFor="let type of mobilityTypes" [value]="type">{{ type }}</option>
+          </select>
         </div>
 
         <div class="campo">
