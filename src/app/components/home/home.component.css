@@ -73,7 +73,7 @@
  .contenido p{
    color: #004270;
    line-height: 20px;
-   width: 230px;
+   width: 270px;
  }
 
  .contenido img{
@@ -82,7 +82,8 @@
  }
 
  .contenido h3{
-   color: #1E1D4C;
+   color: #eaab00;
+   font-weight: 500;
    font-size: 20px;
  }
 
@@ -95,9 +96,12 @@
  }
 
  /*Seccion 3 */
-.seccion-3{
+.seccion-3 {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 20px; /* Espaciado entre las tarjetas */
+  flex-wrap: wrap; /* Permite que las cards se acomoden en varias líneas si no hay espacio */
+  padding: 20px;
 }
 
 /* Estilos para la card */
@@ -125,7 +129,7 @@
 .card-button {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #002855; /* Azul oscuro */
+  background-color: #004270;
   color: #ffffff;
   text-decoration: none;
   font-size: 1rem;
@@ -133,9 +137,6 @@
   transition: background-color 0.3s;
 }
 
-.card-button:hover {
-  background-color: #004b8d; /* Azul más claro */
-}
 
 /*Estilos responsivos*/
 

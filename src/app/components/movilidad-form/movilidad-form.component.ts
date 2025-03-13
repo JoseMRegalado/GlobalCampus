@@ -185,6 +185,14 @@ export class MovilidadFormComponent implements OnInit {
           if (data) {
             this.formData = { ...data };
             this.hasData = true;
+
+            // Llamar a la función para actualizar las opciones de carreras
+            this.onFacultyOrStudentTypeChange(this.formData.facultad, this.formData.tipoEstudiante);
+
+            // Asegurar que la carrera guardada sigue disponible en la lista
+            if (this.formData.carrera && !this.selectedPrograms.some(program => program.name === this.formData.carrera)) {
+              this.selectedPrograms.push({ name: this.formData.carrera, type: this.formData.tipoEstudiante });
+            }
           } else {
             this.hasData = false;
           }
@@ -193,6 +201,7 @@ export class MovilidadFormComponent implements OnInit {
       });
     }
   }
+
 
   saveOrUpdateForm(): void {
     if (this.isAdmin) {
@@ -232,7 +241,9 @@ export class MovilidadFormComponent implements OnInit {
     this.selectedPrograms = this.programsByFaculty[selectedFaculty]?.filter(
       (program: any) => program.type === selectedType
     ) || [];
+
   }
+
 
   updateUserProcess(email: string): void {
     if (!email) {
