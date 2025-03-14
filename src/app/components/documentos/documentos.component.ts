@@ -29,13 +29,14 @@ export class DocumentosComponent implements OnInit {
   cartaEstado: string = '';
   cartaSubida: string | null = null;
 
+  oficioGenerado: boolean = false;
+  cartaCompromisoSubida: boolean = false;
 
+  cartaCompromisoUrl: string = ''; // Nueva variable para almacenar la URL
 
   constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.fechaActual = new Date().toISOString().split('T')[0];
-
     this.authService.getCurrentUser().subscribe(user => {
       if (user?.email) {
         this.email = user.email;
@@ -46,45 +47,122 @@ export class DocumentosComponent implements OnInit {
           if (this.role === 'admin') {
             this.route.queryParams.subscribe(params => {
               this.userEmail = params['userEmail'];
+              this.obtenerDocumentos();
             });
+          } else {
+            this.obtenerDocumentos();
           }
-
-          this.obtenerDocumentos(); // Llama a la función aquí, sin importar si es admin o no
         });
       }
     });
   }
 
-
-  obtenerNombresDocumentos() {
-    this.userDataService.getDocumentNames(this.email).subscribe(nombres => {
-      this.documentosNombres = nombres;
-    });
-  }
-
-  // Obtener documentos
   obtenerDocumentos() {
     const emailConsulta = this.role === 'admin' ? this.userEmail : this.email;
-
-    if (!emailConsulta) {
-      console.error('No se encontró el email del usuario.');
-      return;
-    }
+    if (!emailConsulta) return;
 
     this.userDataService.getDocuments(emailConsulta).subscribe(docs => {
       this.documentos = docs;
       this.documentosAprobados = this.documentos.filter(doc => doc.estado === 'aprobado').length;
 
-      // Obtener la carta de aceptación si ya fue subida
-      this.userDataService.getCartaAceptacion(emailConsulta).subscribe(cartas => {
-        if (cartas.length > 0) {
-          this.cartaSubida = cartas[0].archivo;
-          this.cartaEstado = cartas[0].estado;
+      this.userDataService.getOficio(emailConsulta).subscribe(oficio => {
+        this.oficioGenerado = !!oficio;
+      });
+
+      this.userDataService.getCartaCompromiso(emailConsulta).subscribe(carta => {
+        if (carta?.archivo) {
+          this.cartaCompromisoSubida = true;
+          this.cartaCompromisoUrl = carta.archivo; // Guardamos la URL del documento
         }
       });
     });
   }
 
+  generarOficio() {
+    if (!this.userEmail) {
+      alert('No se encontró el correo del usuario.');
+      return;
+    }
+
+    const pdf = new jsPDF();
+    pdf.setFontSize(12);
+    pdf.text('Oficio', 105, 20, { align: 'center' });
+    pdf.text('Estimado/a:', 20, 50);
+    pdf.text('Por medio de la presente, se certifica que el estudiante ha cumplido con los requisitos necesarios para participar en el programa de movilidad.', 20, 70);
+    pdf.text('Atentamente,', 20, 110);
+    pdf.text('Global Campus', 20, 120);
+    pdf.text('Universidad Técnica Particular de Loja', 20, 130);
+    pdf.text('_____________________', 20, 150);
+    pdf.text('Firma', 20, 160);
+
+    const pdfBlob = pdf.output('blob');
+    const reader = new FileReader();
+    reader.readAsDataURL(pdfBlob);
+    reader.onloadend = () => {
+      const base64Pdf = reader.result as string;
+      this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
+        alert('Oficio generado y guardado en Firebase.');
+        this.oficioGenerado = true;
+      });
+    };
+  }
+
+  descargarOficio() {
+    if (!this.userEmail) return;
+
+    this.userDataService.getOficio(this.userEmail).subscribe(oficio => {
+      if (oficio?.archivo) {
+        const link = document.createElement('a');
+        link.href = oficio.archivo;
+        link.download = 'Oficio.pdf';
+        link.click();
+      } else {
+        alert('No se encontró el Oficio.');
+      }
+    });
+  }
+
+  generarCartaCompromiso() {
+    if (!this.userEmail) {
+      alert('No se encontró el correo del usuario.');
+      return;
+    }
+
+    const pdf = new jsPDF();
+    pdf.setFontSize(12);
+    pdf.text('Carta de Compromiso', 105, 20, { align: 'center' });
+    pdf.text('Yo, [Nombre del estudiante], me comprometo a cumplir con los lineamientos del programa de movilidad estudiantil.', 20, 50);
+    pdf.text('Entiendo que debo respetar las normas de la universidad de destino y regresar a mi institución de origen una vez finalizado el programa.', 20, 70);
+    pdf.text('Atentamente,', 20, 110);
+    pdf.text('_____________________', 20, 150);
+    pdf.text('Firma del estudiante', 20, 160);
+
+    const pdfBlob = pdf.output('blob');
+    const reader = new FileReader();
+    reader.readAsDataURL(pdfBlob);
+    reader.onloadend = () => {
+      const base64Pdf = reader.result as string;
+      this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
+        alert('Carta de Compromiso generada y guardada en Firebase.');
+        this.cartaCompromisoSubida = true;
+      });
+    };
+  }
+
+  descargarCartaCompromiso() {
+    if (!this.userEmail) return;
+
+    this.userDataService.getCartaCompromiso(this.userEmail).subscribe(carta => {
+      if (carta?.archivo) {
+        const link = document.createElement('a');
+        link.href = carta.archivo;
+        link.download = 'Carta_Compromiso.pdf';
+        link.click();
+      } else {
+        alert('No se encontró la Carta de Compromiso.');
+      }
+    });
+  }
 
 
 // Obtener todos los usuarios (Solo para admin)
@@ -239,7 +317,7 @@ export class DocumentosComponent implements OnInit {
         descripcion: 'Carta de Aceptación',
         archivo: base64Pdf,
         fechaIngreso: new Date().toISOString().split('T')[0],
-        estado: 'pendiente'
+        estado: 'subido'
       };
 
       // Guardar la carta en Firebase

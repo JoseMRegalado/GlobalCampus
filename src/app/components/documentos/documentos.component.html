@@ -122,14 +122,34 @@
   </table>
 </div>
 
-<!-- Botón para generar la carta de aceptación (Solo para Admin) -->
+<!-- Para el admin: Generar Oficio cuando los documentos están aprobados -->
 <div *ngIf="role === 'admin' && documentosAprobados >= 2">
-  <button (click)="generarCartaAceptacion()">Generar Carta de Aceptación</button>
+  <button (click)="generarOficio()">Generar Oficio</button>
 </div>
+
+<!-- Descargar Oficio -->
+<div *ngIf="role === 'admin' && oficioGenerado">
+  <button (click)="descargarOficio()">Descargar Oficio</button>
+</div>
+
+<!-- Para el admin: Generar Carta de Compromiso después de descargar el Oficio -->
+<div *ngIf="role === 'admin' && oficioGenerado">
+  <button (click)="generarCartaCompromiso()">Generar Carta de Aceptación</button>
+</div>
+
+
+
+<!-- Para el usuario: Ver la Carta de Compromiso en su lista de documentos -->
+<div *ngIf="role === 'admin' && cartaCompromisoSubida">
+  <button (click)="generarCartaAceptacion()">Generar Carta de Compromiso</button>
+</div>
+
+
+
 
 <!-- Para el usuario (descarga y carga de la carta) -->
 <div *ngIf="role !== 'admin' && documentosAprobados >= 2">
-  <h3>Carta de Aceptación</h3>
+  <h3>Carta de Compromiso</h3>
   <div class="tabla">
     <table>
       <thead>

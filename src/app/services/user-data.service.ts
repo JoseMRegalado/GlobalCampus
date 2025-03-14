@@ -314,6 +314,60 @@ export class UserDataService {
     });
   }
 
+  saveOficio(email: string, base64Pdf: string): Observable<void> {
+    const oficio = {
+      email,
+      descripcion: 'Oficio',
+      archivo: base64Pdf,
+      fechaIngreso: new Date().toISOString().split('T')[0],
+      estado: 'subido'
+    };
+
+    return new Observable<void>(observer => {
+      this.firestore.collection('users').doc(email).collection('docs').add(oficio)
+        .then(() => observer.next())
+        .catch(error => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+  getOficio(email: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('docs', ref => ref.where('descripcion', '==', 'Oficio'))
+      .valueChanges()
+      .pipe(map(docs => (docs.length > 0 ? docs[0] : null)));
+  }
+
+  saveCartaCompromiso(email: string, base64Pdf: string): Observable<void> {
+    const carta = {
+      email,
+      descripcion: 'Carta de Compromiso',
+      archivo: base64Pdf,
+      fechaIngreso: new Date().toISOString().split('T')[0],
+      estado: 'subido'
+    };
+
+    return new Observable<void>(observer => {
+      this.firestore.collection('users').doc(email).collection('docs').add(carta)
+        .then(() => observer.next())
+        .catch(error => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+  getCartaCompromiso(email: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Compromiso'))
+      .valueChanges()
+      .pipe(map(docs => (docs.length > 0 ? docs[0] : null)));
+  }
+
+
+
 
 
 
