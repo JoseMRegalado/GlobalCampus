@@ -23,7 +23,7 @@
           <input id="archivo" type="file" (change)="onFileSelected($event)">
           <label for="archivo" class="custom-file-upload">
             <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-            Adjunta tu documento aquí
+            {{ archivoCargado ? 'Archivo cargado' : 'Adjunta tu documento aquí' }}
           </label>
         </td>
         <td>
@@ -56,7 +56,7 @@
             <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
             <label for="archivo-{{doc.id}}" class="custom-file-upload">
               <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-              Reemplazar documento
+              {{ archivoCargado ? 'Archivo cargado' : 'Reemplazar documento' }}
             </label>
           </ng-container>
 
@@ -122,27 +122,31 @@
   </table>
 </div>
 
-<!-- Para el admin: Generar Oficio cuando los documentos están aprobados -->
-<div *ngIf="role === 'admin' && documentosAprobados >= 2">
-  <button (click)="generarOficio()">Generar Oficio</button>
+<div class="botones-admin">
+  <!-- Para el admin: Generar Oficio cuando los documentos están aprobados -->
+  <div *ngIf="role === 'admin' && documentosAprobados >= 2">
+    <button (click)="generarOficio()">Generar Oficio</button>
+  </div>
+
+  <!-- Descargar Oficio -->
+  <div *ngIf="role === 'admin' && oficioGenerado">
+    <button (click)="descargarOficio()">Descargar Oficio</button>
+  </div>
+
+  <!-- Para el admin: Generar Carta de Compromiso después de descargar el Oficio -->
+  <div *ngIf="role === 'admin' && oficioGenerado">
+    <button (click)="generarCartaCompromiso()">Generar Carta de Aceptación</button>
+  </div>
+
+  <!-- Para el usuario: Ver la Carta de Compromiso en su lista de documentos -->
+  <div *ngIf="role === 'admin' && cartaCompromisoSubida">
+    <button (click)="generarCartaAceptacion()">Generar Carta de Compromiso</button>
+  </div>
+
+
 </div>
 
-<!-- Descargar Oficio -->
-<div *ngIf="role === 'admin' && oficioGenerado">
-  <button (click)="descargarOficio()">Descargar Oficio</button>
-</div>
 
-<!-- Para el admin: Generar Carta de Compromiso después de descargar el Oficio -->
-<div *ngIf="role === 'admin' && oficioGenerado">
-  <button (click)="generarCartaCompromiso()">Generar Carta de Aceptación</button>
-</div>
-
-
-
-<!-- Para el usuario: Ver la Carta de Compromiso en su lista de documentos -->
-<div *ngIf="role === 'admin' && cartaCompromisoSubida">
-  <button (click)="generarCartaAceptacion()">Generar Carta de Compromiso</button>
-</div>
 
 
 
@@ -169,7 +173,7 @@
             <input id="carta-archivo" type="file" (change)="onCartaSelected($event)">
             <label for="carta-archivo" class="custom-file-upload">
               <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-              Adjunta tu carta de aceptación firmada
+              {{ archivoCargado ? 'Archivo cargado' : 'Adjunta tu carta de aceptación firmada' }}
             </label>
             <button (click)="subirCartaAceptacion()">Subir</button>
           </div>

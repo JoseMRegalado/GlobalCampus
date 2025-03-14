@@ -171,17 +171,20 @@ export class DocumentosComponent implements OnInit {
       this.usuarios = users;
     });
   }
-
+  archivoCargado: boolean = false;
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0] || null;
 
     if (this.selectedFile) { // Verificamos que no sea null
+      this.archivoCargado = true;
       const reader = new FileReader();
       reader.onload = () => {
         this.archivoBase64 = reader.result as string;
       };
       reader.readAsDataURL(this.selectedFile);
+    } else {
+      this.archivoCargado = false;
     }
   }
 
