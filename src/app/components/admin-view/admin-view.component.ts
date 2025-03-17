@@ -83,6 +83,19 @@ export class AdminViewComponent implements OnInit {
         } else {
           incomingUsersData.push(userData); // Usuario sin 'outgoing'
         }
+
+
+
+        // Obtener el estadoPostulacion y las fechas del documento de usuario principal
+        const userDocData = userDoc.data() as any;
+        userData.estadoPostulacion = userDocData.estadoPostulacion || 'pendiente'; // Si no tiene estadoPostulacion, se asigna 'pendiente'
+        userData.fechaInicio = userDocData.fechaInicio || '';  // Inicializamos vacío si no tiene
+        userData.fechaFin = userDocData.fechaFin || '';  // Inicializamos vacío si no tiene
+
+        // Verificar si el estadoPostulacion está aprobado
+        if (userData.estadoPostulacion === 'aprobada') {
+          userData.fechasGuardadas = !!(userData.fechaInicio && userData.fechaFin); // Si ambas fechas están guardadas, deshabilitamos los inputs
+        }
       }
 
       // Asignamos los usuarios filtrados
@@ -91,5 +104,29 @@ export class AdminViewComponent implements OnInit {
     } catch (error) {
       console.error('❌ Error al obtener los usuarios:', error);
     }
+  }
+
+  guardarFechas(user: any) {
+    if (!user.fechaInicio || !user.fechaFin) {
+      alert('Debes ingresar ambas fechas.');
+      return;
+    }
+
+    // Actualizar en Firebase
+    this.firestore.collection('users').doc(user.id).update({
+      fechaInicio: user.fechaInicio,
+      fechaFin: user.fechaFin
+    }).then(() => {
+      user.fechasGuardadas = true; // Bloqueamos los inputs tras guardar
+      alert('Fechas guardadas correctamente.');
+    }).catch(error => {
+      console.error('Error al guardar las fechas:', error);
+      alert('Hubo un error al guardar las fechas.');
+    });
+  }
+
+  // Método para verificar si al menos un usuario tiene estadoPostulacion 'aprobada'
+  tieneUsuariosAprobados(): boolean {
+    return this.incomingUsers.some(user => user.estadoPostulacion === 'aprobada');
   }
 }

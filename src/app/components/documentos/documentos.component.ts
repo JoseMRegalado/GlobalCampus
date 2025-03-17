@@ -145,6 +145,7 @@ export class DocumentosComponent implements OnInit {
       this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
         alert('Carta de Compromiso generada y guardada en Firebase.');
         this.cartaCompromisoSubida = true;
+        this.userDataService.actualizarEstadoPostulacion(this.userEmail);
       });
     };
   }

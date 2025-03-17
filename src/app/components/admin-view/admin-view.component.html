@@ -23,6 +23,9 @@
           <th>Universidad</th>
           <th>Periodo</th>
           <th>Seguimiento</th>
+          <th *ngIf="tieneUsuariosAprobados()">Fecha Inicio</th>
+          <th *ngIf="tieneUsuariosAprobados()">Fecha Fin</th>
+          <th *ngIf="tieneUsuariosAprobados()">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +36,16 @@
           <td>{{ user.university }}</td>
           <td>{{ user.period }}</td>
           <td><button (click)="verSeguimiento(user.email)">Ver Seguimiento</button></td>
+
+          <td *ngIf="user.estadoPostulacion === 'aprobada'">
+            <input type="date" [(ngModel)]="user.fechaInicio" [disabled]="user.fechasGuardadas">
+          </td>
+          <td *ngIf="user.estadoPostulacion === 'aprobada'">
+            <input type="date" [(ngModel)]="user.fechaFin" [disabled]="user.fechasGuardadas">
+          </td>
+          <td *ngIf="user.estadoPostulacion === 'aprobada'">
+            <button *ngIf="!user.fechasGuardadas" (click)="guardarFechas(user)">Guardar</button>
+          </td>
         </tr>
         </tbody>
       </table>

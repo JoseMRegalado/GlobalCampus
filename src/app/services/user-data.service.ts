@@ -366,9 +366,14 @@ export class UserDataService {
       .pipe(map(docs => (docs.length > 0 ? docs[0] : null)));
   }
 
-
-
-
-
+  actualizarEstadoPostulacion(email: string) {
+    return this.firestore.collection('users').doc(email).update({
+      estadoPostulacion: 'aprobada'
+    }).then(() => {
+      console.log('Estado de postulación actualizado a "aprobada"');
+    }).catch(error => {
+      console.error('Error al actualizar el estado de postulación:', error);
+    });
+  }
 
 }
