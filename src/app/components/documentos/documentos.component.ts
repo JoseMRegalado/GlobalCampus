@@ -4,6 +4,7 @@ import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
 import {ActivatedRoute} from "@angular/router";
 import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-documentos',
@@ -85,27 +86,90 @@ export class DocumentosComponent implements OnInit {
     }
 
     const pdf = new jsPDF();
-    pdf.setFontSize(12);
-    pdf.text('Oficio', 105, 20, { align: 'center' });
-    pdf.text('Estimado/a:', 20, 50);
-    pdf.text('Por medio de la presente, se certifica que el estudiante ha cumplido con los requisitos necesarios para participar en el programa de movilidad.', 20, 70);
-    pdf.text('Atentamente,', 20, 110);
-    pdf.text('Global Campus', 20, 120);
-    pdf.text('Universidad Técnica Particular de Loja', 20, 130);
-    pdf.text('_____________________', 20, 150);
-    pdf.text('Firma', 20, 160);
+    const fechaActual = new Date().toLocaleDateString('es-ES');
 
-    const pdfBlob = pdf.output('blob');
-    const reader = new FileReader();
-    reader.readAsDataURL(pdfBlob);
-    reader.onloadend = () => {
-      const base64Pdf = reader.result as string;
-      this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
-        alert('Oficio generado y guardado en Firebase.');
-        this.oficioGenerado = true;
+
+      // **Encabezado**
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(12);
+      pdf.text('Loja, ' + fechaActual, 20, 20);
+
+      pdf.setFontSize(12);
+      pdf.text('DGRI-GLOBAL-XXX-2024', 20, 30);
+
+      pdf.setFontSize(12);
+      pdf.text('Dr.', 20, 50);
+      pdf.text('Daniel Guamán Coronel', 20, 60);
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(12);
+      pdf.text('Director de la Carrera de Tecnologías de la Información', 20, 70);
+
+      // **Cuerpo del Oficio**
+      const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante
+[NOMBRE DEL ESTUDIANTE], con identificación N. [CÉDULA/PASAPORTE] de la [UNIVERSIDAD DE ORIGEN], quien desea
+realizar su Programa de Intercambio Virtual en nuestra Universidad en la Modalidad Abierta y a Distancia, en el período
+[PERIODO].`;
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(textoOficio, 20, 90, { maxWidth: 170 });
+
+      const materia = 'Desarrollo basado en Plataformas Móviles'; // Materia a validar
+      pdf.text(
+        `El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada
+por parte de la Titulación, para proceder con la matrícula y beca:`,
+        20, 120, { maxWidth: 170 }
+      );
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(materia, 20, 135);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(
+        'Envío la documentación presentada, para que sea analizada y se pueda dar una respuesta y una aceptación formal.',
+        20, 150, { maxWidth: 170 }
+      );
+
+      pdf.text('Por la atención a la presente, le anticipo mis más sinceros agradecimientos.', 20, 165, { maxWidth: 170 });
+
+      // **Firma**
+      pdf.text('Atentamente,', 20, 185);
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Silvia Cristina Luzuriaga Muñoz', 20, 195);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9);
+      pdf.text('Coordinadora de Internacionalización y Movilidad', 20, 205);
+      pdf.text('Programa de Movilidad Estudiantil', 20, 210);
+      pdf.text('Global Campus', 20, 215);
+      pdf.text('Dirección Relaciones Interinstitucionales.', 20, 220);
+      pdf.text('Ext. 2442', 20, 225);
+
+      // **Pie de página con contacto**
+      autoTable(pdf, {
+        startY: 260,
+        margin: { top: 10 },
+        body: [
+          ['San Cayetano Alto s/n', 'Loja-Ecuador'],
+          ['Tel.: (593-7) 370 1444', 'informacion@utpl.edu.ec'],
+          ['Apartado Postal: 11-01-608', 'www.utpl.edu.ec']
+        ]
       });
+
+      // **Guardar en Firebase**
+      const pdfBlob = pdf.output('blob');
+      const reader = new FileReader();
+      reader.readAsDataURL(pdfBlob);
+      reader.onloadend = () => {
+        const base64Pdf = reader.result as string;
+        this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
+          alert('Oficio generado y guardado en Firebase.');
+          this.oficioGenerado = true;
+        });
+      };
     };
-  }
+
 
   descargarOficio() {
     if (!this.userEmail) return;

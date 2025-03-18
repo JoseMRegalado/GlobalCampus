@@ -20,6 +20,7 @@ export class ConvocatoriasComponent implements OnInit {
         this.slides = data; // Guardamos los datos de Firebase en la variable slides
       });
   }
+  
 
   verDetalles(slide: any) {
     this.router.navigate(['/convocatoria-detalle'], { state: { data: slide } });
