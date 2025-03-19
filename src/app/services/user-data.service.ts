@@ -343,7 +343,7 @@ export class UserDataService {
   saveCartaCompromiso(email: string, base64Pdf: string): Observable<void> {
     const carta = {
       email,
-      descripcion: 'Carta de Compromiso',
+      descripcion: 'Carta de Aceptación',
       archivo: base64Pdf,
       fechaIngreso: new Date().toISOString().split('T')[0],
       estado: 'subido'

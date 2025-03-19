@@ -79,99 +79,116 @@ export class DocumentosComponent implements OnInit {
     });
   }
 
-  generarOficio() {
-    if (!this.userEmail) {
-      alert('No se encontró el correo del usuario.');
+
+generarOficio() {
+  if (!this.userEmail) {
+    alert('No se encontró el correo del usuario.');
+    return;
+  }
+
+  this.userDataService.getUserData(this.userEmail).subscribe(userData => {
+    if (!userData) {
+      alert('No se encontraron datos personales del usuario.');
       return;
     }
 
-    const pdf = new jsPDF();
-    const fechaActual = new Date().toLocaleDateString('es-ES');
+    this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
+      if (!universityData) {
+        alert('No se encontraron datos universitarios del usuario.');
+        return;
+      }
 
+      const pdf = new jsPDF();
+      const fechaActual = this.formatFecha();
 
-      // **Encabezado**
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(12);
-      pdf.text('Loja, ' + fechaActual, 20, 20);
+      // **Renderizar Logo en formato PNG**
+      const logo = new Image();
+      logo.src = 'assets/img/logo.png'; // Cambiado a PNG
+      logo.onload = () => {
+        // **Agregar Logo PNG en el encabezado**
+        pdf.addImage(logo, 'PNG', 150, 10, 40, 30); // Ajusta el tamaño según sea necesario
 
-      pdf.setFontSize(12);
-      pdf.text('DGRI-GLOBAL-XXX-2024', 20, 30);
+        // **Encabezado**
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(12);
+        pdf.text(fechaActual, 20, 40);
+        pdf.text('DGRI-GLOBAL-XXX-2024', 20, 45);
 
-      pdf.setFontSize(12);
-      pdf.text('Dr.', 20, 50);
-      pdf.text('Daniel Guamán Coronel', 20, 60);
+        pdf.text('Dr.', 20, 55);
+        pdf.text('Daniel Guamán Coronel', 20, 60);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Director de la Carrera de Tecnologías de la Información', 20, 65);
 
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-      pdf.text('Director de la Carrera de Tecnologías de la Información', 20, 70);
+        // **Cuerpo del Oficio con datos dinámicos**
+        const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante ${userData.firstName} ${userData.lastName}, con identificación N. ${userData.idNumber} de la ${universityData.universityName}, quien desea realizar su Programa de ${universityData.mobilityType} ${universityData.mobilityModality} en nuestra Universidad en la Modalidad Abierta y a Distancia, en el período ${universityData.period}.`;
 
-      // **Cuerpo del Oficio**
-      const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante
-[NOMBRE DEL ESTUDIANTE], con identificación N. [CÉDULA/PASAPORTE] de la [UNIVERSIDAD DE ORIGEN], quien desea
-realizar su Programa de Intercambio Virtual en nuestra Universidad en la Modalidad Abierta y a Distancia, en el período
-[PERIODO].`;
+        pdf.setFont('helvetica', 'normal');
+        pdf.text(textoOficio, 20, 80, { maxWidth: 170 });
 
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(textoOficio, 20, 90, { maxWidth: 170 });
+        // **Materia a validar**
+        const materia = universityData.materia || 'Desarrollo basado en Plataformas Móviles';
+        pdf.text(
+          `El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada por parte de la Titulación, para proceder con la matrícula y beca:`,
+          20, 105, { maxWidth: 170 }
+        );
 
-      const materia = 'Desarrollo basado en Plataformas Móviles'; // Materia a validar
-      pdf.text(
-        `El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada
-por parte de la Titulación, para proceder con la matrícula y beca:`,
-        20, 120, { maxWidth: 170 }
-      );
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(materia, 20, 120);
 
-      pdf.setFont('helvetica', 'bold');
-      pdf.text(materia, 20, 135);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text('Envío la documentación presentada, para que sea analizada y se pueda dar una respuesta y una aceptación formal.', 20, 130, { maxWidth: 170 });
+        pdf.text('Por la atención a la presente, le anticipo mis más sinceros agradecimientos.', 20, 145, { maxWidth: 170 });
+        pdf.text('Atentamente,', 20, 165);
 
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(
-        'Envío la documentación presentada, para que sea analizada y se pueda dar una respuesta y una aceptación formal.',
-        20, 150, { maxWidth: 170 }
-      );
+        // **Firma debajo de "Atentamente"**
+        const firma = new Image();
+        firma.src = 'assets/img/firma.png'; // Ruta del archivo de la firma en PNG
+        firma.onload = () => {
+          pdf.addImage(firma, 'PNG', 20, 170, 40, 20); // Ajusta las coordenadas y tamaño según sea necesario
 
-      pdf.text('Por la atención a la presente, le anticipo mis más sinceros agradecimientos.', 20, 165, { maxWidth: 170 });
+          // **Firma final**
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Silvia Cristina Luzuriaga Muñoz', 20, 200);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(9);
+          pdf.text('Coordinadora de Internacionalización y Movilidad', 20, 205);
+          pdf.text('Programa de Movilidad Estudiantil', 20, 209);
+          pdf.text('Global Campus', 20, 213);
+          pdf.text('Dirección Relaciones Interinstitucionales.', 20, 217);
+          pdf.text('Ext. 2442', 20, 221);
 
-      // **Firma**
-      pdf.text('Atentamente,', 20, 185);
-
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Silvia Cristina Luzuriaga Muñoz', 20, 195);
-
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(9);
-      pdf.text('Coordinadora de Internacionalización y Movilidad', 20, 205);
-      pdf.text('Programa de Movilidad Estudiantil', 20, 210);
-      pdf.text('Global Campus', 20, 215);
-      pdf.text('Dirección Relaciones Interinstitucionales.', 20, 220);
-      pdf.text('Ext. 2442', 20, 225);
-
-      // **Pie de página con contacto**
-      autoTable(pdf, {
-        startY: 260,
-        margin: { top: 10 },
-        body: [
-          ['San Cayetano Alto s/n', 'Loja-Ecuador'],
-          ['Tel.: (593-7) 370 1444', 'informacion@utpl.edu.ec'],
-          ['Apartado Postal: 11-01-608', 'www.utpl.edu.ec']
-        ]
-      });
-
-      // **Guardar en Firebase**
-      const pdfBlob = pdf.output('blob');
-      const reader = new FileReader();
-      reader.readAsDataURL(pdfBlob);
-      reader.onloadend = () => {
-        const base64Pdf = reader.result as string;
-        this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
-          alert('Oficio generado y guardado en Firebase.');
-          this.oficioGenerado = true;
-        });
+          // **Guardar en Firebase**
+          const pdfBlob = pdf.output('blob');
+          const reader = new FileReader();
+          reader.readAsDataURL(pdfBlob);
+          reader.onloadend = () => {
+            const base64Pdf = reader.result as string;
+            this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
+              alert('Oficio generado y guardado en Firebase.');
+              this.oficioGenerado = true;
+            });
+          };
+        };
       };
-    };
+    });
+  });
+}
+
+// Función para formatear la fecha correctamente
+formatFecha(): string {
+  const meses = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  const fecha = new Date();
+  const dia = fecha.getDate();
+  const mes = meses[fecha.getMonth()];
+  const año = fecha.getFullYear();
+  return `Loja, ${dia} de ${mes} de ${año}`;
+}
 
 
-  descargarOficio() {
+descargarOficio() {
     if (!this.userEmail) return;
 
     this.userDataService.getOficio(this.userEmail).subscribe(oficio => {
@@ -207,7 +224,7 @@ por parte de la Titulación, para proceder con la matrícula y beca:`,
     reader.onloadend = () => {
       const base64Pdf = reader.result as string;
       this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
-        alert('Carta de Compromiso generada y guardada en Firebase.');
+        alert('Carta de Aceptación generada y guardada en Firebase.');
         this.cartaCompromisoSubida = true;
         this.userDataService.actualizarEstadoPostulacion(this.userEmail);
       });
@@ -382,7 +399,7 @@ por parte de la Titulación, para proceder con la matrícula y beca:`,
 
       const carta = {
         email: this.userEmail,
-        descripcion: 'Carta de Aceptación',
+        descripcion: 'Carta de Compromiso',
         archivo: base64Pdf,
         fechaIngreso: new Date().toISOString().split('T')[0],
         estado: 'subido'
@@ -391,7 +408,7 @@ por parte de la Titulación, para proceder con la matrícula y beca:`,
       // Guardar la carta en Firebase
       this.userDataService.saveCartaAceptacion(this.userEmail, carta).subscribe({
         next: () => {
-          alert('Carta de Aceptación generada correctamente.');
+          alert('Carta de Compromiso generada correctamente.');
           this.obtenerDocumentos();
         },
         error: err => {
