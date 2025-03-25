@@ -280,7 +280,7 @@ export class UserDataService {
       this.firestore
         .collection('users')
         .doc(email)
-        .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Aceptación'))
+        .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Compromiso'))
         .get()
         .toPromise()
         .then((snapshot) => {

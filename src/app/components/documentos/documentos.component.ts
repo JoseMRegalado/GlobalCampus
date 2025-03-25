@@ -4,7 +4,6 @@ import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
 import {ActivatedRoute} from "@angular/router";
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-documentos',
@@ -607,7 +606,7 @@ descargarOficio() {
 
 
   descargarCartaAceptacion() {
-    this.userDataService.getCartaAceptacion(this.email).subscribe(carta => {
+    this.userDataService.getCartaCompromiso(this.email).subscribe(carta => {
       if (carta?.archivo) {
         this.verDocumento(carta.archivo);
       } else {
@@ -651,6 +650,48 @@ descargarOficio() {
       }
     });
   }
+
+
+  // Función para manejar la selección de un archivo
+  onFileSelected1(event: any): void {
+    this.selectedFile = event.target.files[0];  // Tomamos el primer archivo seleccionado
+  }
+
+  // Función para guardar el archivo PDF en Firebase
+  guardarCartaCompromiso(): void {
+    if (!this.selectedFile) {
+      alert('Por favor, seleccione un archivo primero.');
+      return;
+    }
+
+    // Leer el archivo como Base64
+    const reader = new FileReader();
+    reader.readAsDataURL(this.selectedFile);
+    reader.onloadend = () => {
+      const base64Pdf = reader.result as string;
+
+      // Crear el objeto para guardar en Firebase
+      const carta = {
+        email: this.userEmail,
+        descripcion: 'Carta de Compromiso',
+        archivo: base64Pdf,  // Guardamos el archivo en formato Base64
+        fechaIngreso: new Date().toISOString().split('T')[0],
+        estado: 'subido'
+      };
+
+      // Guardar el archivo en Firebase
+      this.userDataService.saveCartaAceptacion(this.userEmail, carta).subscribe({
+        next: () => {
+          alert('Carta de Compromiso guardada correctamente.');
+          this.obtenerDocumentos();  // Si es necesario, obtén los documentos
+        },
+        error: err => {
+          alert('Error al guardar la carta: ' + err);
+        }
+      });
+    };
+  }
+
 
 
 

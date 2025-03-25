@@ -140,7 +140,12 @@
 
   <!-- Para el usuario: Ver la Carta de Compromiso en su lista de documentos -->
   <div *ngIf="role === 'admin' && cartaCompromisoSubida">
-    <button (click)="generarCartaAceptacion()">Generar Carta de Compromiso</button>
+    <!-- Input para seleccionar el archivo -->
+    <input type="file" (change)="onFileSelected1($event)" />
+
+    <!-- Botón para guardar el archivo en Firebase -->
+    <button (click)="guardarCartaCompromiso()">Guardar Carta de Compromiso</button>
+
   </div>
 
 </div>
