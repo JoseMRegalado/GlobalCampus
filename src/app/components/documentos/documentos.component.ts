@@ -209,27 +209,83 @@ descargarOficio() {
       return;
     }
 
-    const pdf = new jsPDF();
-    pdf.setFontSize(12);
-    pdf.text('Carta de Compromiso', 105, 20, { align: 'center' });
-    pdf.text('Yo, [Nombre del estudiante], me comprometo a cumplir con los lineamientos del programa de movilidad estudiantil.', 20, 50);
-    pdf.text('Entiendo que debo respetar las normas de la universidad de destino y regresar a mi institución de origen una vez finalizado el programa.', 20, 70);
-    pdf.text('Atentamente,', 20, 110);
-    pdf.text('_____________________', 20, 150);
-    pdf.text('Firma del estudiante', 20, 160);
+    this.userDataService.getUserData(this.userEmail).subscribe(userData => {
+      if (!userData) {
+        alert('No se encontraron datos personales del usuario.');
+        return;
+      }
 
-    const pdfBlob = pdf.output('blob');
-    const reader = new FileReader();
-    reader.readAsDataURL(pdfBlob);
-    reader.onloadend = () => {
-      const base64Pdf = reader.result as string;
-      this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
-        alert('Carta de Aceptación generada y guardada en Firebase.');
-        this.cartaCompromisoSubida = true;
-        this.userDataService.actualizarEstadoPostulacion(this.userEmail);
+      this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
+        if (!universityData) {
+          alert('No se encontraron datos universitarios del usuario.');
+          return;
+        }
+
+        const pdf = new jsPDF();
+        const fechaActual = this.formatFecha();
+
+        // **Renderizar Logo en formato PNG**
+        const logo = new Image();
+        logo.src = 'assets/img/logo.png';
+        logo.onload = () => {
+          pdf.addImage(logo, 'PNG', 150, 10, 40, 30);
+
+          // **Encabezado**
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(12);
+          pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 40);
+          pdf.text('DIRECTORA GENERAL DE RELACIONES INTERINSTITUCIONALES', 20, 50);
+          pdf.text('Universidad Técnica Particular de Loja', 20, 60);
+
+          // **Cuerpo de la carta**
+          const textoCarta = `NOTIFICA:
+
+        Que el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para participar en el programa de movilidad estudiantil.
+
+        El estudiante se compromete a respetar las normas de la universidad de destino y regresar a su institución de origen una vez finalizado el programa.`;
+
+          pdf.text(textoCarta, 20, 80, { maxWidth: 170 });
+
+          // **Fecha y lugar**
+          pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 120);
+
+          // **Firma**
+          pdf.text('_____________________', 20, 150);
+          pdf.text('Firma del estudiante', 20, 160);
+
+          // **Firma institucional**
+          const firma = new Image();
+          firma.src = 'assets/img/firma.png';
+          firma.onload = () => {
+            pdf.addImage(firma, 'PNG', 20, 170, 40, 20);
+
+            pdf.text('ME.d. Ana Bravo Muñoz', 20, 200);
+            pdf.text('Directora General de Relaciones Interinstitucionales', 20, 210);
+            pdf.text('San Cayetano Alto s/n', 20, 220);
+            pdf.text('Loja-Ecuador', 20, 230);
+            pdf.text('Telf.: (593-7) 370 1444', 20, 240);
+            pdf.text('informacion@utpl.edu.ec', 20, 250);
+            pdf.text('Apartado Postal: 11-01-608', 20, 260);
+            pdf.text('www.utpl.edu.ec', 20, 270);
+
+            // **Guardar en Firebase**
+            const pdfBlob = pdf.output('blob');
+            const reader = new FileReader();
+            reader.readAsDataURL(pdfBlob);
+            reader.onloadend = () => {
+              const base64Pdf = reader.result as string;
+              this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
+                alert('Carta de Compromiso generada y guardada en Firebase.');
+                this.cartaCompromisoSubida = true;
+                this.userDataService.actualizarEstadoPostulacion(this.userEmail);
+              });
+            };
+          };
+        };
       });
-    };
+    });
   }
+
 
   descargarCartaCompromiso() {
     if (!this.userEmail) return;
@@ -418,7 +474,7 @@ descargarOficio() {
         pdf.setFont('helvetica', 'bold');
         pdf.text('Nacionalidad: ', 15, 68);
         pdf.setFont('helvetica', 'normal');
-        pdf.text(`${userData.nationality}`, 40, 68);
+        pdf.text(`${userData.nationality}`, 35, 68);
 
         pdf.setFont('helvetica', 'bold');
         pdf.text('Mayor de edad:', 15, 75);
