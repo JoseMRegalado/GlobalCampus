@@ -27,7 +27,7 @@ import {MatIconModule} from "@angular/material/icon";
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { BarComponent } from './components/bar/bar.component';
 import { MovilidadFormComponent } from './components/movilidad-form/movilidad-form.component';
-import { EncuestaComponent } from './components/encuesta/encuesta.component';
+
 
 register();
 
@@ -49,10 +49,9 @@ const appRoutes: Routes = [
   { path: 'docs/:email', component: DocumentosComponent },
   { path: 'out/:email', component: MovilidadFormComponent },
   { path: 'out', component: MovilidadFormComponent },
-  { path: 'encuesta', component: EncuestaComponent },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent],
     imports: [
         BrowserModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),

@@ -324,10 +324,6 @@ descargarOficio() {
       this.archivoCargado = false;
     }
   }
-
-
-
-
   /**
    * Carga un nuevo documento o actualiza el documento en "pendiente".
    */
