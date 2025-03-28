@@ -376,4 +376,76 @@ export class UserDataService {
     });
   }
 
+  // Guardar la encuesta en Firestore en la subcolección 'encuesta'
+  saveSurvey(email: string, surveyData: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('encuesta')
+        .add(surveyData)
+        .then(() => observer.next())
+        .catch((error) => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+  getUserData1(email: string): Observable<{ proceso: string }> {
+    return this.firestore
+      .collection('users', ref => ref.where('email', '==', email))
+      .snapshotChanges() // Usar snapshotChanges para obtener cambios del documento
+      .pipe(
+        map(actions => {
+          const user = actions.length > 0 ? actions[0].payload.doc.data() : null; // Obtener el primer documento
+          // @ts-ignore
+          return user ? { proceso: user['proceso'] } : { proceso: '' }; // Verificar si existe el campo 'proceso'
+        })
+      );
+  }
+
+  // Función para subir el certificado de notas
+  subirCertificadoNotas(email: string, base64Pdf: string): Observable<void> {
+    const certificado = {
+      email,
+      descripcion: 'Certificado de Notas',
+      archivo: base64Pdf,  // Guardando el PDF como base64
+      fechaIngreso: new Date().toISOString().split('T')[0],
+      estado: 'subido',
+    };
+
+    return new Observable<void>((observer) => {
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs')
+        .add(certificado)
+        .then(() => observer.next())
+        .catch((error) => observer.error(error))
+        .finally(() => observer.complete());
+    });
+  }
+
+  // Obtener el certificado de notas del usuario
+  getCertificadoNotas(email: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('docs', (ref) => ref.where('descripcion', '==', 'Certificado de Notas'))
+      .valueChanges()
+      .pipe(map((docs) => (docs.length > 0 ? docs[0] : null)));
+  }
+
+  // Si tienes alguna función para obtener la encuesta, como un ejemplo:
+  getSurvey(email: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .collection('encuesta')
+      .valueChanges()
+      .pipe(map((encuestas) => (encuestas.length > 0 ? encuestas[0] : null)));
+  }
+
+
+
+
 }

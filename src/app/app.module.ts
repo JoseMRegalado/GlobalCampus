@@ -27,7 +27,9 @@ import {MatIconModule} from "@angular/material/icon";
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { BarComponent } from './components/bar/bar.component';
 import { MovilidadFormComponent } from './components/movilidad-form/movilidad-form.component';
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { EncuestaModalComponent } from './components/encuesta-modal/encuesta-modal.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 register();
 
@@ -51,7 +53,7 @@ const appRoutes: Routes = [
   { path: 'out', component: MovilidadFormComponent },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaModalComponent],
     imports: [
         BrowserModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -64,6 +66,8 @@ const appRoutes: Routes = [
         MatMenuModule,
         MatIconModule,
         ReactiveFormsModule,
+      MatDialogModule,
+      NoopAnimationsModule,
     ],
   providers: [],
   bootstrap: [AppComponent],

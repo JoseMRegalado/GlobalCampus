@@ -6,7 +6,7 @@
 
 <!-- Para el usuario con role 'user' -->
 <div *ngIf="role !== 'admin'">
-  <h3 *ngIf="documentos.length === 0 || documentos.length === 1">Carga tu nuevo documento</h3>
+  <h3 *ngIf="documentos.length === 0 || documentos.length === 1 || documentos.length === 2">Carga tu nuevo documento</h3>
   <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
   <div class="tabla">
     <table *ngIf="documentos.length === 0 || documentos.length === 1">
@@ -151,7 +151,7 @@
 </div>
 
 <!-- Para el usuario (descarga y carga de la carta) -->
-<div *ngIf="role !== 'admin' && documentosAprobados >= 2">
+<div *ngIf="role !== 'admin' && documentosAprobados >= 2 && !mostrarEncuesta">
   <h3>Carta de Compromiso</h3>
   <div class="tabla">
     <table>
@@ -189,6 +189,22 @@
   <h3>Carta de Aceptación Subida</h3>
   <button (click)="verDocumento(cartaSubida)">Ver Documento</button>
 </div>
+
+<button *ngIf="mostrarEncuesta" (click)="abrirEncuesta()">Realizar Encuesta</button>
+
+<!-- Para el admin, cuando la encuesta ha sido enviada -->
+<div *ngIf="role === 'admin' && encuestaEnviada">
+  <h3>Encuesta Enviada</h3>
+  <button (click)="verEncuesta()">Ver Encuesta</button>
+</div>
+
+<!-- Para el admin: Subir el certificado de notas -->
+<div *ngIf="role === 'admin' && encuestaEnviada">
+  <h3>Subir Certificado de Notas</h3>
+  <input type="file" (change)="onFileSelectedCertificado($event)" />
+  <button (click)="guardarCertificado()">Guardar Certificado</button>
+</div>
+
 
 
 

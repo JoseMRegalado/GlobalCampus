@@ -1,0 +1,44 @@
+<div class="encuesta-popup">
+  <h2>Encuesta de Movilidad {{ proceso === 'outgoing' ? 'OUTGOING' : 'INCOMING' }}</h2>
+
+  <form [formGroup]="encuestaForm" (ngSubmit)="submitSurvey()">
+    <label>Nombres y Apellidos</label>
+    <input formControlName="nombre" type="text" [readonly]="soloLectura" />
+
+    <label>Universidad de Origen</label>
+    <input formControlName="universidad" type="text" [readonly]="soloLectura" />
+
+    <label>Carrera/Titulación</label>
+    <input formControlName="carrera" type="text" [readonly]="soloLectura" />
+
+    <label>Tipo de Movilidad</label>
+    <input formControlName="tipoMovilidad" type="text" [readonly]="soloLectura" />
+
+    <label>País</label>
+    <input formControlName="pais" type="text" [readonly]="soloLectura" />
+
+    <label>Periodo del intercambio</label>
+    <input formControlName="periodo" type="text" [readonly]="soloLectura" />
+
+    <label>Motivación</label>
+    <textarea formControlName="motivacion" [readonly]="soloLectura"></textarea>
+
+    <label>¿Culminó con éxito su intercambio?</label>
+    <select formControlName="culminoConExito" [disabled]="soloLectura">
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+
+    <label>¿Superó sus expectativas?</label>
+    <select formControlName="superoExpectativas" [disabled]="soloLectura">
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+
+    <label>Explique su respuesta</label>
+    <textarea formControlName="explicacion" [readonly]="soloLectura"></textarea>
+
+    <button type="submit" [disabled]="soloLectura">Enviar Encuesta</button>
+
+  </form>
+</div>

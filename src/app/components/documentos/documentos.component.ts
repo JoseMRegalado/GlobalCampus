@@ -4,6 +4,8 @@ import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
 import {ActivatedRoute} from "@angular/router";
 import { jsPDF } from 'jspdf';
+import {EncuestaModalComponent} from "../encuesta-modal/encuesta-modal.component";
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-documentos',
@@ -33,8 +35,19 @@ export class DocumentosComponent implements OnInit {
   cartaCompromisoSubida: boolean = false;
 
   cartaCompromisoUrl: string = ''; // Nueva variable para almacenar la URL
+  proceso: string = '';
 
-  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute) {}
+  mostrarEncuesta = false;
+  mostrarModal = false;
+
+
+  encuestaEnviada = false;
+  archivoCertificado!: File | null;
+
+  encuestaData: any = null;
+
+
+  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute, private dialog: MatDialog ) {}
 
   ngOnInit() {
     this.authService.getCurrentUser().subscribe(user => {
@@ -46,13 +59,46 @@ export class DocumentosComponent implements OnInit {
 
           if (this.role === 'admin') {
             this.route.queryParams.subscribe(params => {
-              this.userEmail = params['userEmail'];
-              this.obtenerDocumentos();
+              this.userEmail = params['userEmail'] || ''; // Si no hay parámetro, asigna una cadena vacía
+              if (!this.userEmail) {
+                console.error("Error: userEmail no está definido en los parámetros de la ruta.");
+              } else {
+                console.log("Admin cargando documentos del usuario:", this.userEmail);
+                this.obtenerDocumentos();
+                this.obtenerProceso(this.userEmail);
+                // Verificar si hay una encuesta para ese email
+                this.obtenerEncuesta();
+              }
             });
           } else {
+            this.userEmail = this.email; // Para usuarios normales, usar su propio email
+            console.log("Usuario normal cargando sus documentos:", this.userEmail);
             this.obtenerDocumentos();
+            this.obtenerProceso(this.email);
+            // Verificar si hay una encuesta para ese email
+            this.obtenerEncuesta();
           }
         });
+      }
+    });
+  }
+
+  obtenerProceso(email: string): void {
+    this.userDataService.getUserData1(email).subscribe(user => {
+      this.proceso = user.proceso; // Asignar el valor de 'proceso'
+    });
+  }
+
+  obtenerEncuesta() {
+    // Llamamos a getSurvey para obtener la encuesta del usuario
+    this.userDataService.getSurvey(this.userEmail).subscribe((encuesta) => {
+      if (encuesta) {
+        this.encuestaEnviada = true;
+        this.encuestaData = encuesta; // Guardamos la encuesta
+        this.mostrarEncuesta = true; // Mostramos la encuesta en el template
+      } else {
+        this.encuestaEnviada = false;
+        this.mostrarEncuesta = false; // No mostramos la encuesta si no está enviada
       }
     });
   }
@@ -65,6 +111,26 @@ export class DocumentosComponent implements OnInit {
       this.documentos = docs;
       this.documentosAprobados = this.documentos.filter(doc => doc.estado === 'aprobado').length;
 
+      // Verificar si existe un documento con la descripción "Carta de Compromiso"
+      const tieneCartaCompromiso = this.documentos.some(doc => doc.descripcion === "Carta de Compromiso");
+
+      if (!tieneCartaCompromiso) {
+        this.mostrarEncuesta = false;
+        localStorage.setItem("mostrarEncuesta", "false");
+      } else {
+        this.mostrarEncuesta = localStorage.getItem("mostrarEncuesta") === "true";
+      }
+
+      // Verificar si existe un documento con la descripción "Carta de Compromiso"
+      const tieneCartaAceptacion = this.documentos.some(doc => doc.descripcion === "Carta de Aceptación");
+
+      if (!tieneCartaAceptacion) {
+        this.cartaCompromisoSubida = false;
+        localStorage.setItem("cartaCompromisoSubida", "false");
+      } else {
+        this.cartaCompromisoSubida = localStorage.getItem("cartaCompromisoSubida") === "true";
+      }
+
       this.userDataService.getOficio(emailConsulta).subscribe(oficio => {
         this.oficioGenerado = !!oficio;
       });
@@ -72,6 +138,7 @@ export class DocumentosComponent implements OnInit {
       this.userDataService.getCartaCompromiso(emailConsulta).subscribe(carta => {
         if (carta?.archivo) {
           this.cartaCompromisoSubida = true;
+          localStorage.setItem("cartaCompromisoSubida", "true");
           this.cartaCompromisoUrl = carta.archivo; // Guardamos la URL del documento
         }
       });
@@ -276,6 +343,7 @@ descargarOficio() {
               this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
                 alert('Carta de Compromiso generada y guardada en Firebase.');
                 this.cartaCompromisoSubida = true;
+                localStorage.setItem("cartaCompromisoSubida", "true");
                 this.userDataService.actualizarEstadoPostulacion(this.userEmail);
               });
             };
@@ -416,191 +484,6 @@ descargarOficio() {
     window.open(blobUrl, '_blank');
   }
 
-  generarCartaAceptacion() {
-    if (!this.userEmail) {
-      alert('No se encontró el correo del usuario.');
-      return;
-    }
-
-    this.userDataService.getUserData(this.userEmail).subscribe(userData => {
-      if (!userData) {
-        alert('No se encontraron datos personales del usuario.');
-        return;
-      }
-
-      this.userDataService.getUniversityData(this.userEmail).subscribe(universityData => {
-        if (!universityData) {
-          alert('No se encontraron datos universitarios del usuario.');
-          return;
-        }
-
-        const pdf = new jsPDF();
-        const fechaActual = new Date().toLocaleDateString('es-ES');
-
-        // Encabezado
-        pdf.setFontSize(12);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Carta de Compromiso y Autorización', 105, 20, { align: 'center' });
-
-// Datos del estudiante
-        pdf.setFontSize(9);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('DATOS DEL ESTUDIANTE', 15, 30);
-
-        pdf.text('Identificación: ', 15, 40);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`${userData.idNumber}`, 40, 40);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Nombres: ', 15, 47);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`${userData.firstName}`, 30, 47);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Carrera/Programa: ', 15, 54);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`${universityData.program}`, 45, 54);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Modalidad: ', 15, 61);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`${universityData.mobilityModality}`, 35, 61);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Nacionalidad: ', 15, 68);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`${userData.nationality}`, 35, 68);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Mayor de edad:', 15, 75);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('Si ( )  NO ( )', 40, 75);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Grupo de atención prioritaria:', 15, 82);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('SI ( )  NO ( )', 60, 82);
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Detallar el grupo de atención prioritaria:', 15, 89);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('________________________________________', 75, 89);
-
-        // Contenido del compromiso
-        pdf.setFontSize(9);
-        pdf.setFont('helvetica', 'normal');
-        const compromiso = `Mediante el presente documento declaro que he solicitado matrícula en la Universidad Técnica Particular de Loja, en el presente período académico, por lo que me comprometo y obligo de forma expresa, libre y voluntaria a:`;
-        pdf.text(compromiso, 15, 98, { maxWidth: 180 });
-
-        const compromisos = [
-          "Respetar la visión, misión, principios, valores, fines y objetivos institucionales de la Universidad Técnica Particular de Loja de acuerdo con lo establecido en su Estatuto Orgánico.",
-          "Cumplir con lo dispuesto en la Ley Orgánica de Educación Superior y sus Reglamentos; el Estatuto Orgánico de la Universidad Técnica Particular de Loja; Reglamento de Régimen Académico Interno; Reglamento de Ética y Régimen Disciplinario; Reglamento Interno para la Regulación de Aranceles, Matrículas y Derechos; y, demás normativa institucional; y, revisar sus actualizaciones periódicas en la página web de Procuraduría Universitaria: https://procuraduria.utpl.edu.ec/.",
-          "Cumplir con los procesos presenciales, en línea u otros, para el trámite de matrícula, reconocimiento de estudios, retiro voluntario, retiro por caso fortuito o fuerza mayor y demás trámites académicos, administrativos y financieros establecidos por la Universidad Técnica Particular de Loja, procesos que se realizarán en cada período académico.",
-          "Brindar la información personal y académica requerida por la UTPL de forma adecuada y oportuna. La veracidad de la misma es de mi exclusiva responsabilidad.",
-          "Entregar los soportes físicos de cualquier documentación requerida en los procesos académicos o administrativos, en los tiempos y forma establecidos por la Universidad Técnica Particular de Loja. En caso de no cumplir con esta entrega, entiendo y acepto que el proceso no tendrá validez y la Universidad Técnica Particular de Loja procederá con las acciones administrativas y académicas correspondientes.",
-          "Cumplir con todos los deberes y obligaciones académicas, administrativas y económicas que mi condición de estudiante de la Universidad Técnica Particular de Loja demande y que están establecidos en el Estatuto Orgánico y demás normativa institucional y nacional, dando prioridad a mis estudios hasta completar todos los requisitos para obtener mi título, según la planificación curricular establecida.",
-          "Dar buen uso a los bienes e instalaciones de la institución y aquellos bienes públicos o privados que por cualquier motivo estén a cargo de la Universidad Técnica Particular de Loja, comprometiéndome a responder y restituir a la Universidad Técnica Particular de Loja por los daños causados en estos, así como a someterme a los procesos establecidos en el Estatuto Orgánico, Reglamento de Ética y Régimen Disciplinario y demás normativa de la Universidad Técnica Particular de Loja.",
-          "Observar un comportamiento responsable, ético y honesto en cada una de mis actividades como miembro de la comunidad universitaria, y de esa manera evitar incurrir en faltas que puedan ser sancionadas en el ámbito disciplinario, académico, administrativo, así como, acciones que contravengan el ordenamiento jurídico ecuatoriano.",
-          "Antes de acudir a otras autoridades administrativas, jurisdiccionales o constitucionales, observar y acatar el orden de las instancias universitarias establecidas para presentar mis requerimientos, inquietudes o reclamos, debiendo agotar todas las instancias universitarias que prevé la Ley Orgánica de Educación Superior, el Estatuto Orgánico de la Universidad Técnica Particular de Loja y demás normativa interna.",
-          "Utilizar de forma adecuada, personal y exclusivamente para el desarrollo de mis actividades estudiantiles, las herramientas informáticas y sistemas, así como las credenciales de acceso que me proporciona la Universidad Técnica Particular de Loja.",
-          "Dar buen uso a toda la información y material proporcionado por la Universidad Técnica Particular de Loja para el desarrollo de mis actividades académicas (incluyendo videos, tareas, archivo digital del examen, evaluaciones, guías, textos, planes académicos, etc.). Conozco y acepto que son para mi uso exclusivo como estudiante de la Universidad Técnica Particular de Loja; por lo tanto, se encuentra prohibido cualquier uso, reproducción, distribución, copia, o cualquier otra acción sin autorización de la Universidad Técnica Particular de Loja.",
-          "Cumplir con el requisito de Suficiencia de una Lengua Extranjera en el nivel establecido por la normativa y la Universidad Técnica Particular de Loja, de acuerdo con el Marco Común Europeo.",
-          "La dotación de material de bioseguridad para el desarrollo de las actividades académicas presenciales es mi responsabilidad y debe ser asumida con mis propios recursos económicos. En caso de contagio de COVID-19, debo dar aviso de forma inmediata al personal docente o médico de la Universidad para la adopción de las medidas necesarias para evitar su propagación. Además, acepto que cualquier gasto que se genere a causa del contagio de esta enfermedad es de mi exclusiva responsabilidad.",
-          "Conozco la declaratoria de la Universidad en la que establece que sus instalaciones son espacios de paz, seguros y libres de tenencia, porte y manejo de armas, explosivos o cualquier otra sustancia o artefacto de similares características y me comprometo a cumplirla.",
-          "El Consejo Superior de la UTPL ha aprobado el ajuste no sustantivo en el que la oferta de tercer y cuarto nivel de modalidad “A DISTANCIA” ha cambiado a modalidad “EN LÍNEA”, sin que ello implique una afectación al programa formativo, ni al desarrollo de las actividades académicas de la carrera o programa, por lo que estoy de acuerdo y acepto expresamente este cambio de modalidad a partir del presente periodo académico y por ello continuaré mis estudios de forma habitual.",
-          "En calidad de estudiante, declaro de manera voluntaria, clara, precisa e informada que AUTORIZO a la Universidad Técnica Particular de Loja a llevar a cabo la recolección, almacenamiento, uso y circulación de mis datos personales, incluyendo datos sensibles, de conformidad con la Ley Orgánica de Protección de Datos Personales, su reglamento y demás normativa aplicable en esta materia. Asimismo, manifiesto haber sido informado sobre la Política de Privacidad de la Universidad Técnica Particular de Loja, la cual se encuentra disponible en la página web www.utpl.edu.ec.",
-          "Aceptar que el incumplimiento de cualquiera de estos compromisos y de otros establecidos en la normativa nacional e institucional aplicable, generará los procesos disciplinarios, administrativos o legales correspondientes. En caso de incumplir el compromiso establecido en el numeral 13 de la presente carta, con el ánimo de precautelar mi salud y bienestar, además la UTPL, podrá suspenderme de manera temporal o definitiva el acceso a las actividades académicas presenciales, pudiendo continuar con mis estudios a través del uso de los medios que implemente la Universidad para tal efecto."
-        ];
-
-        let y = 110; // Posición inicial en Y para los compromisos
-        const lineHeight = 4; // Espaciado entre líneas
-
-        compromisos.forEach((texto, index) => {
-          if (index === 12) { // Antes del compromiso número 13 (índice 12 en array)
-            pdf.setFont('helvetica', 'bold');
-            pdf.text("Declaro conocer y aceptar de forma libre y voluntaria que:", 15, y);
-            y += lineHeight * 2; // Espaciado extra
-          }
-
-          pdf.setFont('helvetica', 'bold');
-          pdf.text(`${index + 1}.`, 15, y); // Número del compromiso en negrita
-
-          pdf.setFont('helvetica', 'normal');
-          const textLines = pdf.splitTextToSize(texto, 165); // Divide el texto en líneas según el ancho
-          pdf.text(textLines, 22, y, { align: 'justify', maxWidth: 170 }); // Ajusta la sangría después del número
-
-          y += textLines.length * lineHeight; // Ajustar el espacio dinámicamente
-
-          // Agregar una nueva página si se acerca al final de la hoja
-          if (y > 270) {
-            pdf.addPage();
-            y = 20; // Reiniciar la posición en la nueva página
-          }
-        });
-
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(9);
-        pdf.text('Para constancia del presente compromiso y autorización firmo en la ciudad de _____________ a los _______ días del mes de ______________ del año ______', 15, 135, { align: 'justify', maxWidth: 170 });
-
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(9);
-        pdf.text('Firma:', 15, 160);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('________________________________________________', 35, 160);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('* Espacio a llenarse por el Representante Legal en caso de estudiantes menores de edad.', 15, 180);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Nombres:', 15, 190);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('______________________________', 35, 190);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Apellidos:', 100, 190);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('______________________________', 120, 190);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Cédula:', 15, 200);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('______________________________', 35, 200);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Firma:', 15, 210);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('______________________________', 35, 210);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text(`Vigente período ${universityData.period}`, 130, 290);
-
-
-
-
-        // Convertir el PDF a Base64 y guardarlo en Firebase
-        const pdfBlob = pdf.output('blob');
-        const reader = new FileReader();
-        reader.readAsDataURL(pdfBlob);
-        reader.onloadend = () => {
-          const base64Pdf = reader.result as string;
-          const carta = {
-            email: this.userEmail,
-            descripcion: 'Carta de Compromiso',
-            archivo: base64Pdf,
-            fechaIngreso: new Date().toISOString().split('T')[0],
-            estado: 'subido'
-          };
-
-          // Guardar en Firebase
-          this.userDataService.saveCartaAceptacion(this.userEmail, carta).subscribe({
-            next: () => {
-              alert('Carta de Compromiso generada correctamente.');
-              this.obtenerDocumentos();
-            },
-            error: err => {
-              alert('Error al generar la carta: ' + err);
-            }
-          });
-        };
-      });
-    });
-  }
-
-
   descargarCartaAceptacion() {
     this.userDataService.getCartaCompromiso(this.email).subscribe(carta => {
       if (carta?.archivo) {
@@ -633,13 +516,15 @@ descargarOficio() {
       email: this.email,
       archivo: this.cartaBase64,
       estado: 'en revisión',
-      fechaIngreso: new Date().toISOString().split('T')[0]
+      fechaIngreso: new Date().toISOString().split('T')[0],
     };
 
     this.userDataService.updateCartaAceptacion(this.email, cartaActualizada).subscribe({
       next: () => {
         alert('Carta subida correctamente.');
         this.obtenerDocumentos();
+        localStorage.setItem("mostrarEncuesta", "true");
+        this.mostrarEncuesta = true;
       },
       error: err => {
         alert('Error al subir la carta: ' + err);
@@ -680,6 +565,7 @@ descargarOficio() {
         next: () => {
           alert('Carta de Compromiso guardada correctamente.');
           this.obtenerDocumentos();  // Si es necesario, obtén los documentos
+
         },
         error: err => {
           alert('Error al guardar la carta: ' + err);
@@ -688,8 +574,74 @@ descargarOficio() {
     };
   }
 
+  abrirEncuesta(): void {
+    if (!this.userEmail) {
+      console.error("Error: userEmail es undefined");
+      return;
+    }
+
+    this.dialog.open(EncuestaModalComponent, {
+      width: '600px',
+      data: {
+        email: this.userEmail,
+        proceso: this.proceso || '' // Evita que proceso sea undefined
+      }
+    });
+  }
 
 
+  cerrarEncuesta(): void {
+    this.mostrarModal = false;
+  }
+
+  // Función para seleccionar el archivo del certificado de notas
+  onFileSelectedCertificado(event: any) {
+    this.archivoCertificado = event.target.files[0];
+  }
+
+  // Convertir el archivo a base64 y guardar el certificado
+  convertirArchivoABase64(file: File): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string); // Base64 result
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Guardar el certificado de notas (en base64)
+  async guardarCertificado() {
+    if (!this.archivoCertificado) {
+      alert('Por favor, selecciona un archivo.');
+      return;
+    }
+
+    try {
+      const base64Pdf = await this.convertirArchivoABase64(this.archivoCertificado);
+      this.userDataService
+        .subirCertificadoNotas(this.userEmail, base64Pdf)
+        .subscribe(
+          () => {
+            alert('Certificado de notas guardado exitosamente.');
+          },
+          (error) => {
+            alert('Error al guardar el certificado: ' + error);
+          }
+        );
+    } catch (error) {
+      alert('Error al convertir el archivo a base64: ' + error);
+    }
+  }
+
+  // Ver la encuesta enviada (solo para el admin)
+  verEncuesta() {
+    this.dialog.open(EncuestaModalComponent, {
+      width: '600px',
+      data: { email: this.userEmail, proceso: 'outgoing', soloLectura: true }
+    });
+  }
 
 
 }
