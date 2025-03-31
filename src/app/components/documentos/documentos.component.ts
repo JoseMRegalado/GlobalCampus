@@ -98,7 +98,7 @@ export class DocumentosComponent implements OnInit {
         this.mostrarEncuesta = true; // Mostramos la encuesta en el template
       } else {
         this.encuestaEnviada = false;
-        this.mostrarEncuesta = false; // No mostramos la encuesta si no está enviada
+        this.mostrarEncuesta = true; // No mostramos la encuesta si no está enviada
       }
     });
   }
