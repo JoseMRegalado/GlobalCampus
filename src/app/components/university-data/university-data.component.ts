@@ -37,7 +37,7 @@ export class UniversityDataComponent {
     'México', 'Perú', 'Venezuela', 'Bolivia', 'República Dominicana', 'Otro'
   ];
 
-  modalities = ['Presencial', 'Distancia'];
+  modalities = ['Presencial', 'Abierta y a Distancia'];
   periods = ['Abril-Agosto 2025', 'Octubre 2025-Febrero 2026', 'Abril-Agosto 2026'];
   spanishLevels = ['Nativo', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   mobilityModalities = ['Presencial', 'Virtual'];

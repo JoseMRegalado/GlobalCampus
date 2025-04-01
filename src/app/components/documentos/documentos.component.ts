@@ -185,17 +185,26 @@ generarOficio() {
         pdf.setFont('helvetica', 'bold');
         pdf.text('Director de la Carrera de Tecnologías de la Información', 20, 65);
 
-        // **Cuerpo del Oficio con datos dinámicos**
-        const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante ${userData.firstName} ${userData.lastName}, con identificación N. ${userData.idNumber} de la ${universityData.universityName}, quien desea realizar su Programa de ${universityData.mobilityType} ${universityData.mobilityModality} en nuestra Universidad en la Modalidad Abierta y a Distancia, en el período ${universityData.period}.`;
+        let modalidad;
+
+        if (universityData.mobilityModality === "Presencial") {
+          modalidad = "Presencial";
+        } else if (universityData.mobilityModality === "Virtual") {
+          modalidad = "Abierta o a Distancia";
+        } else {
+          modalidad = "Modalidad no especificada"; // O algún valor por defecto
+        }
+
+        const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante ${userData.firstName} ${userData.lastName}, con identificación N. ${userData.idNumber} de la ${universityData.universityName}, quien desea realizar su Programa de ${universityData.mobilityType} ${universityData.mobilityModality} en nuestra Universidad en la Modalidad ${modalidad}, en el período ${universityData.period}.`;
 
         pdf.setFont('helvetica', 'normal');
-        pdf.text(textoOficio, 20, 80, { maxWidth: 170 });
+        pdf.text(textoOficio, 20, 80, { maxWidth: 170, align: "justify"});
 
         // **Materia a validar**
         const materia = universityData.materia || 'Desarrollo basado en Plataformas Móviles';
         pdf.text(
           `El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada por parte de la Titulación, para proceder con la matrícula y beca:`,
-          20, 105, { maxWidth: 170 }
+          20, 105, { maxWidth: 170, align: "justify"}
         );
 
         pdf.setFont('helvetica', 'bold');
@@ -287,52 +296,48 @@ descargarOficio() {
           return;
         }
 
+        // Obtener valores de movilidad
+        const mobilityType = universityData.mobilityType || 'Otro';
+        const mobilityModality = universityData.mobilityModality || 'Presencial';
+
+        // Definir el contenido según las combinaciones posibles
+        let textoCarta = '';
+
+        if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
+
+
+        }
+        else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
+
+        }
+        else {
+          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.faculty} de nuestra universidad, en el periodo ${universityData.period}.`;
+        }
+
         const pdf = new jsPDF();
         const fechaActual = this.formatFecha();
 
-        // **Renderizar Logo en formato PNG**
-        const logo = new Image();
-        logo.src = 'assets/img/logo.png';
-        logo.onload = () => {
-          pdf.addImage(logo, 'PNG', 150, 10, 40, 30);
-
           // **Encabezado**
-          pdf.setFont('helvetica', 'normal');
+          pdf.setFont('helvetica', 'bold');
           pdf.setFontSize(12);
           pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 40);
           pdf.text('DIRECTORA GENERAL DE RELACIONES INTERINSTITUCIONALES', 20, 50);
-          pdf.text('Universidad Técnica Particular de Loja', 20, 60);
 
           // **Cuerpo de la carta**
-          const textoCarta = `NOTIFICA:
-
-        Que el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para participar en el programa de movilidad estudiantil.
-
-        El estudiante se compromete a respetar las normas de la universidad de destino y regresar a su institución de origen una vez finalizado el programa.`;
-
-          pdf.text(textoCarta, 20, 80, { maxWidth: 170 });
+          pdf.setFont('helvetica', 'normal');
+          pdf.text(textoCarta, 20, 80, { maxWidth: 170});
 
           // **Fecha y lugar**
-          pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 120);
+          pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 150);
 
-          // **Firma**
-          pdf.text('_____________________', 20, 150);
-          pdf.text('Firma del estudiante', 20, 160);
 
-          // **Firma institucional**
-          const firma = new Image();
-          firma.src = 'assets/img/firma.png';
-          firma.onload = () => {
-            pdf.addImage(firma, 'PNG', 20, 170, 40, 20);
 
-            pdf.text('ME.d. Ana Bravo Muñoz', 20, 200);
-            pdf.text('Directora General de Relaciones Interinstitucionales', 20, 210);
-            pdf.text('San Cayetano Alto s/n', 20, 220);
-            pdf.text('Loja-Ecuador', 20, 230);
-            pdf.text('Telf.: (593-7) 370 1444', 20, 240);
-            pdf.text('informacion@utpl.edu.ec', 20, 250);
-            pdf.text('Apartado Postal: 11-01-608', 20, 260);
-            pdf.text('www.utpl.edu.ec', 20, 270);
+          pdf.setFont('helvetica', 'normal');
+          pdf.text('ME.d. Ana Bravo Muñoz', 20, 200);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Directora General de Relaciones Interinstitucionales', 20, 210);
 
             // **Guardar en Firebase**
             const pdfBlob = pdf.output('blob');
@@ -347,8 +352,6 @@ descargarOficio() {
                 this.userDataService.actualizarEstadoPostulacion(this.userEmail);
               });
             };
-          };
-        };
       });
     });
   }
