@@ -192,11 +192,6 @@
 
 <button *ngIf="mostrarEncuesta" (click)="abrirEncuesta()">Realizar Encuesta</button>
 
-<!-- Para el admin, cuando la encuesta ha sido enviada -->
-<div *ngIf="role === 'admin' && encuestaEnviada">
-  <h3>Encuesta Enviada</h3>
-  <button (click)="verEncuesta()">Ver Encuesta</button>
-</div>
 
 <!-- Para el admin: Subir el certificado de notas -->
 <div *ngIf="role === 'admin' && encuestaEnviada">
