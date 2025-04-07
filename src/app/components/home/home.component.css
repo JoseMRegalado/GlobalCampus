@@ -50,9 +50,9 @@
 
 }
  .titulo-global{
-   font-family: 'Volkhov', serif;
+   font-family: 'Volkhov',serif;
    color: #004270;
-   font-size: 84px;
+   font-size: 80px;
    margin: 0; /* Elimina cualquier margen por defecto */
    position: relative;
  }

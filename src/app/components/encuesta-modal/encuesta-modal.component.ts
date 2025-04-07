@@ -12,55 +12,39 @@ export class EncuestaModalComponent implements OnInit {
   encuestaForm!: FormGroup;
   proceso!: string;
   soloLectura: boolean = false;
+
+  userEmail: string = '';  // Aquí debes obtener el email del usuario autenticado
+  encuestaData: any = {
+    nombres: '',
+    universidad: '',
+    carrera: '',
+    tipoMovilidad: '',
+    pais: '',
+    periodoIntercambio: ''
+
+  };
+
   constructor(
     private fb: FormBuilder,
     private userDataService: UserDataService,
     private dialogRef: MatDialogRef<EncuestaModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { email: string, proceso: string, soloLectura: boolean }
-  ) {this.proceso = data.proceso;
-    this.soloLectura = data.soloLectura;}
+  ) {
+    this.proceso = data.proceso;
+    this.soloLectura = data.soloLectura;
+  }
 
-  ngOnInit(): void {
-    // 🔹 Inicializa el formulario vacío para evitar el error en la vista
+  ngOnInit() {
     this.encuestaForm = this.fb.group({
-      nombre: [''],
+      nombres: [''],
       universidad: [''],
       carrera: [''],
       tipoMovilidad: [''],
       pais: [''],
-      periodo: [''],
-      motivacion: [''],
-      culminoConExito: [''],
-      superoExpectativas: [''],
-      explicacion: [''],
-      positivos: [''],
-      negativos: [''],
-      aspectosExtra: [''],
-      apoyoDestino: [''],
-      accesoPlataforma: [''],
-      calidadClases: [''],
-      valoracionEstancia: [''],
-      apoyoUTPL: [''],
-      homologacionCreditos: [''],
-      orientacionApoyo: [''],
-      medioConocimiento: [''],
-      postulariaNuevamente: [''],
-      explicacionPostulacion: ['']
+      periodoIntercambio: ['']
     });
 
-    // 🔹 Ahora carga los datos desde Firebase
-    this.userDataService.getUserData(this.data.email).subscribe(user => {
-      this.userDataService.getUniversityData(this.data.email).subscribe(uni => {
-        this.encuestaForm.patchValue({ // Usa patchValue para actualizar solo los campos necesarios
-          nombre: user.nombre,
-          universidad: uni.universidad,
-          carrera: user.carrera,
-          tipoMovilidad: user.tipoMovilidad,
-          pais: user.pais,
-          periodo: user.periodo
-        });
-      });
-    });
+    this.cargarDatosUsuario();
   }
 
 
@@ -95,5 +79,36 @@ export class EncuestaModalComponent implements OnInit {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  cargarDatosUsuario() {
+    if (!this.data.email) {
+      console.warn('No se encontró el correo del usuario.');
+      return;
+    }
+
+    this.userDataService.getUserData(this.data.email).subscribe(userData => {
+      if (!userData) {
+        console.warn('No se encontraron datos personales del usuario.');
+        return;
+      }
+
+      this.userDataService.getUniversityData(this.data.email).subscribe(universityData => {
+        if (!universityData) {
+          console.warn('No se encontraron datos universitarios del usuario.');
+          return;
+        }
+
+        // Asignar los valores al formulario
+        this.encuestaForm.patchValue({
+          nombres: `${userData.firstName} ${userData.lastName}`,
+          universidad: universityData.universityName,
+          carrera: universityData.faculty,
+          tipoMovilidad: universityData.mobilityType,
+          pais: universityData.universityCountry,
+          periodoIntercambio: universityData.period
+        });
+      });
+    });
   }
 }

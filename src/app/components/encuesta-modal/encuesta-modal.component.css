@@ -1,0 +1,88 @@
+/* 🔹 Fondo oscuro detrás del modal */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 🔥 Hace el fondo más opaco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 🔹 Estilos del modal */
+.modal-container {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 🔥 Lo centra completamente */
+  z-index: 1001; /* Asegura que esté sobre todo */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 🔹 Estilo para las etiquetas */
+.modal-container label {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333; /* Color oscuro para mejor contraste */
+  margin-bottom: 5px;
+}
+
+/* 🔹 Estilo para los inputs */
+.modal-container input,
+.modal-container select,
+.modal-container textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* 🔹 Efecto cuando el usuario hace clic en el input */
+.modal-container input:focus,
+.modal-container select:focus,
+.modal-container textarea:focus {
+  border-color: #005599; /* Un azul elegante */
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 85, 153, 0.3);
+}
+
+
+/* 🔹 Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* 🔹 Botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  background: none;
+  border: none;
+}
+
+.close-btn:hover {
+  color: #ff0000;
+}
