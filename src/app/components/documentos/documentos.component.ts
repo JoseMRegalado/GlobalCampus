@@ -278,11 +278,39 @@ descargarOficio() {
     });
   }
 
-  generarCartaCompromiso() {
+  convertirImagenABase64(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/png');
+          resolve(dataURL);
+        } else {
+          reject('No se pudo obtener el contexto del canvas');
+        }
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+
+  async generarCartaCompromiso() {
     if (!this.userEmail) {
       alert('No se encontró el correo del usuario.');
       return;
     }
+
+    const imgEncabezado = await this.convertirImagenABase64('assets/img/Imagen1.png');
+    const mundoBase64 = await this.convertirImagenABase64('assets/img/Imagen2.png');
+    const selloBase64 = await this.convertirImagenABase64('assets/img/Imagen3.png');
+    const logoBase64 = await this.convertirImagenABase64('assets/img/Imagen4.png');
 
     this.userDataService.getUserData(this.userEmail).subscribe(userData => {
       if (!userData) {
@@ -307,17 +335,21 @@ descargarOficio() {
           textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
 
 
-        }
-        else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
+        } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
           textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
 
-        }
-        else {
+        } else {
           textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.faculty} de nuestra universidad, en el periodo ${universityData.period}.`;
         }
 
         const pdf = new jsPDF();
         const fechaActual = this.formatFecha();
+
+        pdf.addImage(imgEncabezado, 'PNG', 0, 0, 210, 10);
+        pdf.addImage(logoBase64, 'PNG', 160, 15, 35, 20);
+        pdf.addImage(mundoBase64, 'PNG', 10, 150, 100, 100); // marca de agua
+        pdf.addImage(imgEncabezado, 'PNG', 0, 290, 210, 10);
+        pdf.addImage(selloBase64, 'PNG', 90, 160, 32, 30);
 
           // **Encabezado**
           pdf.setFont('helvetica', 'bold');
@@ -327,7 +359,7 @@ descargarOficio() {
 
           // **Cuerpo de la carta**
           pdf.setFont('helvetica', 'normal');
-          pdf.text(textoCarta, 20, 80, { maxWidth: 170});
+          pdf.text(textoCarta, 20, 80, { maxWidth: 170, align: "justify"});
 
           // **Fecha y lugar**
           pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 150);
@@ -335,7 +367,7 @@ descargarOficio() {
 
 
           pdf.setFont('helvetica', 'normal');
-          pdf.text('ME.d. Ana Bravo Muñoz', 20, 200);
+          pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 200);
           pdf.setFont('helvetica', 'bold');
           pdf.text('Directora General de Relaciones Interinstitucionales', 20, 210);
 
