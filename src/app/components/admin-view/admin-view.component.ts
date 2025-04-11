@@ -11,6 +11,7 @@ export class AdminViewComponent implements OnInit {
   users: any[] = [];
   incomingUsers: any[] = [];  // Usuarios sin 'proceso: outgoing'
   outgoingUsers: any[] = [];  // Usuarios con 'proceso: outgoing'
+
   currentView: string = 'incoming';
 
   constructor(private firestore: AngularFirestore, private router: Router) {}
