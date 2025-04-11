@@ -6,7 +6,7 @@ import { UserDataService } from 'src/app/services/user-data.service';
 interface Pregunta {
   name: string;
   label: string;
-  type: 'text' | 'select'| 'options';
+  type: 'text' | 'select'| 'options'| 'comunicacion'| 'aspectos';
   subtitle?: string;
 }
 
@@ -60,26 +60,16 @@ export class EncuestaModalComponent implements OnInit {
       { name: 'explicacionExperiencia', label: 'Explicar la respuesta anterior', type: 'text' },
       { name: 'aspectosPostivos', label: 'Describa al menos 2 aspectos positivos de su estancia en UTPL.', type: 'text' },
       { name: 'aspectosNegativos', label: 'Describa al menos 2 aspectos negativos de su estancia en UTPL.', type: 'text' },
-      { name: 'aspectosExtracademicos', label: 'Escoja uno o varios aspectos extra-académicos adquiridos durante la estancia:', type: 'text' },
+      { name: 'aspectosExtracademicos', label: 'Escoja uno o varios aspectos extra-académicos adquiridos durante la estancia:', type: 'aspectos' },
       { name: 'explicacionAspectos', label: 'Explicar la respuesta anterior', type: 'text' },
       { subtitle: 'Procesos',name: 'escalaApoyo', label: 'El apoyo brindado por la UTPL a través de la oficina de relaciones interinstitucionales durante y después de su intercambio fue:', type: 'options' },
       { name: 'escalaPlataforma', label: 'El acceso a la plataforma tecnológica y a los recursos de estudio fue:', type: 'options' },
       { name: 'escalaClases', label: '¿Cómo calificaría la calidad de las clases impartidas: metodologías de estudio, tutorías y metodología de evaluación?', type: 'options' },
       { name: 'escalaEstancia', label: 'En términos generales la valoración académica de su estancia en la UTPL fue:', type: 'options' },
-      { subtitle: 'Información adicional',name: 'medioComunicacion', label: '¿Por qué medio tuvo conocimiento del programa de intercambio en UTPL?', type: 'text' },
+      { subtitle: 'Información adicional',name: 'medioComunicacion', label: '¿Por qué medio tuvo conocimiento del programa de intercambio en UTPL?', type: 'comunicacion' },
       { name: 'repetiria', label: '¿Postularía nuevamente para una estancia en la UTPL? ', type: 'select' },
-
-
-
-
-
-
-
-
-
-
-
     ];
+
 
     // Asignar preguntas según proceso
     this.preguntas = this.proceso === 'outgoing' ? preguntasOutgoing : preguntasIncoming;
@@ -141,6 +131,8 @@ export class EncuestaModalComponent implements OnInit {
   closeDialog(): void {
     this.dialogRef.close();
   }
+
+
 
   cargarDatosUsuario() {
     if (!this.data.email) {

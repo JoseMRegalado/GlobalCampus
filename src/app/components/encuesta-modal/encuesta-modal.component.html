@@ -1,46 +1,77 @@
 <div class="backdrop">
   <div class="modal-container">
     <button class="close-btn" (click)="closeDialog()">×</button>
-    <h2>Encuesta de Movilidad {{ proceso === 'outgoing' ? 'OUTGOING' : 'INCOMING' }}</h2>
+    <h2 class="modal-title">Encuesta de Movilidad {{ proceso === 'outgoing' ? 'OUTGOING' : 'INCOMING' }}</h2>
 
     <form [formGroup]="encuestaForm" (ngSubmit)="submitSurvey()">
-      <label>Nombres y Apellidos</label>
-      <input formControlName="nombres" type="text" readonly />
+      <ng-container  *ngIf="paginaActual === 0">
+        <div class="section">
+          <h3 class="section-title">Datos Personales</h3>
+          <label>Nombres y Apellidos</label>
+          <input formControlName="nombres" type="text" readonly />
 
-      <label>Universidad de Origen</label>
-      <input formControlName="universidad" type="text" readonly />
+          <label>Universidad de Origen</label>
+          <input formControlName="universidad" type="text" readonly />
 
-      <label>Carrera/Titulación</label>
-      <input formControlName="carrera" type="text" readonly />
+          <label>Carrera/Titulación</label>
+          <input formControlName="carrera" type="text" readonly />
 
-      <label>Tipo de Movilidad</label>
-      <input formControlName="tipoMovilidad" type="text" readonly />
+          <label>Tipo de Movilidad</label>
+          <input formControlName="tipoMovilidad" type="text" readonly />
 
-      <label>País</label>
-      <input formControlName="pais" type="text" readonly />
+          <label>País</label>
+          <input formControlName="pais" type="text" readonly />
 
-      <label>Periodo del intercambio</label>
-      <input formControlName="periodoIntercambio" type="text" readonly />
+          <label>Periodo del intercambio</label>
+          <input formControlName="periodoIntercambio" type="text" readonly />
+        </div>
+
+      </ng-container>
 
       <!-- Preguntas dinámicas -->
-      <ng-container *ngFor="let pregunta of preguntasVisibles">
-        <label>{{ pregunta.subtitle }}</label>
-        <label>{{ pregunta.label }}</label>
-        <ng-container [ngSwitch]="pregunta.type">
-          <textarea *ngSwitchCase="'text'" [formControlName]="pregunta.name" [readonly]="soloLectura"></textarea>
-          <select *ngSwitchCase="'select'" [formControlName]="pregunta.name" [disabled]="soloLectura">
-            <option value="Si">Sí</option>
-            <option value="No">No</option>
-          </select>
-          <select *ngSwitchCase="'options'" [formControlName]="pregunta.name" [disabled]="soloLectura">
-            <option>Deficiente</option>
-            <option>Aceptable</option>
-            <option value="Si">Regular</option>
-            <option value="No">Bueno</option>
-            <option value="Si">Excelente</option>
-          </select>
-        </ng-container>
-      </ng-container>
+      <div *ngIf="paginaActual > 0">
+        <div class="section">
+          <ng-container *ngFor="let pregunta of preguntasVisibles">
+            <h3 class="section-title" *ngIf="pregunta.subtitle">
+              <label class="subtitulo">{{ pregunta.subtitle }}</label>
+            </h3>
+            <label>{{ pregunta.label }}</label>
+
+            <ng-container [ngSwitch]="pregunta.type">
+              <textarea *ngSwitchCase="'text'" [formControlName]="pregunta.name" [readonly]="soloLectura"></textarea>
+
+              <select *ngSwitchCase="'select'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option value="Si">Sí</option>
+                <option value="No">No</option>
+              </select>
+
+              <select *ngSwitchCase="'options'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option>Deficiente</option>
+                <option>Aceptable</option>
+                <option>Regular</option>
+                <option>Bueno</option>
+                <option>Excelente</option>
+              </select>
+
+              <select *ngSwitchCase="'comunicacion'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option>Correo</option>
+                <option>Sitio web UTPL</option>
+                <option>Indicación de amigos</option>
+                <option>Redes sociales</option>
+              </select>
+
+              <select *ngSwitchCase="'aspectos'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option>Interculturalidad</option>
+                <option>Nuevos amigos</option>
+                <option>Nuevas habilidades tecnológicas</option>
+                <option>Aprendizaje de un nuevo idioma</option>
+                <option>Visión global de su carrera</option>
+                <option>Ninguno de los anteriores</option>
+              </select>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
 
       <!-- Navegación de preguntas -->
       <div class="nav-buttons" *ngIf="totalPages > 1">
@@ -48,7 +79,7 @@
         <button type="button" (click)="paginaSiguiente()" [disabled]="paginaActual >= totalPages - 1">Siguiente</button>
       </div>
 
-      <button type="submit" [disabled]="soloLectura">Enviar Encuesta</button>
+      <button class="submit-btn" type="submit" *ngIf="paginaActual === totalPages - 1">Enviar encuesta</button>
     </form>
   </div>
 </div>

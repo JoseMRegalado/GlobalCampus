@@ -18,6 +18,7 @@
   padding: 25px;
   border-radius: 10px;
   width: 100%;
+  height: 750px;
   max-width: 600px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   position: fixed;
@@ -85,4 +86,101 @@
 
 .close-btn:hover {
   color: #ff0000;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #69c5db;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px; /* Agranda el texto */
+  font-weight: bold; /* Negrita */
+  margin-bottom: 15px; /* Separación abajo */
+  border-bottom: 2px solid #69c5db; /* Línea decorativa abajo */
+  padding-bottom: 5px; /* Espacio interno abajo */
+  color: #69c5db; /* Color bonito del título */
+}
+
+.section-title label {
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+
+.modal-container label {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.modal-container input,
+.modal-container select,
+.modal-container textarea {
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.modal-container input:focus,
+.modal-container select:focus,
+.modal-container textarea:focus {
+  background-color: #fff;
+  border-color: #005599;
+  box-shadow: 0 0 5px rgba(0, 85, 153, 0.3);
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.nav-buttons button {
+  background-color: #69c5db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-buttons button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.nav-buttons button:hover:not(:disabled) {
+  background-color: #003f7f;
+}
+
+.submit-btn {
+  width: 30%;
+  background-color: #004270;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-btn:hover {
+  background-color: #888888;
 }
