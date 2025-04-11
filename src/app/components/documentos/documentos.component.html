@@ -190,7 +190,7 @@
   <button (click)="verDocumento(cartaSubida)">Ver Documento</button>
 </div>
 
-<button *ngIf="mostrarEncuesta" (click)="abrirEncuesta()">Realizar Encuesta</button>
+<button *ngIf="mostrarEncuesta && role !== 'admin'" (click)="abrirEncuesta()">Realizar Encuesta</button>
 
 
 <!-- Para el admin: Subir el certificado de notas -->

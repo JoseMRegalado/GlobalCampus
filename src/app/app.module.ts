@@ -30,6 +30,7 @@ import { MovilidadFormComponent } from './components/movilidad-form/movilidad-fo
 import { MatDialogModule } from '@angular/material/dialog';
 import { EncuestaModalComponent } from './components/encuesta-modal/encuesta-modal.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ProcessStatusComponent } from './components/process-status/process-status.component';
 
 register();
 
@@ -51,9 +52,10 @@ const appRoutes: Routes = [
   { path: 'docs/:email', component: DocumentosComponent },
   { path: 'out/:email', component: MovilidadFormComponent },
   { path: 'out', component: MovilidadFormComponent },
+  { path: 'process-status', component: ProcessStatusComponent },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaModalComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaModalComponent, ProcessStatusComponent],
     imports: [
         BrowserModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),

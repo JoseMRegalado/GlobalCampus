@@ -1,0 +1,126 @@
+/* Estilos generales del contenedor */
+.container {
+  padding: 30px 40px; /* Más espaciado interno */
+  max-width: 750px; /* Un poco más estrecho quizás */
+  margin: 40px auto; /* Más margen vertical */
+  border: 2px solid #004270; /* Borde azul oscuro */
+  border-radius: 12px; /* Bordes más redondeados */
+  background-color: #ffffff; /* Fondo blanco */
+  box-shadow: 0 5px 15px rgba(0, 66, 112, 0.15); /* Sombra sutil con tono azulado */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
+  color: #333; /* Color de texto base más oscuro */
+}
+
+/* Título principal */
+.container h2 {
+  color: #004270; /* Azul oscuro */
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8em; /* Tamaño más grande */
+  font-weight: 600; /* Más peso */
+  border-bottom: 1px solid #eee; /* Separador sutil */
+  padding-bottom: 15px;
+}
+
+/* Título de sección (Información Registrada) */
+.container h3 {
+  color: #004270; /* Azul oscuro */
+  border-left: 4px solid #eaab00; /* Detalle lateral dorado */
+  padding-left: 15px;
+  margin-top: 25px;
+  margin-bottom: 20px;
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+/* Mensajes de Carga y Error */
+.loading, .error-message {
+  text-align: center;
+  padding: 25px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  font-size: 1.1em;
+}
+
+.loading {
+  color: #004270; /* Azul oscuro */
+  font-style: italic;
+}
+
+/* Mensaje de Error más destacado */
+.error-message {
+  color: #D8000C; /* Rojo oscuro para errores */
+  background-color: #FFD2D2; /* Fondo rojo muy pálido */
+  border: 1px solid #D8000C; /* Borde rojo */
+  font-weight: 500;
+}
+/* Icono opcional para error (requiere añadir un <i> en el HTML) */
+.error-message i {
+  margin-right: 8px;
+}
+
+/* Sección de Información del Usuario */
+.user-info {
+  margin-bottom: 35px; /* Más espacio antes del botón */
+  line-height: 1.7; /* Mejorar legibilidad del texto */
+  border-left: 2px solid #004270; /* Borde izquierdo sutil */
+  padding-left: 20px;
+}
+
+.user-info p {
+  margin: 10px 0; /* Espacio entre líneas de datos */
+  font-size: 1rem; /* Tamaño de fuente estándar */
+  color: #444; /* Texto ligeramente más suave */
+}
+
+.user-info strong {
+  color: #004270; /* Azul oscuro para las etiquetas */
+  margin-right: 10px; /* Más espacio después de la etiqueta */
+  font-weight: 600; /* Etiquetas en negrita */
+  display: inline-block; /* Asegura espacio correcto */
+  min-width: 120px; /* Ancho mínimo para alinear un poco (ajustar según necesidad) */
+}
+
+/* Estilo de los Botones */
+.boton-continuar, .boton-iniciar {
+  display: block; /* Opcional: para que ocupe ancho completo si se desea */
+  width: fit-content; /* Ancho basado en el contenido */
+  margin: 30px auto 15px auto; /* Centrar el botón */
+  padding: 12px 35px; /* Más padding horizontal */
+  background-color: #004270; /* Fondo azul oscuro */
+  color: #ffffff; /* Texto blanco */
+  border: none;
+  border-radius: 25px; /* Botones más redondeados (píldora) */
+  cursor: pointer;
+  font-size: 1.1em; /* Fuente ligeramente más grande */
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none; /* Quitar subrayado si es link */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 66, 112, 0.2); /* Sombra sutil */
+}
+
+/* Efecto Hover para Botones */
+.boton-continuar:hover, .boton-iniciar:hover {
+  background-color: #eaab00; /* Fondo dorado en hover */
+  color: #004270; /* Texto azul oscuro en hover */
+  transform: translateY(-3px); /* Efecto de levantar */
+  box-shadow: 0 4px 10px rgba(234, 171, 0, 0.3); /* Sombra dorada en hover */
+}
+
+/* Estilo específico para el mensaje "No se encontró información" */
+.no-data-message {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  color: #555;
+  font-style: italic;
+  background-color: #f8f8f8;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+/* Para asegurar que el botón Iniciar en caso de no data también se vea bien */
+.no-data-message + .boton-iniciar {
+  margin-top: 20px;
+}
