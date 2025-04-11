@@ -444,8 +444,4 @@ export class UserDataService {
       .valueChanges()
       .pipe(map((encuestas) => (encuestas.length > 0 ? encuestas[0] : null)));
   }
-
-
-
-
 }

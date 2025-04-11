@@ -14,6 +14,18 @@
     <!-- Tabla de Incoming -->
     <div *ngIf="currentView === 'incoming'" class="seccion">
       <h3>Incoming</h3>
+
+      <!-- Barra de Búsqueda -->
+      <div class="search-box">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm"
+          (input)="filterUsers()"/>
+        <img src="assets/img/buscar.svg" alt="Logo buscar">
+      </div>
+
       <table>
         <thead>
         <tr>
@@ -71,6 +83,18 @@
     <!-- Tabla de Outgoing -->
     <div *ngIf="currentView === 'outgoing'" class="seccion">
       <h3>Outgoing</h3>
+
+      <!-- Barra de Búsqueda -->
+      <div class="search-box">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm"
+          (input)="filterUsers()"/>
+          <img src="assets/img/buscar.svg" alt="Logo buscar">
+        />
+      </div>
       <table>
         <thead>
         <tr>

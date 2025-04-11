@@ -83,3 +83,23 @@ th {
   flex-direction: column;
   text-align: center;
 }
+.search-box {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background-color: #f9f9f9;
+  width: 381px;
+  justify-content: space-between;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 14px;
+  flex: 1;
+  background-color: transparent;
+}

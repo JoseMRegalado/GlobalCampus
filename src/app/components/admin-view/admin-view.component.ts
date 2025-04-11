@@ -11,6 +11,10 @@ export class AdminViewComponent implements OnInit {
   users: any[] = [];
   incomingUsers: any[] = [];  // Usuarios sin 'proceso: outgoing'
   outgoingUsers: any[] = [];  // Usuarios con 'proceso: outgoing'
+  searchTerm: string = '';
+  filteredIncomingUsers: any[] = [];
+  filteredOutgoingUsers: any[] = [];
+
 
   currentView: string = 'incoming';
 
@@ -102,10 +106,36 @@ export class AdminViewComponent implements OnInit {
       // Asignamos los usuarios filtrados
       this.incomingUsers = incomingUsersData;
       this.outgoingUsers = outgoingUsersData;
+      this.filteredIncomingUsers = incomingUsersData;
+      this.filteredOutgoingUsers = outgoingUsersData;
+
     } catch (error) {
       console.error('❌ Error al obtener los usuarios:', error);
     }
   }
+
+  filterUsers() {
+    const term = this.searchTerm.toLowerCase().trim();
+
+    if (!term) {
+      // Si el campo de búsqueda está vacío, restauramos los datos completos
+      this.obtenerUsuarios();
+      return;
+    }
+
+    const matches = (user: any) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+      const id = user.idNumber?.toLowerCase() || '';
+      return fullName.includes(term) || id.includes(term);
+    };
+
+    if (this.currentView === 'incoming') {
+      this.incomingUsers = this.filteredIncomingUsers.filter(matches);
+    } else if (this.currentView === 'outgoing') {
+      this.outgoingUsers = this.filteredOutgoingUsers.filter(matches);
+    }
+  }
+
 
   guardarFechas(user: any) {
     if (!user.fechaInicio || !user.fechaFin) {
