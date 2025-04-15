@@ -24,7 +24,6 @@ export class EncuestaModalComponent implements OnInit {
   preguntas: Pregunta[] = [];
   preguntasVisibles: Pregunta[] = [];
   paginaActual: number = 0;
-  totalPages: number = 0;
   preguntasPorPagina: number = 5;
 
   constructor(
@@ -80,17 +79,26 @@ export class EncuestaModalComponent implements OnInit {
     });
 
     // Calcular paginación
-    this.totalPages = Math.ceil(this.preguntas.length / this.preguntasPorPagina);
     this.actualizarPreguntasVisibles();
 
     this.cargarDatosUsuario();
   }
 
   actualizarPreguntasVisibles() {
-    const inicio = this.paginaActual * this.preguntasPorPagina;
-    const fin = inicio + this.preguntasPorPagina;
-    this.preguntasVisibles = this.preguntas.slice(inicio, fin);
+    if (this.paginaActual === 0) {
+      this.preguntasVisibles = []; // Página de datos personales
+    } else {
+      const inicio = (this.paginaActual - 1) * this.preguntasPorPagina;
+      const fin = inicio + this.preguntasPorPagina;
+      this.preguntasVisibles = this.preguntas.slice(inicio, fin);
+    }
   }
+
+  get totalPages() {
+    const totalPaginasPreguntas = Math.ceil(this.preguntas.length / this.preguntasPorPagina);
+    return totalPaginasPreguntas + 1; // +1 por la página de datos personales
+  }
+
 
   paginaSiguiente() {
     if (this.paginaActual < this.totalPages - 1) {

@@ -332,7 +332,7 @@ descargarOficio() {
         let textoCarta = '';
 
         if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.carrera} para el periodo de ${universityData.period}:`;
 
 
         } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
