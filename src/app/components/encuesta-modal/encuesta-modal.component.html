@@ -4,7 +4,7 @@
     <h2 class="modal-title">Encuesta de Movilidad {{ proceso === 'outgoing' ? 'OUTGOING' : 'INCOMING' }}</h2>
 
     <form [formGroup]="encuestaForm" (ngSubmit)="submitSurvey()">
-      <ng-container  *ngIf="paginaActual === 0">
+      <ng-container *ngIf="paginaActual === 0">
         <div class="section">
           <h3 class="section-title">Datos Personales</h3>
           <label>Nombres y Apellidos</label>
@@ -25,7 +25,6 @@
           <label>Periodo del intercambio</label>
           <input formControlName="periodoIntercambio" type="text" readonly />
         </div>
-
       </ng-container>
 
       <!-- Preguntas dinámicas -->
@@ -41,11 +40,13 @@
               <textarea *ngSwitchCase="'text'" [formControlName]="pregunta.name" [readonly]="soloLectura"></textarea>
 
               <select *ngSwitchCase="'select'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option value="">Seleccione una opción</option>
                 <option value="Si">Sí</option>
                 <option value="No">No</option>
               </select>
 
               <select *ngSwitchCase="'options'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option value="">Seleccione una opción</option>
                 <option>Deficiente</option>
                 <option>Aceptable</option>
                 <option>Regular</option>
@@ -54,6 +55,7 @@
               </select>
 
               <select *ngSwitchCase="'comunicacion'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option value="">Seleccione una opción</option>
                 <option>Correo</option>
                 <option>Sitio web UTPL</option>
                 <option>Indicación de amigos</option>
@@ -61,6 +63,7 @@
               </select>
 
               <select *ngSwitchCase="'aspectos'" [formControlName]="pregunta.name" [disabled]="soloLectura">
+                <option value="">Seleccione una opción</option>
                 <option>Interculturalidad</option>
                 <option>Nuevos amigos</option>
                 <option>Nuevas habilidades tecnológicas</option>
@@ -69,14 +72,28 @@
                 <option>Ninguno de los anteriores</option>
               </select>
             </ng-container>
+
+            <!-- Mensaje de error -->
+            <div *ngIf="encuestaForm.get(pregunta.name)?.invalid && encuestaForm.get(pregunta.name)?.touched" class="error-msg">
+              Este campo es obligatorio.
+            </div>
           </ng-container>
         </div>
       </div>
 
-      <!-- Navegación de preguntas -->
+      <!-- Pop-up modal de éxito -->
+      <div class="success-modal" *ngIf="showSuccessModal">
+        <div class="modal-content">
+          <h3>¡Encuesta exitosamente realizada!</h3>
+          <p>Gracias por completar la encuesta.</p>
+        </div>
+      </div>
+
+
+      <!-- Navegación -->
       <div class="nav-buttons" *ngIf="totalPages > 1">
         <button type="button" (click)="paginaAnterior()" [disabled]="paginaActual === 0">Anterior</button>
-        <button type="button" (click)="paginaSiguiente()" [disabled]="paginaActual >= totalPages - 1">Siguiente</button>
+        <button type="button" (click)="paginaSiguiente()">Siguiente</button>
       </div>
 
       <button class="submit-btn" type="submit" *ngIf="paginaActual === totalPages - 1">Enviar encuesta</button>

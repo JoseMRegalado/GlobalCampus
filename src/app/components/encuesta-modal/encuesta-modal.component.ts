@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserDataService } from 'src/app/services/user-data.service';
 
 interface Pregunta {
@@ -19,8 +19,8 @@ export class EncuestaModalComponent implements OnInit {
   encuestaForm!: FormGroup;
   proceso!: string;
   soloLectura: boolean = false;
+  showSuccessModal = false;
 
-  // Navegación por páginas
   preguntas: Pregunta[] = [];
   preguntasVisibles: Pregunta[] = [];
   paginaActual: number = 0;
@@ -46,7 +46,6 @@ export class EncuestaModalComponent implements OnInit {
       periodoIntercambio: ['']
     });
 
-
     const preguntasOutgoing: Pregunta[] = [
       { subtitle: 'Motivación', name: 'aportaciones', label: '¿Qué aportaciones obtuvo de la experiencia?', type: 'text' },
       { name: 'dificultades', label: '¿Qué dificultades enfrentó durante su intercambio?', type: 'text' }
@@ -69,24 +68,19 @@ export class EncuestaModalComponent implements OnInit {
       { name: 'repetiria', label: '¿Postularía nuevamente para una estancia en la UTPL? ', type: 'select' },
     ];
 
-
-    // Asignar preguntas según proceso
     this.preguntas = this.proceso === 'outgoing' ? preguntasOutgoing : preguntasIncoming;
 
-    // Agregar controles al formulario
     this.preguntas.forEach(p => {
-      this.encuestaForm.addControl(p.name, this.fb.control(''));
+      this.encuestaForm.addControl(p.name, this.fb.control('', Validators.required));
     });
 
-    // Calcular paginación
     this.actualizarPreguntasVisibles();
-
     this.cargarDatosUsuario();
   }
 
   actualizarPreguntasVisibles() {
     if (this.paginaActual === 0) {
-      this.preguntasVisibles = []; // Página de datos personales
+      this.preguntasVisibles = [];
     } else {
       const inicio = (this.paginaActual - 1) * this.preguntasPorPagina;
       const fin = inicio + this.preguntasPorPagina;
@@ -96,14 +90,17 @@ export class EncuestaModalComponent implements OnInit {
 
   get totalPages() {
     const totalPaginasPreguntas = Math.ceil(this.preguntas.length / this.preguntasPorPagina);
-    return totalPaginasPreguntas + 1; // +1 por la página de datos personales
+    return totalPaginasPreguntas + 1;
   }
 
-
   paginaSiguiente() {
-    if (this.paginaActual < this.totalPages - 1) {
-      this.paginaActual++;
-      this.actualizarPreguntasVisibles();
+    if (this.paginaActual === 0 || this.validarPaginaActual()) {
+      if (this.paginaActual < this.totalPages - 1) {
+        this.paginaActual++;
+        this.actualizarPreguntasVisibles();
+      }
+    } else {
+      alert("Debes responder todas las preguntas antes de continuar.");
     }
   }
 
@@ -114,23 +111,29 @@ export class EncuestaModalComponent implements OnInit {
     }
   }
 
+  validarPaginaActual(): boolean {
+    const controlesPagina = this.preguntasVisibles.map(p => this.encuestaForm.get(p.name));
+    controlesPagina.forEach(c => c?.markAsTouched());
+    return controlesPagina.every(control => control?.valid);
+  }
+
   submitSurvey(): void {
     if (this.soloLectura) {
       alert('Solo lectura. No se puede enviar.');
       return;
     }
 
-    const surveyData = { ...this.encuestaForm.value };
-    Object.keys(surveyData).forEach(key => {
-      if (surveyData[key] === undefined) {
-        surveyData[key] = "";
-      }
-    });
+    if (!this.encuestaForm.valid) {
+      alert('Por favor, responde todas las preguntas antes de enviar.');
+      this.encuestaForm.markAllAsTouched();
+      return;
+    }
 
+    const surveyData = { ...this.encuestaForm.value };
     this.userDataService.saveSurvey(this.data.email, surveyData).subscribe({
       next: () => {
-        alert('Encuesta guardada exitosamente');
-        this.dialogRef.close();
+        this.showSuccessModal = true;
+        setTimeout(() => this.dialogRef.close(), 2500);
       },
       error: err => alert('Error al guardar la encuesta: ' + err)
     });
@@ -140,8 +143,6 @@ export class EncuestaModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
-
-
   cargarDatosUsuario() {
     if (!this.data.email) {
       console.warn('No se encontró el correo del usuario.');
@@ -149,16 +150,10 @@ export class EncuestaModalComponent implements OnInit {
     }
 
     this.userDataService.getUserData(this.data.email).subscribe(userData => {
-      if (!userData) {
-        console.warn('No se encontraron datos personales del usuario.');
-        return;
-      }
+      if (!userData) return;
 
       this.userDataService.getUniversityData(this.data.email).subscribe(universityData => {
-        if (!universityData) {
-          console.warn('No se encontraron datos universitarios del usuario.');
-          return;
-        }
+        if (!universityData) return;
 
         this.encuestaForm.patchValue({
           nombres: `${userData.firstName} ${userData.lastName}`,

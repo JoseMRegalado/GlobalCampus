@@ -332,14 +332,14 @@ descargarOficio() {
         let textoCarta = '';
 
         if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.carrera} para el periodo de ${universityData.period}:`;
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
 
 
         } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.faculty} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.faculty} para el periodo de ${universityData.period}:`;
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
 
         } else {
-          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.faculty} de nuestra universidad, en el periodo ${universityData.period}.`;
+          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.program} de nuestra universidad, en el periodo ${universityData.period}.`;
         }
 
         const pdf = new jsPDF();

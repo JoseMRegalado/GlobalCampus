@@ -194,14 +194,15 @@
 
 
 <!-- Para el admin: Subir el certificado de notas -->
-<div *ngIf="role === 'admin' && encuestaEnviada">
+<div class="subir-notas" *ngIf="role === 'admin' && encuestaEnviada">
   <h3>Subir Certificado de Notas</h3>
-  <input type="file" (change)="onFileSelectedCertificado($event)" />
-  <button (click)="guardarCertificado()">Guardar Certificado</button>
+  <div class="archivo">
+    <input id="notas" type="file" (change)="onFileSelectedCertificado($event)">
+    <label for="notas" class="custom-file-upload">
+      <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+      {{ archivoCargado ? 'Archivo cargado' : 'Adjunta tu documento aquí' }}
+    </label>
+    <button (click)="guardarCertificado()">Guardar Certificado</button>
+  </div>
 </div>
-
-
-
-
-
 </body>
