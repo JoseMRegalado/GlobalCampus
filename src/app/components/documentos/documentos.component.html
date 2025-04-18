@@ -124,15 +124,15 @@
 
 <div class="botones-admin">
   <!-- Para el admin: Generar Oficio cuando los documentos están aprobados -->
-  <div *ngIf="role === 'admin' && documentosAprobados >= 2">
+  <div *ngIf="role === 'admin' && documentosAprobados >= 2 && mostrarBotones">
     <button (click)="generarOficio()">Generar Oficio</button>
   </div>
 
-  <!-- Descargar Oficio -->
+  <!-- Descargar Oficio
   <div *ngIf="role === 'admin' && oficioGenerado">
     <button (click)="descargarOficio()">Descargar Oficio</button>
   </div>
-
+  -->
   <!-- Para el admin: Generar Carta de Compromiso después de descargar el Oficio -->
   <div *ngIf="role === 'admin' && oficioGenerado">
     <button (click)="generarCartaCompromiso()">Generar Carta de Aceptación</button>

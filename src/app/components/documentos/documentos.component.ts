@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf';
 import {EncuestaModalComponent} from "../encuesta-modal/encuesta-modal.component";
 import { MatDialog } from '@angular/material/dialog';
 
+
 @Component({
   selector: 'app-documentos',
   templateUrl: './documentos.component.html',
@@ -24,7 +25,7 @@ export class DocumentosComponent implements OnInit {
   usuarioSeleccionado: string = ''; // Almacena el usuario seleccionado
   documentosNombres: string[] = [];
   userEmail: string = ''; // Email obtenido de los queryParams
-
+  mostrarBotones = true;
   documentosAprobados: number = 0;
   selectedCartaFile: File | null = null;
   cartaBase64: string = '';
@@ -247,6 +248,7 @@ generarOficio() {
       };
     });
   });
+  this.mostrarBotones = false;
 }
 
 // Función para formatear la fecha correctamente
@@ -332,17 +334,20 @@ descargarOficio() {
         let textoCarta = '';
 
         if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
 
 
         } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la Universidad ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
 
         } else {
-          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la Universidad ${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.program} de nuestra universidad, en el periodo ${universityData.period}.`;
+          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.program} de nuestra universidad, en el periodo ${universityData.period}.`;
         }
 
-        const pdf = new jsPDF();
+        const pdf = new jsPDF({
+          compress: true
+        });
+
         const fechaActual = this.formatFecha();
 
         pdf.addImage(imgEncabezado, 'PNG', 0, 0, 210, 10);
@@ -363,8 +368,6 @@ descargarOficio() {
 
           // **Fecha y lugar**
           pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 150);
-
-
 
           pdf.setFont('helvetica', 'normal');
           pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 200);

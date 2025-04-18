@@ -31,7 +31,6 @@
         <tr>
           <th>Identificación</th>
           <th>Nombre</th>
-          <th>Correo</th>
           <th>Universidad</th>
           <th>Periodo</th>
           <th *ngIf="tieneUsuariosAprobados()">Fecha Inicio</th>
@@ -44,7 +43,6 @@
         <tr *ngFor="let user of incomingUsers">
           <td>{{ user.idNumber }}</td>
           <td>{{ user.firstName }} {{ user.lastName }}</td>
-          <td>{{ user.email }}</td>
           <td>{{ user.university }}</td>
           <td>{{ user.period }}</td>
 
