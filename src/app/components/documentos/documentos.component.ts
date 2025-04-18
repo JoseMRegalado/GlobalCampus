@@ -6,7 +6,8 @@ import {ActivatedRoute} from "@angular/router";
 import { jsPDF } from 'jspdf';
 import {EncuestaModalComponent} from "../encuesta-modal/encuesta-modal.component";
 import { MatDialog } from '@angular/material/dialog';
-
+import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Footer, SectionType } from 'docx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-documentos',
@@ -302,92 +303,275 @@ descargarOficio() {
     });
   }
 
-
   async generarCartaCompromiso() {
     if (!this.userEmail) {
       alert('No se encontró el correo del usuario.');
       return;
     }
 
-    const imgEncabezado = await this.convertirImagenABase64('assets/img/Imagen1.png');
-    const mundoBase64 = await this.convertirImagenABase64('assets/img/Imagen2.png');
-    const selloBase64 = await this.convertirImagenABase64('assets/img/Imagen3.png');
-    const logoBase64 = await this.convertirImagenABase64('assets/img/Imagen4.png');
+    try {
+      // Cargar las imágenes como ArrayBuffer en lugar de Base64
+      const imgEncabezadoBuffer = await this.cargarImagenComoBuffer('assets/img/Imagen1.png');
+      const mundoBuffer = await this.cargarImagenComoBuffer('assets/img/Imagen2.png');
+      const selloBuffer = await this.cargarImagenComoBuffer('assets/img/Imagen3.png');
+      const logoBuffer = await this.cargarImagenComoBuffer('assets/img/Imagen4.png');
 
-    this.userDataService.getUserData(this.userEmail).subscribe(userData => {
-      if (!userData) {
-        alert('No se encontraron datos personales del usuario.');
-        return;
-      }
-
-      this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
-        if (!universityData) {
-          alert('No se encontraron datos universitarios del usuario.');
+      this.userDataService.getUserData(this.userEmail).subscribe(userData => {
+        if (!userData) {
+          alert('No se encontraron datos personales del usuario.');
           return;
         }
 
-        // Obtener valores de movilidad
-        const mobilityType = universityData.mobilityType || 'Otro';
-        const mobilityModality = universityData.mobilityModality || 'Presencial';
+        this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
+          if (!universityData) {
+            alert('No se encontraron datos universitarios del usuario.');
+            return;
+          }
 
-        // Definir el contenido según las combinaciones posibles
-        let textoCarta = '';
+          // Obtener valores de movilidad
+          const mobilityType = universityData.mobilityType || 'Otro';
+          const mobilityModality = universityData.mobilityModality || 'Presencial';
 
-        if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          // Definir el contenido según las combinaciones posibles
+          let textoCarta = '';
 
+          if (mobilityType === 'Intercambio' && mobilityModality === 'Presencial') {
+            textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio presencial en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
+            textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          } else {
+            textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.program} de nuestra universidad, en el periodo ${universityData.period}.`;
+          }
 
-        } else if (mobilityType === 'Intercambio' && mobilityModality === 'Virtual') {
-          textoCarta = `NOTIFICA: \n\nQue ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, estudiante de la ${universityData.universityName}, ha sido aceptado/a para que realice su intercambio en la modalidad abierta y a distancia en la carrera de ${universityData.program} de nuestra universidad. \n\nEl/la estudiante tomará las siguientes materias de la carrera de ${universityData.program} para el periodo de ${universityData.period}:`;
+          const fechaActual = this.formatFecha();
 
-        } else {
-          textoCarta = `NOTIFICA: \n\nQue el estudiante ${userData.firstName} ${userData.lastName}, con documento de identidad N. ${userData.idNumber}, de la${universityData.universityName}, ha sido aceptado para que realice ${universityData.mobilityType} en la modalidad ${universityData.mobilityModality} en la carrera de ${universityData.program} de nuestra universidad, en el periodo ${universityData.period}.`;
-        }
+          // Crear un encabezado con la imagen
+          const header = new Header({
+            children: [
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: imgEncabezadoBuffer,
+                    transformation: {
+                      width: 600,
+                      height: 60
+                    },
+                    type: 'png'
+                  })
+                ]
+              })
+            ]
+          });
 
-        const pdf = new jsPDF({
-          compress: true
-        });
+          // Crear un pie de página con la imagen
+          const footer = new Footer({
+            children: [
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: imgEncabezadoBuffer,
+                    transformation: {
+                      width: 600,
+                      height: 60
+                    },
+                    type: 'png'
+                  })
+                ]
+              })
+            ]
+          });
 
-        const fechaActual = this.formatFecha();
+          // Crear un nuevo documento con encabezado y pie de página
+          const doc = new Document({
+            sections: [
+              {
+                properties: {
+                  type: SectionType.NEXT_PAGE
+                },
+                headers: {
+                  default: header,
+                },
+                footers: {
+                  default: footer,
+                },
+                children: [
+                  // Logo
+                  new Paragraph({
+                    alignment: AlignmentType.RIGHT,
+                    children: [
+                      new ImageRun({
+                        data: logoBuffer,
+                        transformation: {
+                          width: 120,
+                          height: 70
+                        },
+                        type: 'png'
+                      })
+                    ]
+                  }),
 
-        pdf.addImage(imgEncabezado, 'PNG', 0, 0, 210, 10);
-        pdf.addImage(logoBase64, 'PNG', 160, 15, 35, 20);
-        pdf.addImage(mundoBase64, 'PNG', 10, 150, 100, 100); // marca de agua
-        pdf.addImage(imgEncabezado, 'PNG', 0, 290, 210, 10);
-        pdf.addImage(selloBase64, 'PNG', 90, 160, 32, 30);
+                  // Espacio
+                  new Paragraph({}),
 
-          // **Encabezado**
-          pdf.setFont('helvetica', 'bold');
-          pdf.setFontSize(12);
-          pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 40);
-          pdf.text('DIRECTORA GENERAL DE RELACIONES INTERINSTITUCIONALES', 20, 50);
+                  // Encabezado
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: 'ME.d. Ana Stefanía Bravo Muñoz',
+                        bold: true,
+                        size: 24
+                      })
+                    ]
+                  }),
 
-          // **Cuerpo de la carta**
-          pdf.setFont('helvetica', 'normal');
-          pdf.text(textoCarta, 20, 80, { maxWidth: 170, align: "justify"});
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: 'DIRECTORA GENERAL DE RELACIONES INTERINSTITUCIONALES',
+                        bold: true,
+                        size: 24
+                      })
+                    ]
+                  }),
 
-          // **Fecha y lugar**
-          pdf.text(`Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`, 20, 150);
+                  // Espacio
+                  new Paragraph({}),
+                  new Paragraph({}),
 
-          pdf.setFont('helvetica', 'normal');
-          pdf.text('ME.d. Ana Stefanía Bravo Muñoz', 20, 200);
-          pdf.setFont('helvetica', 'bold');
-          pdf.text('Directora General de Relaciones Interinstitucionales', 20, 210);
+                  // Cuerpo de la carta - dividimos el texto en párrafos
+                  ...this.textoAParagraphs(textoCarta),
 
-            // **Guardar en Firebase**
-            const pdfBlob = pdf.output('blob');
+                  // Espacio
+                  new Paragraph({}),
+                  new Paragraph({}),
+
+                  // Fecha y lugar
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: `Se otorga el presente en la ciudad de Loja, el día ${fechaActual}.`,
+                        size: 24
+                      })
+                    ]
+                  }),
+
+                  // Marca de agua como imagen (no es una verdadera marca de agua)
+                  new Paragraph({
+                    alignment: AlignmentType.LEFT,
+                    children: [
+                      new ImageRun({
+                        data: mundoBuffer,
+                        transformation: {
+                          width: 250,
+                          height: 250
+                        },
+                        type: 'png'
+                      })
+                    ]
+                  }),
+
+                  // Sello
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new ImageRun({
+                        data: selloBuffer,
+                        transformation: {
+                          width: 100,
+                          height: 90
+                        },
+                        type: 'png'
+                      })
+                    ]
+                  }),
+
+                  // Firma
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: 'ME.d. Ana Stefanía Bravo Muñoz',
+                        size: 24
+                      })
+                    ]
+                  }),
+
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: 'Directora General de Relaciones Interinstitucionales',
+                        bold: true,
+                        size: 24
+                      })
+                    ]
+                  })
+                ]
+              }
+            ]
+          });
+
+          // Generar el documento
+          Packer.toBlob(doc).then(blob => {
+            // Guardar localmente
+            saveAs(blob, `Carta_Compromiso_${userData.lastName}.docx`);
+
+            // Convertir a base64 para Firebase
             const reader = new FileReader();
-            reader.readAsDataURL(pdfBlob);
+            reader.readAsDataURL(blob);
             reader.onloadend = () => {
-              const base64Pdf = reader.result as string;
-              this.userDataService.saveCartaCompromiso(this.userEmail, base64Pdf).subscribe(() => {
+              const base64Doc = reader.result as string;
+              this.userDataService.saveCartaCompromiso(this.userEmail, base64Doc).subscribe(() => {
                 alert('Carta de Compromiso generada y guardada en Firebase.');
                 this.cartaCompromisoSubida = true;
                 localStorage.setItem("cartaCompromisoSubida", "true");
                 this.userDataService.actualizarEstadoPostulacion(this.userEmail);
               });
             };
+          });
+        });
       });
+    } catch (error) {
+      console.error('Error al generar la carta de compromiso:', error);
+      alert('Error al generar la carta de compromiso. Por favor, inténtelo de nuevo.');
+    }
+  }
+
+// Método auxiliar para dividir el texto en párrafos
+  private textoAParagraphs(texto: string): Paragraph[] {
+    return texto.split('\n\n').map(parrafo =>
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: parrafo,
+            size: 24
+          })
+        ],
+        spacing: {
+          after: 200
+        }
+      })
+    );
+  }
+
+// Método para cargar imágenes como ArrayBuffer
+  private cargarImagenComoBuffer(url: string): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'arraybuffer';
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          resolve(xhr.response);
+        } else {
+          reject(new Error('No se pudo cargar la imagen: ' + url));
+        }
+      };
+
+      xhr.onerror = function () {
+        reject(new Error('Error de red al cargar la imagen: ' + url));
+      };
+
+      xhr.send();
     });
   }
 
