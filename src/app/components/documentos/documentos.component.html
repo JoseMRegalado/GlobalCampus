@@ -124,7 +124,7 @@
 
 <div class="botones-admin">
   <!-- Para el admin: Generar Oficio cuando los documentos están aprobados -->
-  <div *ngIf="role === 'admin' && documentosAprobados >= 2 && mostrarBotones">
+  <div *ngIf="role === 'admin' && documentosAprobados >= 3 && mostrarBotones">
     <button (click)="generarOficio()">Generar Oficio</button>
   </div>
 

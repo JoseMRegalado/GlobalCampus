@@ -533,6 +533,7 @@ descargarOficio() {
       console.error('Error al generar la carta de compromiso:', error);
       alert('Error al generar la carta de compromiso. Por favor, inténtelo de nuevo.');
     }
+
   }
 
 // Método auxiliar para dividir el texto en párrafos
