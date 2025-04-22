@@ -19,7 +19,7 @@ export class EncuestaModalComponent implements OnInit {
   encuestaForm!: FormGroup;
   proceso!: string;
   soloLectura: boolean = false;
-  showSuccessModal = false;
+  showAlerta = false;
 
   preguntas: Pregunta[] = [];
   preguntasVisibles: Pregunta[] = [];
@@ -132,7 +132,7 @@ export class EncuestaModalComponent implements OnInit {
     const surveyData = { ...this.encuestaForm.value };
     this.userDataService.saveSurvey(this.data.email, surveyData).subscribe({
       next: () => {
-        this.showSuccessModal = true;
+        this.showAlerta = true;
         setTimeout(() => this.dialogRef.close(), 2500);
       },
       error: err => alert('Error al guardar la encuesta: ' + err)

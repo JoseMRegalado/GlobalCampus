@@ -25,7 +25,7 @@ export class RequirementsOutComponent {
       name: 'Intercambio estudiantil',
       icon: 'assets/icons/intercambio.png',
       requirements: [
-        'Copia a colores de documento de identidad.',
+        'Copia a colores de documento de identidad/pasaporte.',
         'Promedio mínimo general para la postulación es de 8.5 .',
         'Se podrá postular desde el 3er ciclo hasta el penúltimo ciclo.',
         'Seguro médico internacional que incluya servicio de repatriación.'
@@ -34,7 +34,7 @@ export class RequirementsOutComponent {
         { title: 'Elección de universidad', description: 'Revisa en nuestro catálogo las universidades extranjeras con convenio con la univerisidad, y elige a la que quieres ir' },
         { title: 'Elección de asignaturas', description: 'Revisa la malla curricular de tu carrera y compararla con la malla de la universidad extranjera seleccionada.' },
         { title: 'Validación', description: 'Validar las asignaturas seleccionadas con tu director de carrera de UTPL' },
-        { title: 'Postulación', description: 'Llenar el formulario de datos personales y documentos requeridos.' },
+        { title: 'Postulación', description: 'Dentro de la plataforma de Global-Campus llenar el formulario de datos personales y documentos requeridos.' },
         { title: 'Nominación del estudiante', description: 'Desde la oficina de Movilidad, se nominará al estudiante a la universidad extranjera, la misma que una vez aceptada la nominación se contactara directamente con el estudiante.' },
         { title: 'Carta de aceptación', description: 'Dentro de la plataforma de Global-Campus, se subirá la carta de aceptación por la universidad extranjera.' },
         { title: 'Visa y seguro internacional', description: 'El estudiante hará su proceso de visado y contratara un seguro internacional.' },

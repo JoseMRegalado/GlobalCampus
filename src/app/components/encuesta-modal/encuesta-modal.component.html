@@ -81,14 +81,16 @@
         </div>
       </div>
 
-      <!-- Pop-up modal de éxito -->
-      <div class="success-modal" *ngIf="showSuccessModal">
-        <div class="modal-content">
-          <h3>¡Encuesta exitosamente realizada!</h3>
-          <p>Gracias por completar la encuesta.</p>
-        </div>
-      </div>
-
+      <app-alerta
+        [visible]="showAlerta"
+        [titulo]="'¡Encuesta exitosamente realizada!'"
+        [mensaje]="'Gracias por completar la encuesta.'"
+        [tipo]="'exito'"
+        [icono]="'🎉'"
+        [autoCerrar]="true"
+        [tiempo]="3000"
+        (cerrado)="showAlerta = false">
+      </app-alerta>
 
       <!-- Navegación -->
       <div class="nav-buttons" *ngIf="totalPages > 1">
