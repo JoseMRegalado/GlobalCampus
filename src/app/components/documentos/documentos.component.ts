@@ -8,6 +8,7 @@ import {EncuestaModalComponent} from "../encuesta-modal/encuesta-modal.component
 import { MatDialog } from '@angular/material/dialog';
 import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Footer, SectionType } from 'docx';
 import { saveAs } from 'file-saver';
+import { AlertaService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-documentos',
@@ -49,7 +50,7 @@ export class DocumentosComponent implements OnInit {
   encuestaData: any = null;
 
 
-  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute, private dialog: MatDialog ) {}
+  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute, private dialog: MatDialog, private alertaService: AlertaService  ) {}
 
   ngOnInit() {
     this.authService.getCurrentUser().subscribe(user => {
@@ -620,7 +621,12 @@ descargarOficio() {
    */
   cargarDocumento(doc?: any) {
     if (!this.email || !this.selectedFile) {
-      alert('Debe seleccionar un archivo para subir.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Archivo requerido',
+        'Debe seleccionar un archivo para subir.'
+      );
+      console.log("Alerta presentada")
       return;
     }
 

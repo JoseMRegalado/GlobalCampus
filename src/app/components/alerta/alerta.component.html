@@ -1,8 +1,4 @@
-<div class="alerta-modal" *ngIf="visible" [ngClass]="tipo">
-  <div class="alerta-contenido" [ngClass]="tipo">
-    <button class="cerrar" (click)="cerrarManual()">✖</button>
-    <div class="icono">{{ icono }}</div>
-    <h3>{{ titulo }}</h3>
-    <p>{{ mensaje }}</p>
-  </div>
+<div *ngIf="visible" class="alerta" [ngClass]="tipo">
+  <strong>{{ titulo }}</strong>
+  <p>{{ mensaje }}</p>
 </div>

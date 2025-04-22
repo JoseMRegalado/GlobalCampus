@@ -1,33 +1,33 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import{ AlertaService } from "../../services/alert.service";
 
 @Component({
-  selector: 'app-alerta',
+  selector: 'app-alertas',
   templateUrl: './alerta.component.html',
   styleUrls: ['./alerta.component.css']
 })
-export class AlertaComponent {
-  @Input() visible: boolean = false;
-  @Input() titulo: string = '¡Éxito!';
-  @Input() mensaje: string = 'La operación se realizó correctamente.';
-  @Input() tipo: 'exito' | 'error' | 'info' | 'advertencia' = 'exito';
-  @Input() icono: string = ''; // emoji o ícono personalizado
-  @Input() autoCerrar: boolean = true;
-  @Input() tiempo: number = 3000; // tiempo en ms
+export class AlertaComponent implements OnInit {
+  visible = false;
+  tipo: 'exito' | 'error' | 'info' = 'info';
+  titulo = '';
+  mensaje = '';
 
-  @Output() cerrado = new EventEmitter<void>();
+  constructor(private alertaService: AlertaService) {}
 
-  ngOnChanges() {
-    if (this.visible && this.autoCerrar) {
+  ngOnInit(): void {
+    this.alertaService.alerta$.subscribe(data => {
+      this.tipo = data.tipo;
+      this.titulo = data.titulo;
+      this.mensaje = data.mensaje;
+      this.visible = true;
+
       setTimeout(() => {
         this.visible = false;
-        this.cerrado.emit();
-      }, this.tiempo);
-    }
+      }, 4000); // Tiempo visible de la alerta
+    });
   }
 
-  cerrarManual() {
+  cerrar() {
     this.visible = false;
-    this.cerrado.emit();
   }
-
 }
