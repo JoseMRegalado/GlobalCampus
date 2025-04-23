@@ -320,7 +320,7 @@ export class UserDataService {
       descripcion: 'Oficio',
       archivo: base64Pdf,
       fechaIngreso: new Date().toISOString().split('T')[0],
-      estado: 'subido'
+      estado: 'cargado'
     };
 
     return new Observable<void>(observer => {
@@ -346,7 +346,7 @@ export class UserDataService {
       descripcion: 'Carta de Aceptación',
       archivo: base64Pdf,
       fechaIngreso: new Date().toISOString().split('T')[0],
-      estado: 'subido'
+      estado: 'cargado'
     };
 
     return new Observable<void>(observer => {

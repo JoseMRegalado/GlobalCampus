@@ -20,6 +20,7 @@ table {
 
 .tabla{
   display: flex;
+  flex-direction: column;
   justify-content: center;
 
 }
@@ -133,6 +134,9 @@ input, select{
   display: none;
 }
 
+#carta-compromiso{
+  display: none;
+}
 .contenedor{
   padding: 10px 10%;
 }
@@ -204,3 +208,24 @@ h3{
   display: flex;
   gap: 20px;
 }
+
+.details-container{
+  margin-left: 7%;
+  margin-bottom: 20px;
+
+}
+
+.details-container h4 {
+  color: #eaab00;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 18px;
+
+}
+
+.details-container li {
+  margin: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+

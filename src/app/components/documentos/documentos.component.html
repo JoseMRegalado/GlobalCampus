@@ -9,7 +9,13 @@
   <h3 *ngIf="documentos.length === 0 || documentos.length === 1 || documentos.length === 2">Carga tu nuevo documento</h3>
   <!-- Permitir al usuario cargar un nuevo documento si no hay documentos -->
   <div class="tabla">
-    <table *ngIf="documentos.length === 0 || documentos.length === 1">
+    <div *ngIf="documentos.length === 0 || documentos.length === 1 || documentos.length === 2" class="details-container">
+      <h4>Para realizar tu postulación carga los siguientes documentos:</h4>
+      <li>Copia de pasaporte a color</li>
+      <li>Certificado Académico Oficial de calificaciones</li>
+      <li>Oficio a Director y selección de materias</li>
+    </div>
+    <table *ngIf="documentos.length === 0 || documentos.length === 1 || documentos.length === 2">
       <thead>
       <tr>
         <th>Adjuntar Documento</th>
@@ -141,7 +147,11 @@
   <!-- Para el usuario: Ver la Carta de Compromiso en su lista de documentos -->
   <div *ngIf="role === 'admin' && cartaCompromisoSubida">
     <!-- Input para seleccionar el archivo -->
-    <input type="file" (change)="onFileSelected1($event)" />
+    <input id="carta-compromiso" type="file" (change)="onFileSelected1($event)">
+    <label for="carta-compromiso" class="custom-file-upload">
+      <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+      {{ archivoCargado ? 'Archivo cargado' : 'Adjunta tu carta de compromiso' }}
+    </label>
 
     <!-- Botón para guardar el archivo en Firebase -->
     <button (click)="guardarCartaCompromiso()">Guardar Carta de Compromiso</button>
@@ -152,7 +162,10 @@
 
 <!-- Para el usuario (descarga y carga de la carta) -->
 <div *ngIf="role !== 'admin' && documentosAprobados >= 2 && !mostrarEncuesta">
-  <h3>Carta de Compromiso</h3>
+    <h3>Carta de Compromiso</h3>
+  <div class="details-container">
+    <li>Por favor, descargar la carta, firmarla y volverla a subir.</li>
+  </div>
   <div class="tabla">
     <table>
       <thead>

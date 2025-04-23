@@ -151,19 +151,31 @@ export class DocumentosComponent implements OnInit {
 
 generarOficio() {
   if (!this.userEmail) {
-    alert('No se encontró el correo del usuario.');
+    this.alertaService.mostrarAlerta(
+      'error',
+      'Correo no encontrado',
+      'No se encontró el correo del usuario. '
+    );
     return;
   }
 
   this.userDataService.getUserData(this.userEmail).subscribe(userData => {
     if (!userData) {
-      alert('No se encontraron datos personales del usuario.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Datos personales no encontrados',
+        'No se encontraron datos personales del usuario.'
+      );
       return;
     }
 
     this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
       if (!universityData) {
-        alert('No se encontraron datos universitarios del usuario.');
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Datos universitarios no encontrados',
+          'No se encontraron datos universitarios del usuario.'
+        );
         return;
       }
 
@@ -242,7 +254,11 @@ generarOficio() {
           reader.onloadend = () => {
             const base64Pdf = reader.result as string;
             this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
-              alert('Oficio generado y guardado en Firebase.');
+              this.alertaService.mostrarAlerta(
+                'exito',
+                'Oficio exitosamente generado.',
+                'Oficio generado y guardado en Firebase.'
+              );
               this.oficioGenerado = true;
             });
           };
@@ -277,7 +293,11 @@ descargarOficio() {
         link.download = 'Oficio.pdf';
         link.click();
       } else {
-        alert('No se encontró el Oficio.');
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Oficio no encontrado.',
+          'No se encontró el Oficio.'
+        );
       }
     });
   }
@@ -306,7 +326,11 @@ descargarOficio() {
 
   async generarCartaCompromiso() {
     if (!this.userEmail) {
-      alert('No se encontró el correo del usuario.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Correo no encontrado',
+        'No se encontró el correo del usuario. '
+      );
       return;
     }
 
@@ -319,13 +343,21 @@ descargarOficio() {
 
       this.userDataService.getUserData(this.userEmail).subscribe(userData => {
         if (!userData) {
-          alert('No se encontraron datos personales del usuario.');
+          this.alertaService.mostrarAlerta(
+            'error',
+            'Datos personales no encontrados',
+            'No se encontraron datos personales del usuario.'
+          );
           return;
         }
 
         this.userDataService.getUniversityData(this.userEmail).subscribe(async universityData => {
           if (!universityData) {
-            alert('No se encontraron datos universitarios del usuario.');
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Datos universitarios no encontrados',
+              'No se encontraron datos universitarios del usuario.'
+            );
             return;
           }
 
@@ -521,7 +553,11 @@ descargarOficio() {
             reader.onloadend = () => {
               const base64Doc = reader.result as string;
               this.userDataService.saveCartaCompromiso(this.userEmail, base64Doc).subscribe(() => {
-                alert('Carta de Compromiso generada y guardada en Firebase.');
+                this.alertaService.mostrarAlerta(
+                  'exito',
+                  'Carta exitosamente generada.',
+                  'Carta de Compromiso generada y guardada en Firebase.'
+                );
                 this.cartaCompromisoSubida = true;
                 localStorage.setItem("cartaCompromisoSubida", "true");
                 this.userDataService.actualizarEstadoPostulacion(this.userEmail);
@@ -532,7 +568,11 @@ descargarOficio() {
       });
     } catch (error) {
       console.error('Error al generar la carta de compromiso:', error);
-      alert('Error al generar la carta de compromiso. Por favor, inténtelo de nuevo.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Carta no generada.',
+        'Error al generar la carta de compromiso. Por favor, inténtelo de nuevo.'
+      );
     }
 
   }
@@ -588,7 +628,11 @@ descargarOficio() {
         link.download = 'Carta_Compromiso.pdf';
         link.click();
       } else {
-        alert('No se encontró la Carta de Compromiso.');
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Carta no encontrada.',
+          'No se encontró la Carta de Compromiso.'
+        );
       }
     });
   }
@@ -626,7 +670,6 @@ descargarOficio() {
         'Archivo requerido',
         'Debe seleccionar un archivo para subir.'
       );
-      console.log("Alerta presentada")
       return;
     }
 
@@ -649,31 +692,48 @@ descargarOficio() {
         // Actualizar el documento existente en estado "pendiente"
         this.userDataService.updateDocument(this.email, doc.id, nuevoDocumento).subscribe({
           next: () => {
-            alert('Documento actualizado correctamente.');
+            this.alertaService.mostrarAlerta(
+              'exito',
+              'Actualizado',
+              'Documento actualizado correctamente.'
+            );
             this.descripcion = '';
             this.selectedFile = null;
             this.obtenerDocumentos();
           },
           error: err => {
-            alert('Error al actualizar el documento: ' + err);
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Error al actualizar',
+              'Hubo un error al actualizar el documento: ' + err
+            );
           }
         });
       } else {
         // Crear un nuevo documento
         this.userDataService.saveDocument(this.email, nuevoDocumento).subscribe({
           next: () => {
-            alert('Documento subido correctamente.');
+            this.alertaService.mostrarAlerta(
+              'exito',
+              'Documento subido',
+              'Documento subido correctamente.'
+            );
             this.descripcion = '';
             this.selectedFile = null;
             this.obtenerDocumentos();
           },
           error: err => {
-            alert('Error al subir el documento: ' + err);
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Error al subir',
+              'Hubo un error al subir el documento: ' + err
+            );
           }
         });
       }
     };
   }
+
 
   validarDocumento(doc: any) {
     const data = { ...doc };
@@ -718,7 +778,11 @@ descargarOficio() {
       if (carta?.archivo) {
         this.verDocumento(carta.archivo);
       } else {
-        alert('No se encontró la carta.');
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Carta no encontrada.',
+          'No se encontró la carta, carguela primero.'
+        );
       }
     });
   }
@@ -737,7 +801,11 @@ descargarOficio() {
 
   subirCartaAceptacion() {
     if (!this.selectedCartaFile) {
-      alert('Debe seleccionar un archivo.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Seleccione un archivo.',
+        'Debe seleccionar un archivo antes de subir.'
+      );
       return;
     }
 
@@ -750,13 +818,22 @@ descargarOficio() {
 
     this.userDataService.updateCartaAceptacion(this.email, cartaActualizada).subscribe({
       next: () => {
+        this.alertaService.mostrarAlerta(
+          'exito',
+          'Carta subida exitosamente.',
+          'Carta de Aceptación subida correctamente.'
+        );
         alert('Carta subida correctamente.');
         this.obtenerDocumentos();
         localStorage.setItem("mostrarEncuesta", "true");
         this.mostrarEncuesta = true;
       },
       error: err => {
-        alert('Error al subir la carta: ' + err);
+        this.alertaService.mostrarAlerta(
+          'error',
+          'No se pudo subir la carta.',
+          'Error al subir la carta: ' + err
+        );
       }
     });
   }
@@ -770,7 +847,11 @@ descargarOficio() {
   // Función para guardar el archivo PDF en Firebase
   guardarCartaCompromiso(): void {
     if (!this.selectedFile) {
-      alert('Por favor, seleccione un archivo primero.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Seleccione un archivo.',
+        'Debe seleccionar un archivo antes de subir.'
+      );
       return;
     }
 
@@ -786,18 +867,26 @@ descargarOficio() {
         descripcion: 'Carta de Compromiso',
         archivo: base64Pdf,  // Guardamos el archivo en formato Base64
         fechaIngreso: new Date().toISOString().split('T')[0],
-        estado: 'subido'
+        estado: 'cargado'
       };
 
       // Guardar el archivo en Firebase
       this.userDataService.saveCartaAceptacion(this.userEmail, carta).subscribe({
         next: () => {
-          alert('Carta de Compromiso guardada correctamente.');
+          this.alertaService.mostrarAlerta(
+            'exito',
+            'Carta guardada exitosamente.',
+            'Carta de Compromiso guardada correctamente.'
+          );
           this.obtenerDocumentos();  // Si es necesario, obtén los documentos
 
         },
         error: err => {
-          alert('Error al guardar la carta: ' + err);
+          this.alertaService.mostrarAlerta(
+            'error',
+            'Carta no guardada.',
+            'Error al guardar la carta: ' + err
+          );
         }
       });
     };
@@ -843,7 +932,11 @@ descargarOficio() {
   // Guardar el certificado de notas (en base64)
   async guardarCertificado() {
     if (!this.archivoCertificado) {
-      alert('Por favor, selecciona un archivo.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Por favor, seleccione un archivo.',
+        'Debe seleccionar un archivo antes de subir.'
+      );
       return;
     }
 
@@ -853,14 +946,26 @@ descargarOficio() {
         .subirCertificadoNotas(this.userEmail, base64Pdf)
         .subscribe(
           () => {
-            alert('Certificado de notas guardado exitosamente.');
+            this.alertaService.mostrarAlerta(
+              'exito',
+              'Certificado exitosamente guardado.',
+              'Certificado de notas guardado exitosamente.'
+            );
           },
           (error) => {
-            alert('Error al guardar el certificado: ' + error);
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Certificado no guardado.',
+              'Error al guardar el certificado: ' + error
+            );
           }
         );
     } catch (error) {
-      alert('Error al convertir el archivo a base64: ' + error);
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Archivo no convertido a base64.',
+        'Error al convertir el archivo a base64: ' + error
+      );
     }
   }
 

@@ -11,7 +11,7 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.alerta.exito { background-color: #4caf50; }
+.alerta.exito { background-color:#69c5db}
 .alerta.error { background-color: #f44336; }
 .alerta.info { background-color: #2196f3; }
 
