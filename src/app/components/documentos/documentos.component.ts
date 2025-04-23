@@ -46,7 +46,6 @@ export class DocumentosComponent implements OnInit {
 
   encuestaEnviada = false;
   archivoCertificado!: File | null;
-
   encuestaData: any = null;
 
 

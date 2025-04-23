@@ -81,17 +81,6 @@
         </div>
       </div>
 
-      <app-alerta
-        [visible]="showAlerta"
-        [titulo]="'¡Encuesta exitosamente realizada!'"
-        [mensaje]="'Gracias por completar la encuesta.'"
-        [tipo]="'exito'"
-        [icono]="'🎉'"
-        [autoCerrar]="true"
-        [tiempo]="3000"
-        (cerrado)="showAlerta = false">
-      </app-alerta>
-
       <!-- Navegación -->
       <div class="nav-buttons" *ngIf="totalPages > 1">
         <button type="button" (click)="paginaAnterior()" [disabled]="paginaActual === 0">Anterior</button>
