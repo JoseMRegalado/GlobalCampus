@@ -168,7 +168,7 @@
 </div>
 
 <!-- Para el usuario (descarga y carga de la carta) -->
-<div *ngIf="role !== 'admin' && documentosAprobados >= 2 && !mostrarEncuesta">
+<div *ngIf="role !== 'admin' && documentosAprobados >= 2 && !mostrarEncuesta && !cartaCompromisoSubida">
     <h3>Carta de Compromiso</h3>
   <div class="details-container">
     <li>Por favor, descargar la carta, firmarla y volverla a subir.</li>
@@ -210,7 +210,7 @@
   <button (click)="verDocumento(cartaSubida)">Ver Documento</button>
 </div>
 
-<button *ngIf="mostrarEncuesta && role !== 'admin'" (click)="abrirEncuesta()">Realizar Encuesta</button>
+<button *ngIf="mostrarEncuesta && cartaCompromisoSubida && role !== 'admin'" (click)="abrirEncuesta()">Realizar Encuesta</button>
 
 
 <!-- Para el admin: Subir el certificado de notas -->

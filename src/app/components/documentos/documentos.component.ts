@@ -821,7 +821,6 @@ descargarOficio() {
           'Carta subida exitosamente.',
           'Carta de Aceptación subida correctamente.'
         );
-        alert('Carta subida correctamente.');
         this.obtenerDocumentos();
         localStorage.setItem("mostrarEncuesta", "true");
         this.mostrarEncuesta = true;
