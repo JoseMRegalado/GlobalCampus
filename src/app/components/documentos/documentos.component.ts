@@ -41,7 +41,6 @@ export class DocumentosComponent implements OnInit {
   proceso: string = '';
 
   mostrarEncuesta = false;
-  mostrarModal = false;
 
 
   encuestaEnviada = false;
@@ -906,11 +905,6 @@ descargarOficio() {
     });
   }
 
-
-  cerrarEncuesta(): void {
-    this.mostrarModal = false;
-  }
-
   // Función para seleccionar el archivo del certificado de notas
   onFileSelectedCertificado(event: any) {
     this.archivoCertificado = event.target.files[0];
@@ -927,6 +921,19 @@ descargarOficio() {
       reader.readAsDataURL(file);
     });
   }
+
+  mostrarModal = false;
+
+  ngOnChanges() {
+    if (this.documentos.length === 3) {
+      this.mostrarModal = true;
+
+      setTimeout(() => {
+        this.mostrarModal = false;
+      }, 3000); // Se oculta después de 3 segundos
+    }
+  }
+
 
   // Guardar el certificado de notas (en base64)
   async guardarCertificado() {
