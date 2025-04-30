@@ -314,6 +314,46 @@ export class UserDataService {
     });
   }
 
+  updateCartaCompromiso(email: string, cartaActualizada: any): Observable<void> {
+    return new Observable<void>((observer) => {
+      // Busca el documento de la carta de aceptación que debe actualizarse
+      this.firestore
+        .collection('users')
+        .doc(email)
+        .collection('docs', ref => ref.where('descripcion', '==', 'Carta de Aceptación'))
+        .get()
+        .toPromise()
+        .then((snapshot) => {
+          // @ts-ignore
+          if (!snapshot.empty) {
+            // Obtén el ID del primer documento de carta de aceptación
+            // @ts-ignore
+            const docId = snapshot.docs[0].id;
+
+            // Reemplaza el documento con la nueva carta
+            this.firestore
+              .collection('users')
+              .doc(email)
+              .collection('docs')
+              .doc(docId)
+              .set(cartaActualizada, { merge: true }) // Actualiza el documento existente
+              .then(() => {
+                observer.next();
+                observer.complete();
+              })
+              .catch((error) => {
+                observer.error(error);
+              });
+          } else {
+            observer.error('No se encontró la carta de aceptación para actualizar.');
+          }
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    });
+  }
+
   saveOficio(email: string, base64Pdf: string): Observable<void> {
     const oficio = {
       email,

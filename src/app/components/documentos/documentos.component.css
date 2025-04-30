@@ -134,6 +134,10 @@ input, select{
   display: none;
 }
 
+#carta-aceptacion-archivo{
+  display: none;
+}
+
 #carta-compromiso{
   display: none;
 }
