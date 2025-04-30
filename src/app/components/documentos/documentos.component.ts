@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnChanges, OnInit} from '@angular/core';
 import { UserDataService } from '../../services/user-data.service';
 import { AuthService } from '../../services/login.service';
 import { Observable } from 'rxjs';
@@ -33,6 +33,7 @@ export class DocumentosComponent implements OnInit {
   cartaBase64: string = '';
   cartaEstado: string = '';
   cartaSubida: string | null = null;
+  mostrarModalFelicidades = false;
 
   oficioGenerado: boolean = false;
   cartaCompromisoSubida: boolean = false;
@@ -88,6 +89,7 @@ export class DocumentosComponent implements OnInit {
             this.obtenerProceso(this.email);
             // Verificar si hay una encuesta para ese email
             this.obtenerEncuesta();
+
           }
         });
       }
@@ -154,6 +156,17 @@ export class DocumentosComponent implements OnInit {
         }
       });
       this.certificadoNotasSubido = this.documentos.some(doc => doc.descripcion === "Certificado de Notas");
+      //Aqui se implementa el modal de Felicidades
+
+      if (this.documentos.some(doc => doc.descripcion === "Certificado de Notas") && this.role !== 'admin') {
+        this.mostrarModalFelicidades = true;
+        localStorage.setItem('modalCertificadoMostrado', 'true');
+
+        setTimeout(() => {
+          this.mostrarModalFelicidades = false;
+        }, 4000); // 4 segundos visible
+      }
+
 
     });
   }
@@ -244,6 +257,13 @@ export class DocumentosComponent implements OnInit {
             this.descripcion = '';
             this.selectedFile = null;
             this.obtenerDocumentos();
+            if (this.documentos.length === 3) {
+              this.mostrarModal = true;
+
+              setTimeout(() => {
+                this.mostrarModal = false;
+              }, 5000);
+            }
           },
           error: err => {
             this.alertaService.mostrarAlerta(
@@ -335,7 +355,7 @@ export class DocumentosComponent implements OnInit {
     const cartaActualizada = {
       email: this.email,
       archivo: this.cartaBase64,
-      estado: 'en revisión',
+      estado: 'cargado',
       fechaIngreso: new Date().toISOString().split('T')[0],
     };
 
@@ -448,15 +468,16 @@ export class DocumentosComponent implements OnInit {
 
   mostrarModal = false;
 
-  ngOnChanges() {
+  onDocumentoAgregado() {
     if (this.documentos.length === 3) {
       this.mostrarModal = true;
 
       setTimeout(() => {
         this.mostrarModal = false;
-      }, 3000); // Se oculta después de 3 segundos
+      }, 3000);
     }
   }
+
 
 
   // Guardar el certificado de notas (en base64)

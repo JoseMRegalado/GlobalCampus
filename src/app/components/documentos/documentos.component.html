@@ -41,14 +41,17 @@
       </tr>
       </tbody>
     </table>
-    <!-- Pop-up modal de éxito -->
-    <div class="success-modal" *ngIf="mostrarModal">
-      <div class="modal-content">
-        <h4>¡Postulación exitosamente realizada!</h4>
-        <p>Gracias por postular, sigue con el proceso.</p>
-      </div>
+
+  </div>
+  <!-- Pop-up modal de éxito -->
+  <div class="success-modal" *ngIf="mostrarModal">
+    <div class="modal-content">
+      <h4>¡Postulación exitosamente realizada!</h4>
+      <p>Gracias por postular, por favor estar pendiente de la plataforma y notificaciones para conocer el estado de tu
+        postulación.</p>
     </div>
   </div>
+
 
 
   <h3>Documentos Cargados</h3>
@@ -92,6 +95,14 @@
       </tr>
 
     </table>
+
+    <!-- Pop-up modal de felicitaciones -->
+    <div class="success-modal" *ngIf="mostrarModalFelicidades">
+      <div class="modal-content">
+        <h4>🎉 ¡Felicidades!</h4>
+        <p>Tu certificado de notas ha sido cargado. Gracias por vivir esta experiencia con la UTPL.</p>
+      </div>
+    </div>
   </div>
 
 

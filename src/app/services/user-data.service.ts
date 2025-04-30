@@ -450,7 +450,7 @@ export class UserDataService {
       descripcion: 'Certificado de Notas',
       archivo: base64Pdf,  // Guardando el PDF como base64
       fechaIngreso: new Date().toISOString().split('T')[0],
-      estado: 'subido',
+      estado: 'cargado',
     };
 
     return new Observable<void>((observer) => {
