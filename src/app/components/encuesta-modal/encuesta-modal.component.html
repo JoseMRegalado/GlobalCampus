@@ -37,7 +37,7 @@
             <label>{{ pregunta.label }}</label>
 
             <ng-container [ngSwitch]="pregunta.type">
-              <textarea *ngSwitchCase="'text'" [formControlName]="pregunta.name" [readonly]="soloLectura"></textarea>
+              <input *ngSwitchCase="'text'" [formControlName]="pregunta.name" [readonly]="soloLectura">
 
               <select *ngSwitchCase="'select'" [formControlName]="pregunta.name" [disabled]="soloLectura">
                 <option value="">Seleccione una opción</option>
@@ -81,11 +81,13 @@
         </div>
       </div>
 
+
       <!-- Navegación -->
       <div class="nav-buttons" *ngIf="totalPages > 1">
         <button type="button" (click)="paginaAnterior()" [disabled]="paginaActual === 0">Anterior</button>
-        <button type="button" (click)="paginaSiguiente()">Siguiente</button>
+        <button type="button" (click)="paginaSiguiente()" [disabled]="paginaActual >= totalPages - 1">Siguiente</button>
       </div>
+
 
       <button class="submit-btn" type="submit" *ngIf="paginaActual === totalPages - 1">Enviar encuesta</button>
     </form>

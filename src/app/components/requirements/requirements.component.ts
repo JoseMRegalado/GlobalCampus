@@ -3,6 +3,7 @@ import {of, Subscription, switchMap, take} from "rxjs";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/login.service";
 import {UserDataService} from "../../services/user-data.service";
+import {AlertaService} from "../../services/alert.service";
 interface Step {
   title?: string; // Opcional
   description: string;
@@ -25,7 +26,8 @@ export class RequirementsComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private alertaService: AlertaService,
   ) {}
 
   options: Option[] = [
@@ -187,7 +189,11 @@ export class RequirementsComponent {
       },
       error: (err) => {
         console.error('Error al verificar datos personales:', err);
-        alert('Hubo un error al verificar tu información. Inténtalo de nuevo.');
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Información no verificada.',
+          'Hubo un error al verificar tu información. Inténtalo de nuevo.'
+        );
         // Considera navegar a una página de error o a /personal-data por defecto
         // this.router.navigate(['/personal-data']);
         this.isChecking = false; // Desbloquear el botón en caso de error

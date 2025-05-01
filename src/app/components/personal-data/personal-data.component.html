@@ -60,8 +60,17 @@
         </div>
       </div>
 
+      <div class="declaracion">
+        <input type="checkbox" id="politica" name="declaracion" [(ngModel)]="formData.politica"  required #politica="ngModel">
+        <label for="politica" class="required-label">Acepto la
+          <a href="https://procuraduria.utpl.edu.ec/sitios/documentos/NormativasPublicas/Pol%C3%ADtica%20de%20Movilidad%20Estudiantil.pdf" target="_blank" rel="noopener noreferrer">
+            Política de Movilidad Estudiantil
+          </a>.
+        </label>
+      </div>
+
       <div class="boton">
-        <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin">
+        <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin || !formData.politica">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>

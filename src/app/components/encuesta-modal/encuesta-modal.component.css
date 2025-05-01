@@ -27,6 +27,9 @@
   transform: translate(-50%, -50%); /* 🔥 Lo centra completamente */
   z-index: 1001; /* Asegura que esté sobre todo */
   animation: fadeIn 0.3s ease-in-out;
+  overflow-y: auto;
+  padding-bottom: 80px; /* espacio para los botones */
+
 }
 
 /* 🔹 Estilo para las etiquetas */
@@ -144,6 +147,13 @@
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  padding: 0 25px;
+  background-color: white; /* fondo para que se vea bien */
+
 }
 
 .nav-buttons button {
@@ -166,6 +176,7 @@
 }
 
 .submit-btn {
+  flex: 1;
   width: 30%;
   background-color: #004270;
   color: white;
@@ -183,4 +194,8 @@
 
 .submit-btn:hover {
   background-color: #888888;
+}
+
+.error-msg{
+  color: red;
 }

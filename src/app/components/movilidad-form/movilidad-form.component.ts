@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/login.service';
 import { UserDataService } from '../../services/user-data.service';
+import {AlertaService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-movilidad-form',
@@ -34,7 +35,8 @@ export class MovilidadFormComponent implements OnInit {
     titulacionDestino: '',
     periodoDestino: '',
     paisDestino: '',
-    declaracion: false
+    declaracion: false,
+    politica: false
   };
 
   periods = ['Abril-Agosto 2025', 'Octubre 2025-Febrero 2026', 'Abril-Agosto 2026'];
@@ -147,7 +149,8 @@ export class MovilidadFormComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userDataService: UserDataService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertaService: AlertaService,
   ) {}
 
   ngOnInit() {
@@ -226,13 +229,23 @@ export class MovilidadFormComponent implements OnInit {
       // Si el usuario no es admin, guardar los datos
       this.userDataService.updateUserData(emailToSave, userData).subscribe({
         next: () => this.updateUserProcess(emailToSave),
-        error: (err: any) => alert('Error al actualizar los datos: ' + err.message)
+        error: (err: any) =>
+          this.alertaService.mostrarAlerta(
+            'error',
+            'Error al actualizar los datos.',
+            'No se logró actualizar los datos correctamente.'
+          )
       });
     } else {
       // Si el usuario no es admin y no hay datos, guardarlos
       this.userDataService.saveUserData(userData).subscribe({
         next: () => this.updateUserProcess(emailToSave),
-        error: (err: any) => alert('Error al guardar los datos: ' + err.message)
+        error: (err: any) =>
+        this.alertaService.mostrarAlerta(
+          'error',
+          'No se guardaron los datos correctamente.',
+          'Error al guardar los datos: ' + err.message
+        )
       });
     }
   }

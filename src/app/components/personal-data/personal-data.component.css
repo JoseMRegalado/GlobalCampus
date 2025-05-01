@@ -93,3 +93,11 @@ select {
   color: rgba(4, 65, 112, 1);
   background-color: #E2E2E2;
 }
+
+.declaracion{
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 20px 0;
+  align-items: center;
+  line-height: 20px;
+}

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/login.service';
 import { UserDataService } from '../../services/user-data.service';
+import {AlertaService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-personal-data',
@@ -24,6 +25,7 @@ export class PersonalDataComponent implements OnInit {
     idExpiry: '',
     nationality: '',
     phone: '',
+    politica: false,
   };
 
   hasData: boolean = false; // Indica si ya existen datos en Firebase
@@ -31,7 +33,8 @@ export class PersonalDataComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userDataService: UserDataService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertaService: AlertaService
   ) {}
 
   ngOnInit() {
@@ -101,13 +104,21 @@ export class PersonalDataComponent implements OnInit {
       if (this.hasData) {
         this.userDataService.updateUserData(emailToSave, userData).subscribe({
           error: (err: any) => {
-            alert('Error al actualizar los datos: ' + err.message);
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Error al actualizar',
+              'Hubo un error al actualizar el documento: ' + err.message
+            );
           }
         });
       } else {
         this.userDataService.saveUserData(userData).subscribe({
           error: (err: any) => {
-            alert('Error al guardar los datos: ' + err.message);
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Datos no guardados.',
+              'Error al guardar los datos: ' + err.message
+            );
           }
         });
       }

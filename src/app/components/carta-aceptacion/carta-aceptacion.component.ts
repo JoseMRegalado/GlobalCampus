@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserDataService } from '../../services/user-data.service';
 import { AuthService } from '../../services/login.service';
 import { jsPDF } from 'jspdf';
+import {AlertaService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-carta-aceptacion',
@@ -23,8 +24,9 @@ export class CartaAceptacionComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userDataService: UserDataService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private alertaService: AlertaService
+) {}
 
   ngOnInit() {
     this.authService.getCurrentUser().subscribe(user => {
@@ -81,7 +83,11 @@ export class CartaAceptacionComponent implements OnInit {
   // Generar la carta de aceptación y guardarla en la base de datos
   generatePdf() {
     if (!this.personalData || !this.personalData.firstName) {
-      alert('No hay datos para generar la carta.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'No se encontraron datos.',
+        'No hay datos para generar la carta.'
+      );
       return;
     }
 
@@ -118,11 +124,19 @@ export class CartaAceptacionComponent implements OnInit {
 
       this.userDataService.saveDocumentReference(this.queryUserEmail!, documentData).subscribe({
         next: () => {
-          alert('Carta de aceptación generada y guardada correctamente.');
+          this.alertaService.mostrarAlerta(
+            'exito',
+            'Carta generada exitosamente.',
+            'Carta de Aceptación generada correctamente.'
+          );
           this.loadGeneratedDocument(); // Recargar el documento generado
         },
         error: err => {
-          alert('Error al guardar la carta: ' + err);
+          this.alertaService.mostrarAlerta(
+            'error',
+            'No se guardo la carta correctamente.',
+            'Error al guardar la carta: ' + err
+          );
         }
       });
     };
@@ -136,7 +150,11 @@ export class CartaAceptacionComponent implements OnInit {
       link.download = this.generatedDocument.fileName;
       link.click();
     } else {
-      alert('No hay carta disponible para descargar.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Carta no encontrada.',
+        'No hay carta disponible para descargar.'
+      );
     }
   }
 
@@ -153,7 +171,11 @@ export class CartaAceptacionComponent implements OnInit {
   // Subir el archivo firmado en formato Base64
   uploadSignedPdf() {
     if (!this.queryUserEmail || !this.selectedFile) {
-      alert('Debe seleccionar un archivo para subir.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Seleccione un archivo.',
+        'Debe seleccionar un archivo antes de subir.'
+      );
       return;
     }
 
@@ -174,12 +196,20 @@ export class CartaAceptacionComponent implements OnInit {
       this.userDataService.saveDocumentReference(this.queryUserEmail!, documentData).subscribe({
         next: () => {
           this.pdfUploading = false;
-          alert('Documento firmado subido correctamente.');
+          this.alertaService.mostrarAlerta(
+            'exito',
+            'Documento subido',
+            'Documento firmado subido correctamente.'
+          );
           this.selectedFile = null;
         },
         error: err => {
           this.pdfUploading = false;
-          alert('Error al subir el documento: ' + err);
+          this.alertaService.mostrarAlerta(
+            'error',
+            'No se pudo subir el documento.',
+            'Error al subir el documento: ' + err
+          );
         }
       });
     };

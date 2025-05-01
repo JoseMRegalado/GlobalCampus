@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserDataService } from 'src/app/services/user-data.service';
+import {AlertaService} from "../../services/alert.service";
 
 interface Pregunta {
   name: string;
@@ -30,10 +31,12 @@ export class EncuestaModalComponent implements OnInit {
     private fb: FormBuilder,
     private userDataService: UserDataService,
     private dialogRef: MatDialogRef<EncuestaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { email: string, proceso: string, soloLectura: boolean }
+    private alertaService: AlertaService,
+  @Inject(MAT_DIALOG_DATA) public data: { email: string, proceso: string, soloLectura: boolean }
   ) {
     this.proceso = data.proceso;
     this.soloLectura = data.soloLectura;
+
   }
 
   ngOnInit() {
@@ -100,7 +103,11 @@ export class EncuestaModalComponent implements OnInit {
         this.actualizarPreguntasVisibles();
       }
     } else {
-      alert("Debes responder todas las preguntas antes de continuar.");
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Debes responder todas las preguntas antes de continuar',
+        'Por favor, complete todas las preguntas de la presente página.'
+      );
     }
   }
 
@@ -124,7 +131,11 @@ export class EncuestaModalComponent implements OnInit {
     }
 
     if (!this.encuestaForm.valid) {
-      alert('Por favor, responde todas las preguntas antes de enviar.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Formulario incompleto.',
+        'Por favor, responde todas las preguntas antes de enviar.'
+      );
       this.encuestaForm.markAllAsTouched();
       return;
     }
@@ -135,7 +146,12 @@ export class EncuestaModalComponent implements OnInit {
         this.showAlerta = true;
         setTimeout(() => this.dialogRef.close(), 2500);
       },
-      error: err => alert('Error al guardar la encuesta: ' + err)
+      error: err =>
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Error al guardar la encuesta.',
+          'No se logró guardar la encuesta, por favor intentelo de nuevo.'
+        )
     });
   }
 

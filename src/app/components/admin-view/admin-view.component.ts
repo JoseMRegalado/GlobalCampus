@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import {AlertaService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-admin-view',
@@ -18,7 +19,7 @@ export class AdminViewComponent implements OnInit {
 
   currentView: string = 'incoming';
 
-  constructor(private firestore: AngularFirestore, private router: Router) {}
+  constructor(private firestore: AngularFirestore, private router: Router, private alertaService: AlertaService ) {}
 
   ngOnInit() {
     this.obtenerUsuarios();
@@ -139,7 +140,11 @@ export class AdminViewComponent implements OnInit {
 
   guardarFechas(user: any) {
     if (!user.fechaInicio || !user.fechaFin) {
-      alert('Debes ingresar ambas fechas.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Debes ingresar ambas fechas.',
+        'Por favor ingresa la fecha inicio y fecha fin'
+      );
       return;
     }
 
@@ -149,10 +154,18 @@ export class AdminViewComponent implements OnInit {
       fechaFin: user.fechaFin
     }).then(() => {
       user.fechasGuardadas = true; // Bloqueamos los inputs tras guardar
-      alert('Fechas guardadas correctamente.');
+      this.alertaService.mostrarAlerta(
+        'exito',
+        'Fechas guardadas correctamente.',
+        'Se han guardado las fechas con éxito'
+      );
     }).catch(error => {
       console.error('Error al guardar las fechas:', error);
-      alert('Hubo un error al guardar las fechas.');
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Hubo un error al guardar las fechas.',
+        'No se guardaron correctamente las fechas'
+      );
     });
   }
 

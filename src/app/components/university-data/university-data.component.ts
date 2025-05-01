@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/login.service'; // Servicio de autenticación
 import { UserDataService } from '../../services/user-data.service';
 import {ActivatedRoute} from "@angular/router";
-import {switchMap} from "rxjs"; // Servicio para manejar los datos del usuario
+import {switchMap} from "rxjs";
+import {AlertaService} from "../../services/alert.service"; // Servicio para manejar los datos del usuario
 
 @Component({
   selector: 'app-university-data',
@@ -147,7 +148,8 @@ export class UniversityDataComponent {
   constructor(
     private authService: AuthService,
     private userDataService: UserDataService,
-  private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertaService: AlertaService,
 
 ) {
   }
@@ -203,11 +205,21 @@ export class UniversityDataComponent {
 
       if (this.hasData) {
         this.userDataService.updateUniversityData(this.userEmail, userData).subscribe({
-          error: (err) => alert('Error al actualizar los datos: ' + err),
+          error: (err) =>
+            this.alertaService.mostrarAlerta(
+              'error',
+              'Error al actualizar los datos.',
+              'No se logró actualizar los datos correctamente.' + err
+            )
         });
       } else {
         this.userDataService.saveUniversityData(userData).subscribe({
-          error: (err) => alert('Error al guardar los datos: ' + err),
+          error: (err) =>
+            this.alertaService.mostrarAlerta(
+              'error',
+              'No se guardaron los datos correctamente.',
+              'Error al guardar los datos: ' + err.message
+            )
         });
       }
     }

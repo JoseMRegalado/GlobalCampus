@@ -112,9 +112,17 @@
         <input type="checkbox" id="declaracion" name="declaracion" [(ngModel)]="formData.declaracion"  required>
         <label for="declaracion" class="required-label">Declaro que la información entregada en esta postulación es correcta y completa. Entiendo que la Universidad Técnica Particular de Loja pueda rechazar mi postulación si  la  información entregada por  mi  es  incompleta  o  incorrecta.   Autorizo  a  que  se  solicite  a  mi  Universidad información adicional que pueda respaldar mi postulación.</label>
       </div>
+      <div class="declaracion">
+        <input type="checkbox" id="politica" name="declaracion" [(ngModel)]="formData.politica"  required #politica="ngModel">
+        <label for="politica" class="required-label">Acepto la
+          <a href="https://procuraduria.utpl.edu.ec/sitios/documentos/NormativasPublicas/Pol%C3%ADtica%20de%20Movilidad%20Estudiantil.pdf" target="_blank" rel="noopener noreferrer">
+            Política de Movilidad Estudiantil
+          </a>.
+        </label>
+      </div>
 
       <div class="boton">
-        <button type="submit">
+        <button type="submit" [disabled]="isAdmin || !formData.politica">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>
