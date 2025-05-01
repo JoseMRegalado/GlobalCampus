@@ -33,6 +33,7 @@
           <th>Nombre</th>
           <th>Universidad</th>
           <th>Periodo</th>
+          <th>Comentario</th>
           <th *ngIf="tieneUsuariosAprobados()">Fecha Inicio</th>
           <th *ngIf="tieneUsuariosAprobados()">Fecha Fin</th>
           <th *ngIf="tieneUsuariosAprobados()">Acciones</th>
@@ -45,6 +46,14 @@
           <td>{{ user.firstName }} {{ user.lastName }}</td>
           <td>{{ user.university }}</td>
           <td>{{ user.period }}</td>
+          <td>
+            <input
+              type="text"
+              [(ngModel)]="user.comentario"
+              (blur)="guardarComentario(user)"
+              placeholder="Escribe un comentario..."
+            />
+          </td>
 
           <!-- Fecha Inicio -->
           <td>

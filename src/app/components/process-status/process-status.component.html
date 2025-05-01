@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="container">
-  <h2>Estado de tu Proceso</h2>
+  <h2>Estado de tus Procesos</h2>
 
   <div *ngIf="isLoading" class="loading">
     <p>Cargando datos...</p>
@@ -12,15 +12,33 @@
 
   <div *ngIf="!isLoading && userData && !errorMessage" class="user-info">
     <h3>Información Registrada</h3>
-    <p><strong>Nombre:</strong> {{ userData.firstName || 'N/A' }} {{ userData.lastName || 'N/A' }}</p>
-    <p><strong>Correo:</strong> {{ userData.email || 'N/A' }}</p>
-    <p><strong>Identificación:</strong> {{ userData.idNumber || 'N/A' }}</p>
-    <p><strong>Universidad:</strong> {{ userData.universityName }}</p> <p><strong>Periodo:</strong> {{ userData.period }}</p>  <button class="boton-continuar" (click)="continueProcess()">Continuar Proceso</button>
+
+    <table class="horizontal-table">
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>ID</th>
+        <th>Universidad</th>
+        <th>Periodo</th>
+        <th>Comentario</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{ userData.firstName || 'N/A' }} {{ userData.lastName || 'N/A' }}</td>
+        <td>{{ userData.email || 'N/A' }}</td>
+        <td>{{ userData.idNumber || 'N/A' }}</td>
+        <td>{{ userData.universityName || 'N/A' }}</td>
+        <td>{{ userData.period || 'N/A' }}</td>
+        <td>{{ userData.comentario || 'Sin comentario' }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <button class="boton-continuar" (click)="continueProcess()">Continuar Proceso</button>
   </div>
 
-  <div *ngIf="!isLoading && !userData && !errorMessage">
-    <p>No se encontró información del proceso.</p>
-    <button class="boton-iniciar" routerLink="/personal-data">Iniciar Proceso</button>
-  </div>
+
 
 </div>

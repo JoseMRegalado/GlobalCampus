@@ -127,7 +127,7 @@ input, select{
   align-items: center;
 }
 
-#archivo{
+#archivo, #archivoExtra{
   display: none;
 }
 #notas{

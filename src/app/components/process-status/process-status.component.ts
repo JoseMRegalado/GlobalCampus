@@ -28,19 +28,22 @@ export class ProcessStatusComponent implements OnInit, OnDestroy {
       switchMap(user => {
         if (user && user.email) {
           this.userEmail = user.email;
+
           // Combinar observables para obtener datos personales y universitarios
-          return combineLatest([
+            return combineLatest([
             this.userDataService.getUserData(user.email).pipe(catchError(() => of(null))), // Manejar error si no hay datos personales
             this.userDataService.getUniversityData(user.email).pipe(catchError(() => of(null))), // Manejar error si no hay datos universitarios
-            this.userDataService.getUserData1(user.email).pipe(catchError(() => of({ proceso: 'N/A' }))) // Obtener 'proceso'
+            this.userDataService.getUserData1(user.email).pipe(catchError(() => of({ proceso: 'N/A' }))), // Obtener 'proceso'
+            this.userDataService.getUserData2(user.email).pipe(catchError(() => of({ comentario: 'N/A' }))) // Obtener 'comentario'
           ]).pipe(
-            map(([personalData, universityData, processData]) => {
+            map(([personalData, universityData, processData, comentarioData]) => {
               // Construir el objeto userData combinando la información
               return {
                 ...personalData, // Incluye id, firstName, lastName, email, etc.
                 universityName: universityData?.universityName || 'N/A',
                 period: universityData?.period || 'N/A',
-                proceso: processData?.proceso || 'N/A' // Asegura que 'proceso' esté presente
+                proceso: processData?.proceso || 'N/A', // Asegura que 'proceso' esté presente
+                comentario: comentarioData?.comentario || 'N/A',
               };
             })
           );

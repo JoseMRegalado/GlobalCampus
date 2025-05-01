@@ -105,9 +105,19 @@ export class AdminViewComponent implements OnInit {
       }
 
       // Asignamos los usuarios filtrados
-      this.incomingUsers = incomingUsersData;
+      this.incomingUsers = incomingUsersData.sort((a, b) => {
+        const aSinFechas = !a.fechaInicio || !a.fechaFin;
+        const bSinFechas = !b.fechaInicio || !b.fechaFin;
+        return (aSinFechas === bSinFechas) ? 0 : aSinFechas ? -1 : 1;
+      });
+
       this.outgoingUsers = outgoingUsersData;
-      this.filteredIncomingUsers = incomingUsersData;
+      this.filteredIncomingUsers = incomingUsersData.sort((a, b) => {
+        const aSinFechas = !a.fechaInicio || !a.fechaFin;
+        const bSinFechas = !b.fechaInicio || !b.fechaFin;
+        return (aSinFechas === bSinFechas) ? 0 : aSinFechas ? -1 : 1;
+      });
+
       this.filteredOutgoingUsers = outgoingUsersData;
 
     } catch (error) {
@@ -127,7 +137,8 @@ export class AdminViewComponent implements OnInit {
     const matches = (user: any) => {
       const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
       const id = user.idNumber?.toLowerCase() || '';
-      return fullName.includes(term) || id.includes(term);
+      const university = user.university?.toLowerCase() || '';
+      return fullName.includes(term) || id.includes(term) || university.includes(term);
     };
 
     if (this.currentView === 'incoming') {
@@ -168,6 +179,20 @@ export class AdminViewComponent implements OnInit {
       );
     });
   }
+
+  guardarComentario(user: any) {
+    if (!user.id) return;
+
+    this.firestore.collection('users').doc(user.id).update({
+      comentario: user.comentario || ''
+    }).then(() => {
+      console.log('Comentario guardado correctamente');
+    }).catch(error => {
+      console.error('Error al guardar comentario:', error);
+    });
+  }
+
+
 
   // Método para verificar si al menos un usuario tiene estadoPostulacion 'aprobada'
   tieneUsuariosAprobados(): boolean {

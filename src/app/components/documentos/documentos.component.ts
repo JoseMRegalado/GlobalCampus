@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Footer, SectionType } from 'docx';
 import { saveAs } from 'file-saver';
 import { AlertaService } from '../../services/alert.service';
+import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 @Component({
   selector: 'app-documentos',
@@ -57,9 +58,12 @@ export class DocumentosComponent implements OnInit {
   tieneCartaAceptacion: boolean = false;
   certificadoNotasSubido: boolean = false;
 
+  showDocumentSection: boolean = false;
 
 
-  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute, private dialog: MatDialog, private alertaService: AlertaService  ) {}
+
+
+  constructor(private userDataService: UserDataService, private authService: AuthService, private route: ActivatedRoute, private dialog: MatDialog, private alertaService: AlertaService, private firestore: AngularFirestore  ) {}
 
   ngOnInit() {
     this.authService.getCurrentUser().subscribe(user => {
@@ -80,6 +84,8 @@ export class DocumentosComponent implements OnInit {
                 this.obtenerProceso(this.userEmail);
                 // Verificar si hay una encuesta para ese email
                 this.obtenerEncuesta();
+                // Verificar si el usuario normal tiene proceso
+                this.verificarProceso(this.userEmail);
               }
             });
           } else {
@@ -89,10 +95,29 @@ export class DocumentosComponent implements OnInit {
             this.obtenerProceso(this.email);
             // Verificar si hay una encuesta para ese email
             this.obtenerEncuesta();
+            // Verificar si el usuario normal tiene proceso
+            this.verificarProceso(this.email);
 
           }
         });
       }
+    });
+  }
+
+  verificarProceso(email: string) {
+    this.firestore.collection('users').doc(email).get().toPromise().then(doc => {
+      // @ts-ignore
+      if (doc.exists) {
+        // @ts-ignore
+        const userData = doc.data() as any;
+        if (userData.proceso) {
+          this.showDocumentSection = true;
+        } else {
+          this.showDocumentSection = false;
+        }
+      }
+    }).catch(error => {
+      console.error('Error al verificar el proceso del usuario:', error);
     });
   }
 
@@ -647,6 +672,7 @@ export class DocumentosComponent implements OnInit {
         };
       });
     });
+
 
 
   }

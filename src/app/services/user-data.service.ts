@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable, of } from 'rxjs';
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -416,6 +416,7 @@ export class UserDataService {
     });
   }
 
+
   // Guardar la encuesta en Firestore en la subcolección 'encuesta'
   saveSurvey(email: string, surveyData: any): Observable<void> {
     return new Observable<void>((observer) => {
@@ -442,6 +443,23 @@ export class UserDataService {
         })
       );
   }
+
+  getUserData2(email: string): Observable<{ comentario: string }> {
+    return this.firestore
+      .collection('users')
+      .doc(email)
+      .snapshotChanges()
+      .pipe(
+        map(snapshot => {
+          const data = snapshot.payload.data() as any;
+          return data && data['comentario']
+            ? { comentario: data['comentario'] }
+            : { comentario: '' };
+        })
+      );
+  }
+
+
 
   // Función para subir el certificado de notas
   subirCertificadoNotas(email: string, base64Pdf: string): Observable<void> {

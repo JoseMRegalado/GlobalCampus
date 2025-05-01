@@ -122,7 +122,7 @@
       </div>
 
       <div class="boton">
-        <button type="submit" [disabled]="isAdmin || !formData.politica">
+        <button [routerLink]="['/docs']" type="submit" [disabled]="isAdmin || !formData.politica">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>
