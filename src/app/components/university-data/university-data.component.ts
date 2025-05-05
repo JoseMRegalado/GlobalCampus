@@ -39,7 +39,8 @@ export class UniversityDataComponent {
   ];
 
   modalities = ['Presencial', 'Abierta y a Distancia'];
-  periods = ['Abril-Agosto 2025', 'Octubre 2025-Febrero 2026', 'Abril-Agosto 2026'];
+  periods: string[] = [];
+
   spanishLevels = ['Nativo', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   mobilityModalities = ['Presencial', 'Virtual'];
   mobilityTypes = [
@@ -187,6 +188,11 @@ export class UniversityDataComponent {
         this.loadUserData(this.userEmail);
       }
     });
+    this.userDataService.getPeriods().subscribe(periodList => {
+      this.periods = periodList;
+      console.log('📅 Periodos cargados desde Firebase:', this.periods);
+    });
+
   }
 
 

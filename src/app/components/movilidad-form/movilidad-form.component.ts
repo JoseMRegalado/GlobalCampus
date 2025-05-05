@@ -247,6 +247,7 @@ export class MovilidadFormComponent implements OnInit {
           'Error al guardar los datos: ' + err.message
         )
       });
+      this.updateUserProcess(emailToSave);
     }
   }
 
@@ -272,11 +273,14 @@ export class MovilidadFormComponent implements OnInit {
           this.userDataService.updateUserProcess(email, 'outgoing').subscribe({
             error: (err: any) => console.error('Error al actualizar el proceso del usuario:', err)
           });
+          this.userDataService.updateUserRole(email, 'user').subscribe({
+            error: (err: any) => console.error('Error al actualizar el role del usuario:', err)
+          });
         } else {
           // Si el documento no existe, crearlo o manejar el error
           console.error('Error: El documento del usuario no existe.');
           // Opcionalmente puedes crear un documento nuevo si lo deseas:
-          this.userDataService.saveUserData({ email, proceso: 'outgoing' }).subscribe({
+          this.userDataService.saveUserData({ email, proceso: 'outgoing', role: 'user' }).subscribe({
             next: () => console.log('Documento creado con éxito.'),
             error: (err: any) => console.error('Error al crear el documento del usuario:', err)
           });

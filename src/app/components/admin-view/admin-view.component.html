@@ -9,6 +9,10 @@
       <button (click)="setView('outgoing')" [class.active]="currentView === 'outgoing'">
         Outgoing
       </button>
+      <button (click)="setView('periodos')" [class.active]="currentView === 'periodos'">
+        Periodos
+      </button>
+
     </nav>
 
     <!-- Tabla de Incoming -->
@@ -22,7 +26,8 @@
           class="search-input"
           placeholder="Buscar"
           [(ngModel)]="searchTerm"
-          (input)="filterUsers()"/>
+          (input)="filterUsers()"
+        />
         <img src="assets/img/buscar.svg" alt="Logo buscar">
       </div>
 
@@ -100,7 +105,6 @@
           [(ngModel)]="searchTerm"
           (input)="filterUsers()"/>
           <img src="assets/img/buscar.svg" alt="Logo buscar">
-        />
       </div>
       <table>
         <thead>
@@ -125,5 +129,24 @@
         </tbody>
       </table>
     </div>
+    <!-- Sección de Periodos -->
+    <div *ngIf="currentView === 'periodos'" class="seccion">
+      <h3>Gestión de Periodos</h3>
+
+      <!-- Formulario para añadir nuevo periodo -->
+      <div class="add-period">
+        <input type="text" [(ngModel)]="nuevoPeriodo" placeholder="Nuevo periodo (Ej: 2025-I)">
+        <button (click)="agregarPeriodo()">Agregar</button>
+      </div>
+
+      <!-- Lista de periodos existentes -->
+      <ul class="period-list">
+        <li *ngFor="let periodo of periodos">
+          {{ periodo.name }}
+          <button (click)="eliminarPeriodo(periodo.id)">Eliminar</button>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </div>

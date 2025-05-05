@@ -103,3 +103,25 @@ th {
   flex: 1;
   background-color: transparent;
 }
+
+
+.add-period {
+  margin-bottom: 15px;
+}
+
+.add-period input {
+  padding: 5px;
+  margin-right: 8px;
+}
+
+.period-list {
+  list-style: none;
+  padding: 0;
+}
+
+.period-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+

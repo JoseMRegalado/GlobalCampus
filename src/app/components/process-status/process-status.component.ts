@@ -75,7 +75,7 @@ export class ProcessStatusComponent implements OnInit, OnDestroy {
     if (this.userEmail) {
       // Navega a personal-data. Puedes pasar el email si es necesario,
       // aunque el componente personal-data probablemente también use AuthService.
-      this.router.navigate(['/personal-data']);
+      this.router.navigate(['/docs']);
       // O si necesitas pasar el email como parámetro (ej, si personal-data no usa AuthService):
       // this.router.navigate(['/personal-data'], { queryParams: { userEmail: this.userEmail } });
     } else {

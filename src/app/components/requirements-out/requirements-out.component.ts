@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/login.service';
+import { UserDataService } from '../../services/user-data.service';
+import { AlertaService } from '../../services/alert.service';
+import { Subscription, of, switchMap, take } from 'rxjs';
 
 interface Step {
   title?: string; // Opcional
@@ -18,7 +23,13 @@ interface Option {
   styleUrls: ['./requirements-out.component.css']
 })
 
-export class RequirementsOutComponent {
+export class RequirementsOutComponent implements OnDestroy {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private userDataService: UserDataService,
+    private alertaService: AlertaService
+  ) {}
 
   options: Option[] = [
     {
@@ -136,6 +147,49 @@ export class RequirementsOutComponent {
   // Método para seleccionar una opción
   selectOption(option: Option) {
     this.selectedOption = option;
+  }
+
+  isChecking: boolean = false;
+  private processSubscription: Subscription | null = null;
+
+  startOrContinueProcess() {
+    if (!this.selectedOption || this.isChecking) return;
+
+    this.isChecking = true;
+
+    this.processSubscription = this.authService.getCurrentUser().pipe(
+      take(1),
+      switchMap(user => {
+        if (user && user.email) {
+          return this.userDataService.getUserData(user.email);
+        } else {
+          console.warn('Usuario no logueado al intentar iniciar proceso.');
+          return of(null);
+        }
+      })
+    ).subscribe({
+      next: (personalData) => {
+        if (personalData) {
+          this.router.navigate(['/process-status']);
+        } else {
+          this.router.navigate(['/out']);
+        }
+        this.isChecking = false;
+      },
+      error: (err) => {
+        console.error('Error al verificar datos personales:', err);
+        this.alertaService.mostrarAlerta(
+          'error',
+          'Información no verificada.',
+          'Hubo un error al verificar tu información. Inténtalo de nuevo.'
+        );
+        this.isChecking = false;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.processSubscription?.unsubscribe();
   }
 
 }

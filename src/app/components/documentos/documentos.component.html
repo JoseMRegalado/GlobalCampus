@@ -13,7 +13,7 @@
       <h4>Para realizar tu postulación carga los siguientes documentos:</h4>
       <li>Copia de pasaporte a color</li>
       <li>Certificado Académico Oficial de calificaciones</li>
-      <li>Oficio a Director y selección de materias</li>
+      <li>Contrato de Estudios</li>
     </div>
     <table *ngIf="documentos.length === 0 || documentos.length === 1 || documentos.length === 2">
       <thead>
@@ -194,6 +194,38 @@
     </div>
   </div>
 
+  <div *ngIf="cartaAceptacionSubida && !cartaCompromisoSubida">
+    <h3>Carta de Aceptación</h3>
+    <div class="details-container">
+      <li>Por favor, descarga la carta de aceptación, colocar las materias y volver a subirla en formato pdf.</li>
+    </div>
+    <div class="tabla">
+      <table>
+        <thead>
+        <tr>
+          <th>Subir Carta Firmada</th>
+          <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>
+            <div class="adjuntar-carta">
+              <input id="carta-aceptacion-archivo" type="file" (change)="onCartaAceptacionSelected($event)">
+              <label for="carta-aceptacion-archivo" class="custom-file-upload">
+                <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+                {{ archivoAceptacionCargado ? 'Archivo cargado' : 'Adjunta tu carta de aceptación' }}
+              </label>
+              <button (click)="subirCartaCompromiso()">Subir</button>
+            </div>
+          </td>
+          <td>{{ cartaAceptacionEstado || 'Pendiente' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 
 
 
@@ -275,11 +307,13 @@
 </div>
 
 </div>
+
+
 <div *ngIf="showDocumentSection">
   <!-- ======================= SUBIDA DE PRIMEROS 5 DOCUMENTOS (USUARIO) ======================= -->
 
-  <h3 *ngIf="role !== 'admin' && documentos.length < 5">Carga tu nuevo documento</h3>
-  <div class="tabla" *ngIf="role !== 'admin' && documentos.length < 5">
+  <h3 *ngIf="role !== 'admin' && documentos.length < 4">Carga tu nuevo documento</h3>
+  <div class="tabla" *ngIf="role !== 'admin' && documentos.length < 4">
     <div class="details-container">
       <h4>Para realizar tu postulación carga los siguientes documentos:</h4>
       <li>Copia de pasaporte a color</li>
@@ -365,7 +399,7 @@
 
   <!-- ======================= CARGA DE CARTA COMPROMISO POR ADMIN ======================= -->
 
-  <div *ngIf="role === 'admin' && documentosAprobados >= 5 && !cartaCompromisoSubida">
+  <div *ngIf="role === 'admin' && documentosAprobados >= 4 && !cartaCompromisoSubida">
     <h3>Subir Carta de Compromiso</h3>
     <input id="carta-compromiso" type="file" (change)="onFileSelected1($event)">
     <label for="carta-compromiso" class="custom-file-upload">
@@ -377,32 +411,23 @@
 
   <!-- ======================= DESCARGA Y SUBIDA DE CARTA FIRMADA POR USUARIO ======================= -->
 
-  <div *ngIf="role !== 'admin' && documentosAprobados >= 5  && !cartaCompromisoSubida">
+  <div *ngIf="role !== 'admin' && documentosAprobados <= 4  && cartaCompromisoSubida">
     <h3>Carta de Compromiso</h3>
     <div class="details-container">
-      <li>Por favor, descarga la carta, fírmala y vuelve a subirla.</li>
+      <li>Por favor, descarga la carta, fírmala y vuelve a subirla en el casillero superior.</li>
     </div>
 
     <table>
       <thead>
       <tr>
         <th>Descargar Carta</th>
-        <th>Subir Carta Firmada</th>
-        <th>Estado</th>
+
       </tr>
       </thead>
       <tbody>
       <tr>
         <td><button (click)="descargarCartaAceptacion()">Descargar Carta</button></td>
-        <td>
-          <input id="carta-archivo" type="file" (change)="onCartaSelected($event)">
-          <label for="carta-archivo" class="custom-file-upload">
-            <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-            {{ archivoCargado ? 'Archivo cargado' : 'Adjunta tu carta firmada' }}
-          </label>
-          <button (click)="subirCartaAceptacion()">Subir</button>
-        </td>
-        <td>{{ cartaEstado || 'Pendiente' }}</td>
+
       </tr>
       </tbody>
     </table>
@@ -410,8 +435,8 @@
 
   <!-- ======================= SUBIDA DE 2 DOCUMENTOS ADICIONALES (USUARIO) ======================= -->
 
-  <h3 *ngIf="role !== 'admin' && documentos.length >= 5 && cartaCompromisoSubida && documentos.length <= 7">Carga tus documentos adicionales</h3>
-  <div class="tabla" *ngIf="role !== 'admin' && documentos.length >= 5 && cartaCompromisoSubida && documentos.length <= 7">
+  <h3 *ngIf="role !== 'admin' && documentos.length >= 4 && cartaCompromisoSubida && documentos.length <= 6">Carga tus documentos adicionales</h3>
+  <div class="tabla" *ngIf="role !== 'admin' && documentos.length >= 4 && cartaCompromisoSubida && documentos.length <= 6">
     <table>
       <thead>
       <tr>
@@ -484,7 +509,7 @@
 
   <!-- ======================= ENCUESTA PARA USUARIO ======================= -->
 
-  <div *ngIf="role !== 'admin' && documentos.length === 8 && documentosAprobados === 7 && cartaCompromisoSubida">
+  <div *ngIf="role !== 'admin' && documentos.length === 7 && documentosAprobados === 7 && cartaCompromisoSubida && !encuestaEnviada">
     <h3>¡Todo listo!</h3>
     <button (click)="abrirEncuesta()">Realizar Encuesta</button>
   </div>

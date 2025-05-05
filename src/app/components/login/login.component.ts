@@ -23,7 +23,7 @@ export class LoginComponent {
         if (role === 'admin') {
           this.router.navigate(['/admin']);
         } else {
-          this.router.navigate(['/personal-data']);
+          this.router.navigate(['/home']);
         }
       });
     }).catch(error => alert(error.message));
@@ -38,13 +38,13 @@ export class LoginComponent {
           if (role === 'admin') {
             this.router.navigate(['/admin']);
           } else {
-            this.router.navigate(['/personal-data']);
+            this.router.navigate(['/home']);
           }
         });
       } else {
         // Handle the case where the email is not available
         console.error('Email not found after Google login.');
-        this.router.navigate(['/personal-data']); // Or some other default route
+        this.router.navigate(['/home']); // Or some other default route
       }
     }).catch(error => alert(error.message));
   }

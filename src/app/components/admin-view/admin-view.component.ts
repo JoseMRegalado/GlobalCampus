@@ -19,10 +19,15 @@ export class AdminViewComponent implements OnInit {
 
   currentView: string = 'incoming';
 
+  periodos: any[] = [];
+  nuevoPeriodo: string = '';
+
+
   constructor(private firestore: AngularFirestore, private router: Router, private alertaService: AlertaService ) {}
 
   ngOnInit() {
     this.obtenerUsuarios();
+    this.obtenerPeriodos();
   }
 
   setView(view: string) {
@@ -61,10 +66,12 @@ export class AdminViewComponent implements OnInit {
           for (const doc of personalSnapshot.docs) {
             const data = doc.data() as any;
             if (doc.id !== 'default') {
-              userData.idNumber = data?.idNumber || 'N/A';
-              userData.firstName = data?.firstName || 'N/A';
-              userData.lastName = data?.lastName || 'N/A';
+              userData.idNumber = data?.idNumber || data?.cedula || 'N/A';
+              userData.firstName = data?.firstName || data?.nombres || 'N/A';
+              userData.lastName = data?.lastName || data?.apellidos || 'N/A';
               userData.email = data?.email || 'N/A';
+              userData.university = data?.universityName || data?.universidadDestino || 'N/A';
+              userData.period = data?.period || data?.periodoMovilidad || 'N/A';
             }
           }
         }
@@ -75,8 +82,8 @@ export class AdminViewComponent implements OnInit {
         if (univSnapshot && !univSnapshot.empty) {
           const univDoc = univSnapshot.docs[0]; // Obtenemos el primer documento
           const univData = univDoc.data() as any;
-          userData.university = univData?.universityName || 'N/A';
-          userData.period = univData?.period || 'N/A';
+          userData.university = univData?.universityName || univData?.universidadDestino || 'N/A';
+          userData.period = univData?.period || univData?.periodoMovilidad || 'N/A';
         } else {
           userData.university = 'N/A';
           userData.period = 'N/A';
@@ -197,5 +204,36 @@ export class AdminViewComponent implements OnInit {
   // Método para verificar si al menos un usuario tiene estadoPostulacion 'aprobada'
   tieneUsuariosAprobados(): boolean {
     return this.incomingUsers.some(user => user.estadoPostulacion === 'aprobada');
+  }
+
+  // Obtener los periodos desde la colección 'periodos'
+  obtenerPeriodos() {
+    this.firestore.collection('periods').snapshotChanges().subscribe((res) => {
+      this.periodos = res.map((doc) => {
+        const data = doc.payload.doc.data() as { name: string };
+        return {
+          id: doc.payload.doc.id,
+          name: data.name
+        };
+      });
+    });
+
+  }
+
+// Agregar nuevo periodo
+  agregarPeriodo() {
+    const name = this.nuevoPeriodo.trim();
+    if (!name) return;
+
+    this.firestore.collection('periods').add({ name }).then(() => {
+      this.nuevoPeriodo = '';
+    });
+  }
+
+// Eliminar un periodo
+  eliminarPeriodo(id: string) {
+    this.firestore.collection('periods').doc(id).delete().then(() => {
+      console.log('Periodo eliminado');
+    });
   }
 }

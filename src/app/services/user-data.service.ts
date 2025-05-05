@@ -156,9 +156,24 @@ export class UserDataService {
       });
   }
 
-  updateUserProcess(email: string, process: string): Observable<void> {
+  getPeriods(): Observable<string[]> {
+    return this.firestore.collection('periods').valueChanges().pipe(
+      map((docs: any[]) => docs.map(doc => doc.name)) // suponiendo que cada doc tiene un campo 'name'
+    );
+  }
+
+  updateUserProcess(email: string, proceso: string): Observable<void> {
     return new Observable(observer => {
-      this.firestore.collection('users').doc(email).update({ process }).then(() => {
+      this.firestore.collection('users').doc(email).update({ proceso }).then(() => {
+        observer.next();
+        observer.complete();
+      }).catch(err => observer.error(err));
+    });
+  }
+
+  updateUserRole(email: string, role: string): Observable<void> {
+    return new Observable(observer => {
+      this.firestore.collection('users').doc(email).update({ role }).then(() => {
         observer.next();
         observer.complete();
       }).catch(err => observer.error(err));

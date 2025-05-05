@@ -1,5 +1,5 @@
 <app-header></app-header>
-<app-bar></app-bar>
+<app-bar *ngIf="hasData"></app-bar>
 
 <div class="personal-data-container">
   <h2>Formulario de Movilidad</h2>
@@ -122,7 +122,7 @@
       </div>
 
       <div class="boton">
-        <button [routerLink]="['/docs']" type="submit" [disabled]="isAdmin || !formData.politica">
+        <button [routerLink]="['/docs']" type="submit" (click)="saveOrUpdateForm()" [disabled]="isAdmin || !formData.politica">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>

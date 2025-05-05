@@ -17,7 +17,12 @@
   <div *ngIf="selectedOption" class="details-container">
     <div class="titulo-boton">
       <h2>{{ selectedOption.name }}</h2>
-      <button class="boton" routerLink="/out">Inicia tu proceso aquí</button>
+      <button
+        class="boton"
+        (click)="startOrContinueProcess()"
+        [disabled]="isChecking">
+        {{ isChecking ? 'Verificando...' : 'Inicia tu proceso aquí' }}
+      </button>
     </div>
 
     <h3>INDICACIONES</h3>
