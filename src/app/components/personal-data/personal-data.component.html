@@ -68,6 +68,14 @@
           </a>.
         </label>
       </div>
+      <div class="declaracion">
+        <input type="checkbox" id="politicaD" name="declaracion" [(ngModel)]="formData.politica"  required #politica="ngModel">
+        <label for="politicaD" class="required-label">Acepto la
+          <a href="https://procuraduria.utpl.edu.ec/sitios/documentos/NormativasPublicas/Pol%C3%ADtica%20de%20Privacidad%20de%20la%20Universidad%20T%C3%A9cnica%20Particular%20de%20Loja.pdf" target="_blank" rel="noopener noreferrer">
+            Política de Privacidad
+          </a>.
+        </label>
+      </div>
 
       <div class="boton">
         <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin || !formData.politica">
