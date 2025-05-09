@@ -6,7 +6,7 @@ import {ActivatedRoute} from "@angular/router";
 import { jsPDF } from 'jspdf';
 import {EncuestaModalComponent} from "../encuesta-modal/encuesta-modal.component";
 import { MatDialog } from '@angular/material/dialog';
-import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Footer, SectionType } from 'docx';
+import { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Footer, SectionType, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import { AlertaService } from '../../services/alert.service';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
@@ -554,12 +554,12 @@ export class DocumentosComponent implements OnInit {
   }
 
 
-  generarOficio() {
+  async generarOficio() {
     if (!this.userEmail) {
       this.alertaService.mostrarAlerta(
         'error',
         'Correo no encontrado',
-        'No se encontró el correo del usuario. '
+        'No se encontró el correo del usuario.'
       );
       return;
     }
@@ -584,97 +584,232 @@ export class DocumentosComponent implements OnInit {
           return;
         }
 
-        const pdf = new jsPDF();
-        const fechaActual = this.formatFecha();
+        try {
+          const fechaActual = this.formatFecha();
 
-        // **Renderizar Logo en formato PNG**
-        const logo = new Image();
-        logo.src = 'assets/img/logo.png'; // Cambiado a PNG
-        logo.onload = () => {
-          // **Agregar Logo PNG en el encabezado**
-          pdf.addImage(logo, 'PNG', 150, 10, 40, 30); // Ajusta el tamaño según sea necesario
+          const logoBuffer = await this.cargarImagenComoBuffer('assets/img/logo.png');
+          const firmaBuffer = await this.cargarImagenComoBuffer('assets/img/firma.png');
 
-          // **Encabezado**
-          pdf.setFont('helvetica', 'normal');
-          pdf.setFontSize(12);
-          pdf.text(fechaActual, 20, 40);
-          pdf.text('DGRI-GLOBAL-XXX-2024', 20, 45);
-
-          pdf.text('Dr.', 20, 55);
-          pdf.text('Daniel Guamán Coronel', 20, 60);
-          pdf.setFont('helvetica', 'bold');
-          pdf.text('Director de la Carrera de Tecnologías de la Información', 20, 65);
-
-          let modalidad;
-
-          if (universityData.mobilityModality === "Presencial") {
-            modalidad = "Presencial";
-          } else if (universityData.mobilityModality === "Virtual") {
-            modalidad = "Abierta o a Distancia";
-          } else {
-            modalidad = "Modalidad no especificada"; // O algún valor por defecto
-          }
+          const modalidad = universityData.mobilityModality === 'Presencial'
+            ? 'Presencial'
+            : universityData.mobilityModality === 'Virtual'
+              ? 'Abierta o a Distancia'
+              : 'Modalidad no especificada';
 
           const textoOficio = `Por medio del presente comunico a usted la postulación presentada por el/la estudiante ${userData.firstName} ${userData.lastName}, con identificación N. ${userData.idNumber} de la ${universityData.universityName}, quien desea realizar su Programa de ${universityData.mobilityType} ${universityData.mobilityModality} en nuestra Universidad en la Modalidad ${modalidad}, en el período ${universityData.period}.`;
 
-          pdf.setFont('helvetica', 'normal');
-          pdf.text(textoOficio, 20, 80, { maxWidth: 170, align: "justify"});
-
-          // **Materia a validar**
           const materia = universityData.materia || 'Desarrollo basado en Plataformas Móviles';
-          pdf.text(
-            `El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada por parte de la Titulación, para proceder con la matrícula y beca:`,
-            20, 105, { maxWidth: 170, align: "justify"}
-          );
 
-          pdf.setFont('helvetica', 'bold');
-          pdf.text(materia, 20, 120);
+          const header = new Header({
+            children: [
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: logoBuffer,
+                    transformation: {
+                      width: 130,
+                      height: 70
+                    },
+                    type: 'png',
+                  })
+                ],
+                alignment: AlignmentType.RIGHT
+              })
+            ]
+          });
 
-          pdf.setFont('helvetica', 'normal');
-          pdf.text('Envío la documentación presentada, para que sea analizada y se pueda dar una respuesta y una aceptación formal.', 20, 130, { maxWidth: 170 });
-          pdf.text('Por la atención a la presente, le anticipo mis más sinceros agradecimientos.', 20, 145, { maxWidth: 170 });
-          pdf.text('Atentamente,', 20, 165);
 
-          // **Firma debajo de "Atentamente"**
-          const firma = new Image();
-          firma.src = 'assets/img/firma.png'; // Ruta del archivo de la firma en PNG
-          firma.onload = () => {
-            pdf.addImage(firma, 'PNG', 20, 170, 40, 20); // Ajusta las coordenadas y tamaño según sea necesario
 
-            // **Firma final**
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('Silvia Cristina Luzuriaga Muñoz', 20, 200);
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(9);
-            pdf.text('Coordinadora de Internacionalización y Movilidad', 20, 205);
-            pdf.text('Programa de Movilidad Estudiantil', 20, 209);
-            pdf.text('Global Campus', 20, 213);
-            pdf.text('Dirección Relaciones Interinstitucionales.', 20, 217);
-            pdf.text('Ext. 2442', 20, 221);
+          const doc = new Document({
+            sections: [{
+              properties: {
+                type: SectionType.NEXT_PAGE
+              },
+              headers: {
+                default: header,
+              },
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: fechaActual, size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "DGRI-GLOBAL-XXX-2024", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
 
-            // **Guardar en Firebase**
-            const pdfBlob = pdf.output('blob');
-            const reader = new FileReader();
-            reader.readAsDataURL(pdfBlob);
-            reader.onloadend = () => {
-              const base64Pdf = reader.result as string;
-              this.userDataService.saveOficio(this.userEmail, base64Pdf).subscribe(() => {
-                this.alertaService.mostrarAlerta(
-                  'exito',
-                  'Oficio exitosamente generado.',
-                  'Oficio generado y guardado en Firebase.'
-                );
-                this.oficioGenerado = true;
-                this.mostrarBotones = false;
-              });
-            };
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Dr.", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "XXXXX XXXXX XXXXX", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Director de la Carrera de ", size: 24, bold: true })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+
+                new Paragraph({
+                  alignment: AlignmentType.JUSTIFIED,
+                  children: [
+                    new TextRun({ text: textoOficio, size: 24 })
+                  ],
+                  spacing: { after: 200 }
+                }),
+
+                new Paragraph({
+                  alignment: AlignmentType.JUSTIFIED,
+                  children: [
+                    new TextRun({ text: "El/la estudiante en su contrato de estudios ha seleccionado la siguiente materia, misma que debe ser validada por parte de la Titulación, para proceder con la matrícula y beca:", size: 24 })
+                  ],
+                  spacing: { after: 100 }
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: materia, size: 24, bold: true})
+                  ],
+                  spacing: { after: 200 }
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+
+                new Paragraph({
+                  alignment: AlignmentType.JUSTIFIED,
+                  children: [
+                    new TextRun({ text: "Envío la documentación presentada, para que sea analizada y se pueda dar una respuesta y una aceptación formal.", size: 24 })
+                  ],
+                  spacing: { after: 100 }
+                }),
+                new Paragraph({
+                  alignment: AlignmentType.JUSTIFIED,
+                  children: [
+                    new TextRun({ text: "Por la atención a la presente, le anticipo mis más sinceros agradecimientos.", size: 24 })
+                  ],
+                  spacing: { after: 100 }
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Atentamente,", size: 24 })
+                  ],
+                  spacing: { after: 100 }
+                }),
+
+                new Paragraph({
+                  children: [
+                    new ImageRun({
+                      data: firmaBuffer,
+                      transformation: { width: 120, height: 65 }, type: 'png'
+                    })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "", size: 24 })
+                  ]
+                }),
+
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Silvia Cristina Luzuriaga Muñoz", size: 20, bold: true })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Coordinadora de Internacionalización y Movilidad", size: 20})
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Programa de Movilidad Estudiantil", size: 20 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Global Campus", size: 20 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Dirección Relaciones Interinstitucionales.", size: 20 })
+                  ]
+                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: "Ext. 2442", size: 20 })
+                  ]
+                })
+              ]
+            }]
+          });
+
+          const buffer = await Packer.toBlob(doc);
+          saveAs(buffer, "Oficio_Movilidad.docx");
+
+          const reader = new FileReader();
+          reader.readAsDataURL(buffer);
+          reader.onloadend = () => {
+            const base64Word = reader.result as string;
+            this.userDataService.saveOficio(this.userEmail, base64Word).subscribe(() => {
+              this.alertaService.mostrarAlerta(
+                'exito',
+                'Oficio Word generado',
+                'El oficio fue guardado correctamente.'
+              );
+              this.oficioGenerado = true;
+              this.mostrarBotones = false;
+            });
           };
-        };
+
+        } catch (error) {
+          console.error("Error al generar el oficio:", error);
+          this.alertaService.mostrarAlerta(
+            'error',
+            'Error al generar el documento',
+            'Hubo un problema al generar el documento Word.'
+          );
+        }
       });
     });
-
-
-
   }
 
 // Función para formatear la fecha correctamente
