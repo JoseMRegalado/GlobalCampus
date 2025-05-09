@@ -195,6 +195,19 @@ export class UniversityDataComponent {
 
   }
 
+  isFormValid(): boolean {
+    for (const key in this.formData) {
+      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+        const value = this.formData[key as keyof typeof this.formData];
+        // Verifica si el campo es una cadena no vacía
+        if (!value || value.trim() === '') return false;
+      }
+    }
+    return true;
+  }
+
+
+
 
   loadUserData(email: string) {
     this.userDataService.getUniversityData(email).subscribe(data => {

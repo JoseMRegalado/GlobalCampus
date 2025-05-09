@@ -41,21 +41,21 @@
         </div>
         <div class="campo">
           <label for="tipoEstudiante" class="required-label">Tipo de estudiante</label>
-          <select id="tipoEstudiante" name="tipoEstudiante" [(ngModel)]="formData.tipoEstudiante" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable" required>
+          <select id="tipoEstudiante" name="tipoEstudiante" [(ngModel)]="formData.tipoEstudiante" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable || isAdmin" required>
             <option value="Grado">Grado</option>
             <option value="Posgrado">Posgrado</option>
           </select>
         </div>
         <div class="campo">
           <label for="facultad" class="required-label">Facultad</label>
-          <select id="facultad" name="faculty" [(ngModel)]="formData.facultad" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable" required>
+          <select id="facultad" name="faculty" [(ngModel)]="formData.facultad" (change)="onFacultyOrStudentTypeChange(formData.facultad, formData.tipoEstudiante)" [disabled]="!isEditable || isAdmin" required>
             <option *ngFor="let faculty of faculties" [value]="faculty">{{ faculty }}</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="carrera" class="required-label">Carrera</label>
-          <select id="carrera" name="carrera" [(ngModel)]="formData.carrera" [disabled]="!isEditable" required>
+          <select id="carrera" name="carrera" [(ngModel)]="formData.carrera" [disabled]="!isEditable || isAdmin" required>
             <option *ngFor="let program of selectedPrograms" [value]="program.name">{{ program.name }}</option>
           </select>
         </div>
@@ -72,13 +72,15 @@
 
         <div class="campo">
           <label for="periodoMovilidad" class="required-label">Periodo de Movilidad</label>
-          <select id="periodoMovilidad" name="periodoMovilidad" [(ngModel)]="formData.periodoMovilidad" [disabled]="!isEditable" required>
+
+          <select id="periodoMovilidad" name="periodoMovilidad" [(ngModel)]="formData.periodoMovilidad" [disabled]="!isEditable || isAdmin" required>
             <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
-          </select>        </div>
+          </select>
+        </div>
 
         <div class="campo">
           <label for="tipoMovilidad" class="required-label">Tipo de Movilidad</label>
-          <select id="tipoMovilidad" name="tipoMovilidad" [(ngModel)]="formData.tipoMovilidad" [disabled]="!isEditable" required>
+          <select id="tipoMovilidad" name="tipoMovilidad" [(ngModel)]="formData.tipoMovilidad" [disabled]="!isEditable || isAdmin" required>
             <option *ngFor="let type of mobilityTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
@@ -98,14 +100,14 @@
           <input type="text" id="titulacionDestino" name="titulacionDestino" [(ngModel)]="formData.titulacionDestino" [disabled]="isAdmin" required>
         </div>
 
-        <div class="campo">
+        <div *ngIf="isAdmin" class="campo">
           <label for="periodoDestino" class="required-label">Periodo en Destino</label>
-          <input type="text" id="periodoDestino" name="periodoDestino" [(ngModel)]="formData.periodoDestino" [disabled]="isAdmin" required>
+          <input type="text" id="periodoDestino" name="periodoDestino" [(ngModel)]="formData.periodoDestino" [disabled]="!isAdmin" required>
         </div>
 
-        <div class="campo">
+        <div *ngIf="isAdmin" class="campo">
           <label for="paisDestino" class="required-label">País de Destino</label>
-          <input type="text" id="paisDestino" name="paisDestino" [(ngModel)]="formData.paisDestino" [disabled]="isAdmin" required>
+          <input type="text" id="paisDestino" name="paisDestino" [(ngModel)]="formData.paisDestino" [disabled]="!isAdmin" required>
         </div>
       </div>
       <div class="declaracion">
@@ -122,7 +124,7 @@
       </div>
 
       <div class="boton">
-        <button [routerLink]="['/docs']" type="submit" (click)="saveOrUpdateForm()" [disabled]="isAdmin || !formData.politica">
+        <button [routerLink]="['/docs']" type="submit" (click)="saveOrUpdateForm()" [disabled]="isAdmin || !isFormValid()">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>

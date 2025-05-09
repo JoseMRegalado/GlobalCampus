@@ -172,7 +172,7 @@ export class EncuestaModalComponent implements OnInit {
         if (!universityData) return;
 
         this.encuestaForm.patchValue({
-          nombres: `${userData.firstName} ${userData.lastName}`,
+          nombres: `${userData.firstName} ${userData.lastName}` || `${userData.nombres} ${userData.apellidos}`,
           universidad: universityData.universityName,
           carrera: universityData.faculty,
           tipoMovilidad: universityData.mobilityType,

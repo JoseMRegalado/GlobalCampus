@@ -78,7 +78,7 @@
       </div>
 
       <div class="boton">
-        <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin || !formData.politica">
+        <button type="submit" [routerLink]="['/university-data']" [disabled]="isAdmin || !isFormValid()">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>

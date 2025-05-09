@@ -2,6 +2,13 @@
 <app-bar></app-bar>
 <body>
 <h2>Ingreso y Validación de Documentación</h2>
+<div class="details-container">
+  <h4>Recuerda:</h4>
+  <li> El peso de los documentos no debe superar 1MB. </li>
+  <li> Los documentos deben ser cargados en pdf. </li>
+  <li *ngIf="role !== 'admin'"> En caso de problemas comunicarse con Global Campus. </li>
+</div>
+
 
 <div *ngIf="!showDocumentSection">
 <!-- Para el usuario con role 'user' -->
@@ -65,34 +72,37 @@
         <th>Observaciones</th>
         <th>Estado</th>
       </tr>
-      <tr *ngFor="let doc of documentos">
-        <td>
-          <!-- Mostrar el input si el documento está en 'pendiente' -->
-          <ng-container *ngIf="doc.estado === 'pendiente'; else verDoc">
-            <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
-            <label for="archivo-{{doc.id}}" class="custom-file-upload">
-              <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
-              {{ archivoCargado ? 'Archivo cargado' : 'Reemplazar documento' }}
-            </label>
-          </ng-container>
+      <ng-container *ngFor="let doc of documentos">
+        <tr *ngIf="!(doc.descripcion === 'Oficio')">
+          <td>
+            <!-- Mostrar el input si el documento está en 'pendiente' -->
+            <ng-container *ngIf="doc.estado === 'pendiente'; else verDoc">
+              <input class="inputNover" id="archivo-{{doc.id}}" type="file" (change)="onFileSelected($event)">
+              <label for="archivo-{{doc.id}}" class="custom-file-upload">
+                <img src="assets/img/upload-icon.svg" alt="Upload Icon" />
+                {{ archivoCargado ? 'Archivo cargado' : 'Reemplazar documento' }}
+              </label>
+            </ng-container>
 
-          <!-- Mostrar el enlace si el documento no está en 'pendiente' -->
-          <ng-template #verDoc>
-            <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
-            <span *ngIf="!doc.archivo">No disponible</span>
-          </ng-template>
-        </td>
-        <td>{{ doc.descripcion }}</td>
-        <td>{{ doc.fechaIngreso }}</td>
-        <td>{{ doc.fechaValidacion || '-' }}</td>
-        <td>{{ doc.observaciones || '-' }}</td>
-        <td>{{ doc.estado }}</td>
+            <!-- Mostrar el enlace si el documento no está en 'pendiente' -->
+            <ng-template #verDoc>
+              <a *ngIf="doc.archivo" (click)="verDocumento(doc.archivo)">Ver documento</a>
+              <span *ngIf="!doc.archivo">No disponible</span>
+            </ng-template>
+          </td>
+          <td>{{ doc.descripcion }}</td>
+          <td>{{ doc.fechaIngreso }}</td>
+          <td>{{ doc.fechaValidacion || '-' }}</td>
+          <td>{{ doc.observaciones || '-' }}</td>
+          <td>{{ doc.estado }}</td>
 
-        <td *ngIf="doc.estado === 'pendiente'">
-          <button (click)="cargarDocumento(doc)">Actualizar</button>
-        </td>
+          <td *ngIf="doc.estado === 'pendiente'">
+            <button (click)="cargarDocumento(doc)">Actualizar</button>
+          </td>
 
-      </tr>
+        </tr>
+      </ng-container>
+
 
     </table>
 
@@ -194,7 +204,7 @@
     </div>
   </div>
 
-  <div *ngIf="cartaAceptacionSubida && !cartaCompromisoSubida">
+  <div *ngIf=" role === 'admin' && cartaAceptacionSubida && !cartaCompromisoSubida">
     <h3>Carta de Aceptación</h3>
     <div class="details-container">
       <li>Por favor, descarga la carta de aceptación, colocar las materias y volver a subirla en formato pdf.</li>
@@ -318,8 +328,8 @@
       <h4>Para realizar tu postulación carga los siguientes documentos:</h4>
       <li>Copia de pasaporte a color</li>
       <li>Certificado Académico Oficial de calificaciones</li>
-      <li>Oficio a Director y selección de materias</li>
-      <li>Otros documentos requeridos</li>
+      <li>Contrato de estudios</li>
+      <li>Carta de aceptación (Al momento de ser obtenido)</li>
     </div>
     <table>
       <thead>
@@ -435,7 +445,12 @@
 
   <!-- ======================= SUBIDA DE 2 DOCUMENTOS ADICIONALES (USUARIO) ======================= -->
 
-  <h3 *ngIf="role !== 'admin' && documentos.length >= 4 && cartaCompromisoSubida && documentos.length <= 6">Carga tus documentos adicionales</h3>
+
+  <div class="details-container" *ngIf="role !== 'admin' && documentos.length >= 4 && cartaCompromisoSubida && documentos.length <= 6">
+    <h3 >Carga tus documentos adicionales</h3>
+    <li> Seguro médico internacional</li>
+    <li> Certificado de notas de la universidad extranjera</li>
+  </div>
   <div class="tabla" *ngIf="role !== 'admin' && documentos.length >= 4 && cartaCompromisoSubida && documentos.length <= 6">
     <table>
       <thead>

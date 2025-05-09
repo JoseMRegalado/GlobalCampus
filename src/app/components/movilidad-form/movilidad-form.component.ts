@@ -3,17 +3,33 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/login.service';
 import { UserDataService } from '../../services/user-data.service';
 import {AlertaService} from "../../services/alert.service";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
+export function minAgeValidator(minAge: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const birthDate = new Date(control.value);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+    const isOldEnough = age > minAge || (age === minAge && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+    return isOldEnough ? null : { minAge: true };
+  };
+}
 @Component({
   selector: 'app-movilidad-form',
   templateUrl: './movilidad-form.component.html',
   styleUrls: ['./movilidad-form.component.css']
 })
+
+
 export class MovilidadFormComponent implements OnInit {
   userEmail: string | null = null;
   userRole: string | null = null;
   isAdmin: boolean = false;
   selectedUserEmail: string | null = null;  // Email del usuario de los queryParams (si es admin)
+
+
 
   formData = {
     nombres: '',
@@ -39,7 +55,8 @@ export class MovilidadFormComponent implements OnInit {
     politica: false
   };
 
-  periods = ['Abril-Agosto 2025', 'Octubre 2025-Febrero 2026', 'Abril-Agosto 2026'];
+  periods: any[] = [];
+
 
   mobilityTypes = [
     'Intercambio', 'Prácticas y Pasantías', 'Programas Cortos',
@@ -164,6 +181,10 @@ export class MovilidadFormComponent implements OnInit {
         }
       });
     });
+    this.userDataService.getPeriods().subscribe(periodList => {
+      this.periods = periodList;
+      console.log('📅 Periodos cargados desde Firebase:', this.periods);
+    });
   }
 
   loadUserRole(): void {
@@ -205,10 +226,52 @@ export class MovilidadFormComponent implements OnInit {
     }
   }
 
+  checkMinAge(dateString: string, minAge: number): boolean {
+    const birthDate = new Date(dateString);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age >= minAge;
+  }
+
+  isFormValid(): boolean {
+    for (const key in this.formData) {
+      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+        const value = this.formData[key as keyof typeof this.formData];
+        if (typeof value === 'boolean') {
+          if (!value) return false; // debe ser true
+        } else {
+          if (value === null || value === undefined || value.trim() === '') {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+
+
+
 
   saveOrUpdateForm(): void {
     if (this.isAdmin) {
       // Si es admin, no debe guardar los datos. Solo se pueden ver
+      return;
+    }
+
+    const isOldEnough = this.checkMinAge(this.formData.fechaNacimiento, 16);
+    if (!isOldEnough) {
+      this.alertaService.mostrarAlerta(
+        'error',
+        'Error al guardar los datos.',
+        'Debes tener al menos 16 años.'
+      )
       return;
     }
 

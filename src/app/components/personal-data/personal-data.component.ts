@@ -91,6 +91,21 @@ export class PersonalDataComponent implements OnInit {
     }
   }
 
+  isFormValid(): boolean {
+    for (const key in this.formData) {
+      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+        const value = this.formData[key as keyof typeof this.formData];
+        if (typeof value === 'boolean') {
+          if (!value) return false; // campos booleanos deben ser true
+        } else {
+          if (!value || value.trim() === '') return false; // strings no vacíos
+        }
+      }
+    }
+    return true;
+  }
+
+
 
   saveOrUpdateForm(): void {
     let emailToSave = this.isAdmin && this.selectedUserEmail ? this.selectedUserEmail : this.userEmail;

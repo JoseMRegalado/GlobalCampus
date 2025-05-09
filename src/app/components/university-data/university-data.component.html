@@ -86,7 +86,7 @@
       </div>
 
       <div class="boton">
-        <button (click)="saveForm()" type="submit"  [routerLink]="['/docs']">
+        <button (click)="saveForm()" type="submit"  [routerLink]="['/docs']" [disabled]="!isFormValid()">
           {{ hasData ? 'Siguiente' : 'Guardar' }}
         </button>
       </div>
