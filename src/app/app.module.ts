@@ -32,6 +32,9 @@ import { EncuestaModalComponent } from './components/encuesta-modal/encuesta-mod
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessStatusComponent } from './components/process-status/process-status.component';
 import { AlertaComponent } from './components/alerta/alerta.component';
+import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
+import {BaseChartDirective} from "ng2-charts";
+
 
 register();
 
@@ -54,9 +57,10 @@ const appRoutes: Routes = [
   { path: 'out/:email', component: MovilidadFormComponent },
   { path: 'out', component: MovilidadFormComponent },
   { path: 'process-status', component: ProcessStatusComponent },
+  { path: 'stats', component: EstadisticasComponent },
 ];
 @NgModule({
-  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaModalComponent, ProcessStatusComponent, AlertaComponent],
+  declarations: [AppComponent, HomeComponent, HeaderComponent, FooterComponent, LoginComponent, PersonalDataComponent, UniversityDataComponent, CartaAceptacionComponent, RequirementsComponent, RequirementsOutComponent, ConvocatoriasComponent, DocumentosComponent, ProgressBarComponent, ConvocatoriaDetalleComponent, AdminViewComponent, BarComponent, MovilidadFormComponent, EncuestaModalComponent, ProcessStatusComponent, AlertaComponent, EstadisticasComponent],
     imports: [
         BrowserModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -69,8 +73,9 @@ const appRoutes: Routes = [
         MatMenuModule,
         MatIconModule,
         ReactiveFormsModule,
-      MatDialogModule,
-      NoopAnimationsModule,
+        MatDialogModule,
+        NoopAnimationsModule,
+        BaseChartDirective,
     ],
   providers: [],
   bootstrap: [AppComponent],

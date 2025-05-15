@@ -1,0 +1,27 @@
+<div class="button-group">
+  <button
+    (click)="cambiarTipo('outgoing')"
+    [class.active]="selectedTipo === 'outgoing'">
+    Outgoing
+  </button>
+  <button
+    (click)="cambiarTipo('incoming')"
+    [class.active]="selectedTipo === 'incoming'">
+    Incoming
+  </button>
+</div>
+
+<div class="charts-container">
+  <div class="chart-box">
+    <canvas baseChart [data]="chartFacultades" chartType="bar"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas baseChart [data]="chartCarreras" chartType="bar"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas baseChart [data]="chartTiposMovilidad" chartType="bar"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas baseChart [data]="chartModalidades" chartType="bar"></canvas>
+  </div>
+</div>

@@ -27,7 +27,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/highcharts/highcharts.js",
+              "node_modules/highcharts/modules/map.js"
+            ]
           },
           "configurations": {
             "production": {
